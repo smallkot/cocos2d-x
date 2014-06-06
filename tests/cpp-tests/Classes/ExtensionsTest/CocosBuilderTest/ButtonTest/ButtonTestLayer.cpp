@@ -13,11 +13,11 @@ ButtonTestLayer::~ButtonTestLayer()
     CC_SAFE_RELEASE(mControlEventLabel);
 }
 
-SEL_MenuHandler ButtonTestLayer::onResolveCCBCCMenuItemSelector(Ref * pTarget, const char * pSelectorName) {
+SEL_MenuHandler ButtonTestLayer::onResolveCCBCCMenuItemSelector(Ref * pTarget, const char * pSelectorName, cocos2d::Node* pNode) {
     return NULL;    
 }
 
-Control::Handler ButtonTestLayer::onResolveCCBCCControlSelector(Ref * pTarget, const char * pSelectorName) {
+Control::Handler ButtonTestLayer::onResolveCCBCCControlSelector(Ref * pTarget, const char * pSelectorName, cocos2d::Node* pNode) {
     CCB_SELECTORRESOLVER_CCCONTROL_GLUE(this, "onCCControlButtonClicked", ButtonTestLayer::onControlButtonClicked);
 
     return NULL;

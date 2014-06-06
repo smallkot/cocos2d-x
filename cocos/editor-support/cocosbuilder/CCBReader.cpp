@@ -16,8 +16,10 @@
 #include "CCBAnimationManager.h"
 #include "CCBSequenceProperty.h"
 #include "CCBKeyframe.h"
+#include "CCBReaderParams.h"
 #include <sstream>
 
+using namespace std;
 using namespace cocos2d;
 using namespace cocos2d::extension;
 
@@ -58,13 +60,14 @@ void CCBFile::setCCBFileNode(Node *pNode)
  *************************************************************************/
 
 CCBReader::CCBReader(NodeLoaderLibrary * pNodeLoaderLibrary, CCBMemberVariableAssigner * pCCBMemberVariableAssigner, CCBSelectorResolver * pCCBSelectorResolver, NodeLoaderListener * pNodeLoaderListener) 
-: _data(nullptr)
-, _bytes(nullptr)
+: _bytes(nullptr)
 , _currentByte(-1)
 , _currentBit(-1)
+, _version(0)
 , _owner(nullptr)
 , _animationManager(nullptr)
 , _animatedProps(nullptr)
+, _ccbx(false)
 {
     this->_nodeLoaderLibrary = pNodeLoaderLibrary;
     this->_nodeLoaderLibrary->retain();
@@ -75,8 +78,7 @@ CCBReader::CCBReader(NodeLoaderLibrary * pNodeLoaderLibrary, CCBMemberVariableAs
 }
 
 CCBReader::CCBReader(CCBReader * ccbReader) 
-: _data(nullptr)
-, _bytes(nullptr)
+: _bytes(nullptr)
 , _currentByte(-1)
 , _currentBit(-1)
 , _owner(nullptr)
@@ -92,13 +94,13 @@ CCBReader::CCBReader(CCBReader * ccbReader)
     this->_nodeLoaderListener = ccbReader->_nodeLoaderListener;
     
     this->_CCBRootPath = ccbReader->getCCBRootPath();
+    this->_ccbx = ccbReader->_ccbx;
     
     init();
 }
 
 CCBReader::CCBReader()
-: _data(nullptr)
-, _bytes(nullptr)
+: _bytes(nullptr)
 , _currentByte(-1)
 , _currentBit(-1)
 , _owner(nullptr)
@@ -107,6 +109,7 @@ CCBReader::CCBReader()
 , _nodeLoaderListener(nullptr)
 , _CCBMemberVariableAssigner(nullptr)
 , _CCBSelectorResolver(nullptr)
+, _ccbx(false)
 {
     init();
 }
@@ -195,17 +198,17 @@ Ref*  CCBReader::getOwner()
     return _owner;
 }
 
-Node* CCBReader::readNodeGraphFromFile(const char *pCCBFileName)
+Node* CCBReader::readNodeGraphFromFile(const char *pCCBFileName, SceneScaleType scaleType)
 {
-    return this->readNodeGraphFromFile(pCCBFileName, nullptr);
+    return this->readNodeGraphFromFile(pCCBFileName, nullptr, scaleType);
 }
 
-Node* CCBReader::readNodeGraphFromFile(const char* pCCBFileName, Ref* pOwner) 
+Node* CCBReader::readNodeGraphFromFile(const char* pCCBFileName, Ref* pOwner, SceneScaleType scaleType)
 {
-    return this->readNodeGraphFromFile(pCCBFileName, pOwner, Director::getInstance()->getWinSize());
+    return this->readNodeGraphFromFile(pCCBFileName, pOwner, Director::getInstance()->getWinSize(), scaleType);
 }
 
-Node* CCBReader::readNodeGraphFromFile(const char *pCCBFileName, Ref *pOwner, const Size &parentSize)
+Node* CCBReader::readNodeGraphFromFile(const char *pCCBFileName, Ref *pOwner, const Size &parentSize, SceneScaleType scaleType)
 {
     if (nullptr == pCCBFileName || strlen(pCCBFileName) == 0)
     {
@@ -222,26 +225,76 @@ Node* CCBReader::readNodeGraphFromFile(const char *pCCBFileName, Ref *pOwner, co
 
     std::string strPath = FileUtils::getInstance()->fullPathForFilename(strCCBFileName.c_str());
 
-    auto dataPtr = std::make_shared<Data>(FileUtils::getInstance()->getDataFromFile(strPath));
+    Data dataPtr = FileUtils::getInstance()->getDataFromFile(strPath);
     
-    Node *ret =  this->readNodeGraphFromData(dataPtr, pOwner, parentSize);
+    Node *ret =  this->readNodeGraphFromData(dataPtr, pOwner, parentSize, scaleType);
     
     return ret;
 }
 
-Node* CCBReader::readNodeGraphFromData(std::shared_ptr<cocos2d::Data> data, Ref *pOwner, const Size &parentSize)
+Node* CCBReader::readNodeGraphFromData(const cocos2d::Data &data, Ref *pOwner, const Size &parentSize, SceneScaleType scaleType)
 {
-    _data = data;
-    _bytes =_data->getBytes();
+    _bytes =data.getBytes();
     _currentByte = 0;
     _currentBit = 0;
     _owner = pOwner;
+    _stringCache.clear();
+    
+    if(scaleType == SceneScaleType::NONE)
+    {
+        CCBReader::setMainScale(1.0);
+        CCBReader::setResolutionScaleY(1.0);
+        CCBReader::setResolutionScaleX(1.0);
+    }
+    else
+    {
+        float resolutionAspectX = Director::getInstance()->getWinSize().width / CCBReader::getResolutionScale();
+        float resolutionAspectY = Director::getInstance()->getWinSize().height / CCBReader::getResolutionScale();
+        
+        float designAspectX = CCBReaderParams::getInstance()->getDesignResolution().width / CCBReaderParams::getInstance()->getDesignResolutionScale();
+        float designAspectY = CCBReaderParams::getInstance()->getDesignResolution().height / CCBReaderParams::getInstance()->getDesignResolutionScale();
+        
+        if(scaleType == SceneScaleType::MINSCALE)
+        {
+            float mainScale = std::min(resolutionAspectX / designAspectX, resolutionAspectY / designAspectY);
+            CCBReader::setMainScale(mainScale);
+            CCBReader::setResolutionScaleX((resolutionAspectX/mainScale)/designAspectX);
+            CCBReader::setResolutionScaleY((resolutionAspectY/mainScale)/designAspectY);
+        }
+        else if(scaleType == SceneScaleType::MAXSCALE)
+        {
+            float mainScale = std::max(resolutionAspectX / designAspectX, resolutionAspectY / designAspectY);
+            CCBReader::setMainScale(mainScale);
+            CCBReader::setResolutionScaleX((resolutionAspectX/mainScale)/designAspectX);
+            CCBReader::setResolutionScaleY((resolutionAspectY/mainScale)/designAspectY);
+        }
+
+        else if((CCBReaderParams::getInstance()->getDesignResolution().width>CCBReaderParams::getInstance()->getDesignResolution().height)==(scaleType == SceneScaleType::MINSIZE))
+        {
+            float mainScale = resolutionAspectY / designAspectY;
+            CCBReader::setMainScale(mainScale);
+            CCBReader::setResolutionScaleY(1.0);
+            CCBReader::setResolutionScaleX((resolutionAspectX/mainScale)/designAspectX);
+        }
+        else
+        {
+            float mainScale = resolutionAspectX / designAspectX;
+            CCBReader::setMainScale(mainScale);
+            CCBReader::setResolutionScaleX(1.0);
+            CCBReader::setResolutionScaleY((resolutionAspectY/mainScale)/designAspectY);
+        }
+    }
+
+    
     CC_SAFE_RETAIN(_owner);
 
     _animationManager->setRootContainerSize(parentSize);
     _animationManager->_owner = _owner;
     
     Node *pNodeGraph = readFileWithCleanUp(true, std::make_shared<CCBAnimationManagerMap>());
+    
+    if(!pNodeGraph)
+        return nullptr;
     
     if (pNodeGraph && _animationManager->getAutoPlaySequenceId() != -1)
     {
@@ -267,19 +320,19 @@ Node* CCBReader::readNodeGraphFromData(std::shared_ptr<cocos2d::Data> data, Ref 
     return pNodeGraph;
 }
 
-Scene* CCBReader::createSceneWithNodeGraphFromFile(const char *pCCBFileName)
+Scene* CCBReader::createSceneWithNodeGraphFromFile(const char *pCCBFileName, SceneScaleType scaleType)
 {
-    return createSceneWithNodeGraphFromFile(pCCBFileName, nullptr);
+    return createSceneWithNodeGraphFromFile(pCCBFileName, nullptr, scaleType);
 }
 
-Scene* CCBReader::createSceneWithNodeGraphFromFile(const char *pCCBFileName, Ref *pOwner)
+Scene* CCBReader::createSceneWithNodeGraphFromFile(const char *pCCBFileName, Ref *pOwner, SceneScaleType scaleType)
 {
-    return createSceneWithNodeGraphFromFile(pCCBFileName, pOwner, Director::getInstance()->getWinSize());
+    return createSceneWithNodeGraphFromFile(pCCBFileName, pOwner, Director::getInstance()->getWinSize(), scaleType);
 }
 
-Scene* CCBReader::createSceneWithNodeGraphFromFile(const char *pCCBFileName, Ref *pOwner, const Size &parentSize)
+Scene* CCBReader::createSceneWithNodeGraphFromFile(const char *pCCBFileName, Ref *pOwner, const Size &parentSize, SceneScaleType scaleType)
 {
-    Node *pNode = readNodeGraphFromFile(pCCBFileName, pOwner, parentSize);
+    Node *pNode = readNodeGraphFromFile(pCCBFileName, pOwner, parentSize, scaleType);
     Scene *pScene = Scene::create();
     pScene->addChild(pNode);
     
@@ -348,19 +401,36 @@ bool CCBReader::readHeader()
     int magicBytes = *((int*)(this->_bytes + this->_currentByte));
     this->_currentByte += 4;
 
+    _ccbx = false;
+
     if(CC_SWAP_INT32_BIG_TO_HOST(magicBytes) != (*reinterpret_cast<const int*>("ccbi"))) {
-        return false; 
+        if(CC_SWAP_INT32_BIG_TO_HOST(magicBytes) != (*reinterpret_cast<const int*>("ccbx")))
+            return false;
+        else
+            _ccbx = true;
+            
     }
 
     /* Read version. */
-    int version = this->readInt(false);
-    if(version != CCB_VERSION) {
-        log("WARNING! Incompatible ccbi file version (file: %d reader: %d)", version, CCB_VERSION);
+    this->_version = this->readInt(false);
+    if(_ccbx)
+    {
+        if((this->_version > CCBX_MAX_VERSION)||(this->_version < CCBX_MIN_VERSION)) {
+            log("WARNING! Incompatible ccbx file version (file: %d reader min: %d reader max: %d)", this->_version, CCB_MIN_VERSION, CCB_MAX_VERSION);
+            return false;
+        }
+
+    }
+    else if((this->_version > CCB_MAX_VERSION)||(this->_version < CCB_MIN_VERSION)) {
+        log("WARNING! Incompatible ccbi file version (file: %d reader min: %d reader max: %d)", this->_version, CCB_MIN_VERSION, CCB_MAX_VERSION);
         return false;
     }
 
     // Read JS check
-    _jsControlled = this->readBool();
+    if(this->_version<6)
+        _jsControlled = this->readBool();
+    else
+        _jsControlled = false;
     _animationManager->_jsControlled = _jsControlled;
 
     return true;
@@ -424,34 +494,136 @@ void CCBReader::alignBits() {
     }
 }
 
-int CCBReader::readInt(bool pSigned) {
-    // Read encoded int
-    int numBits = 0;
-    while(!this->getBit()) {
-        numBits++;
+inline long readVariableLengthIntFromArray(const uint8_t* buffer, uint32_t &value) {
+    const uint8_t* ptr = buffer;
+    uint32_t b;
+    uint32_t result;
+    
+    b = *(ptr++); result  = (b & 0x7F)      ; if (!(b & 0x80)) goto done;
+    b = *(ptr++); result |= (b & 0x7F) <<  7; if (!(b & 0x80)) goto done;
+    b = *(ptr++); result |= (b & 0x7F) << 14; if (!(b & 0x80)) goto done;
+    b = *(ptr++); result |= (b & 0x7F) << 21; if (!(b & 0x80)) goto done;
+    b = *(ptr++); result |=  b         << 28; if (!(b & 0x80)) goto done;
+    
+done:
+    value = result;
+    return ptr - buffer;
+}
+    
+#define REVERSE_BYTE(b) (unsigned char)(((b * 0x0802LU & 0x22110LU) | (b * 0x8020LU & 0x88440LU)) * 0x10101LU >> 16)
+    
+inline unsigned int readEliasGammaIntFromArray(const uint8_t* buffer, uint32_t &value)
+{
+    int currentBit = 0;
+    int currentByte = 0;
+    unsigned int v = 0;
+    memcpy(&v, buffer, 4);
+    
+    int numBits = 32;
+    int extraByte = 0;
+    v &= -((int)v);
+    if (v) numBits--;
+    if (v & 0x0000FFFF) numBits -= 16;
+    if (v & 0x00FF00FF) numBits -= 8;
+    if (v & 0x0F0F0F0F) numBits -= 4;
+    if (v & 0x33333333) numBits -= 2;
+    if (v & 0x55555555) numBits -= 1;
+    
+    if ((numBits & 0x00000007) == 0)
+    {
+        extraByte = 1;
+        currentBit = 0;
+        currentByte += (numBits >> 3);
+    }
+    else
+    {
+        currentBit = numBits - (numBits >> 3) * 8;
+        currentByte += (numBits >> 3);
     }
     
-    long long current = 0;
-    for(int a = numBits - 1; a >= 0; a--) {
-        if(this->getBit()) {
-            current |= 1LL << a;
+    static unsigned char prefixMask[] = {
+        0xFF,
+        0x7F,
+        0x3F,
+        0x1F,
+        0x0F,
+        0x07,
+        0x03,
+        0x01,
+    };
+    static unsigned int suffixMask[] = {
+        0x00,
+        0x80,
+        0xC0,
+        0xE0,
+        0xF0,
+        0xF8,
+        0xFC,
+        0xFE,
+        0xFF,
+    };
+    unsigned char prefix = REVERSE_BYTE(*(buffer + currentByte)) & prefixMask[currentBit];
+    long long current = prefix;
+    int numBytes = 0;
+    int suffixBits = (numBits - (8 - currentBit) + 1);
+    if (numBits >= 8)
+    {
+        suffixBits %= 8;
+        numBytes = (numBits - (8 - (int)(currentBit)) - suffixBits + 1) / 8;
+    }
+    if (suffixBits >= 0)
+    {
+        currentByte++;
+        for (int i = 0; i < numBytes; i++)
+        {
+            current <<= 8;
+            unsigned char byte = REVERSE_BYTE(*(buffer + currentByte));
+            current += byte;
+            currentByte++;
         }
+        current <<= suffixBits;
+        unsigned char suffix = (REVERSE_BYTE(*(buffer + currentByte)) & suffixMask[suffixBits]) >> (8 - suffixBits);
+        current += suffix;
     }
-    current |= 1LL << numBits;
+    else
+    {
+        current >>= -suffixBits;
+    }
+    currentByte += extraByte;
     
-    int num;
-    if(pSigned) {
-        int s = current % 2;
-        if(s) {
-            num = static_cast<int>(current / 2);
-        } else {
-            num = static_cast<int>(-current / 2);
-        }
-    } else {
-        num = static_cast<int>(current - 1);
+    if(currentBit)
+        currentByte++;
+    
+    value = (unsigned int)current -1;
+    
+    return currentByte;
+}
+    
+int CCBReader::readInt(bool pSigned)
+{
+    unsigned int value = 0;
+    if(this->_ccbx)
+    {
+        this->_currentByte += readVariableLengthIntFromArray(this->_bytes + this->_currentByte, value);
+    }
+    else
+    {
+        this->_currentByte += readEliasGammaIntFromArray(this->_bytes + this->_currentByte, value);
     }
     
-    this->alignBits();
+    int num = 0;
+    
+    if (pSigned)
+    {
+        if (value & 0x1)
+            num = -(int)((value+1) >> 1);
+        else
+            num = (int)(value >> 1);
+    }
+    else
+    {
+        num = (int)value;
+    }
     
     return num;
 }
@@ -500,7 +672,7 @@ float CCBReader::readFloat()
     }
 }
 
-std::string CCBReader::readCachedString()
+const std::string& CCBReader::readCachedString()
 {
     int n = this->readInt(false);
     return this->_stringCache[n];
@@ -702,6 +874,163 @@ Node * CCBReader::readNodeGraph(Node * pParent)
     delete _animatedProps;
     _animatedProps = nullptr;
 
+    bool hasPhysicsBody = false;
+    
+    // Read physics
+    if(this->_version >= 6)
+        hasPhysicsBody = this->readBool();
+    
+#if CC_USE_PHYSICS
+    
+    if (hasPhysicsBody)
+    {
+        // Read body shape
+        int bodyShape = this->readInt(false);
+        float cornerRadius = this->readFloat();
+        
+        PhysicsBody* body = NULL;
+        
+        Point physicsOffset = Point(-node->getContentSize().width * node->getAnchorPoint().x, -node->getContentSize().height * node->getAnchorPoint().y);
+        
+        if(_version < 7)
+        {
+            int numPoints = this->readInt(false);
+            std::vector<Point> points;
+            points.reserve(numPoints);
+            for (int i = 0; i < numPoints; i++)
+            {
+                float x = this->readFloat() + physicsOffset.x;
+                float y = this->readFloat() + physicsOffset.y;
+                
+                points.push_back(Point(x, y));
+            }
+            
+            if (bodyShape == 0)
+            {
+                body = PhysicsBody::createPolygon(&points.front(), numPoints, PHYSICSBODY_MATERIAL_DEFAULT);
+            }
+            else if (bodyShape == 1)
+            {
+                if (numPoints > 0)
+                    body = PhysicsBody::createCircle(cornerRadius, PHYSICSBODY_MATERIAL_DEFAULT, points[0]);
+            }
+        }
+        else
+        {
+            bool scaleByResourceScale = this->readBool();
+            
+            if (bodyShape == 0)
+            {
+                
+                int numPolygons = this->readInt(false);
+                
+                std::vector<std::vector<Point>> polygons(numPolygons);
+                
+                for(int j = 0; j < numPolygons; j++)
+                {
+                    // Read points
+                    int numPoints = this->readInt(false);
+                    polygons[j].reserve(numPoints);
+                    
+                    for (int i = 0; i < numPoints; i++)
+                    {
+                        float x = this->readFloat() + physicsOffset.x;
+                        float y = this->readFloat() + physicsOffset.y;
+                        
+                        if(scaleByResourceScale)
+                        {
+                            x *= CCBReader::getResolutionScale();
+                            y *= CCBReader::getResolutionScale();
+                        }
+                        
+                        polygons[j].push_back(Point(x, y));
+                    }
+                }
+                
+                //Construct body.
+                body =  PhysicsBody::create();
+                for (int i=0; i < numPolygons; i++)
+                {
+                    body->addShape(PhysicsShapePolygon::create(&polygons[i].front(), (int)polygons[i].size(), PHYSICSBODY_MATERIAL_DEFAULT));
+                }
+            }
+            else if (bodyShape == 1)
+            {
+                float x = this->readFloat() + physicsOffset.x;
+                float y = this->readFloat() + physicsOffset.y;
+                
+                if(scaleByResourceScale)
+                {
+                    x *= CCBReader::getResolutionScale();
+                    y *= CCBReader::getResolutionScale();
+                }
+                
+                Point point = Point(x, y);
+                
+                body = PhysicsBody::createCircle(cornerRadius, PHYSICSBODY_MATERIAL_DEFAULT, point);
+            }
+        }
+        
+        CCAssert(body, "Unknown body shape");
+        
+        bool dynamic = this->readBool();
+        bool affectedByGravity = this->readBool();
+        bool allowsRotation = this->readBool();
+        
+        body->setDynamic(dynamic);
+        
+        float density = this->readFloat();
+        float friction = this->readFloat();
+        float elasticity = this->readFloat();
+        
+        if(_version>6)
+        {
+            bool setMass = this->readBool();
+            if(setMass)
+                body->setMass(this->readFloat());
+            bool setMoment = this->readBool();
+            if(setMoment)
+                body->setMoment(this->readFloat());
+            
+            body->setCategoryBitmask(this->readInt(true));
+            body->setContactTestBitmask(this->readInt(true));
+            body->setCollisionBitmask(this->readInt(true));
+            
+            Vect velocuty(this->readFloat(),this->readFloat());
+            float velocityLimit(this->readFloat());
+            float angularVelocity(this->readFloat());
+            float angularVelocityLimit(this->readFloat());
+            float linearDamping(this->readFloat());
+            float angularDamping(this->readFloat());
+            
+            if(dynamic)
+            {
+                body->setVelocity(velocuty);
+                body->setVelocityLimit(velocityLimit);
+                body->setAngularVelocity(angularVelocity);
+                body->setAngularVelocityLimit(angularVelocityLimit);
+                body->setLinearDamping(linearDamping);
+                body->setAngularDamping(angularDamping);
+            }
+        }
+        
+        if (dynamic)
+        {
+            body->setGravityEnable(affectedByGravity);
+            body->setRotationEnable(allowsRotation);
+        }
+        
+        for(const auto &it : body->getShapes())
+        {
+            it->setDensity(density);
+            it->setFriction(friction);
+            it->setRestitution(elasticity);
+        }
+        
+        node->setPhysicsBody(body);
+    }
+#endif
+
     /* Read and add children. */
     int numChildren = this->readInt(false);
     for(int i = 0; i < numChildren; i++)
@@ -756,20 +1085,30 @@ CCBKeyframe* CCBReader::readKeyframe(PropertyType type)
     {
         value = readBool();
     }
+    else if (type == PropertyType::FLOAT)
+    {
+        value = readFloat();
+    }
     else if (type == PropertyType::BYTE)
     {
         value = readByte();
     }
     else if (type == PropertyType::COLOR3)
     {
-        unsigned char r = readByte();
-        unsigned char g = readByte();
-        unsigned char b = readByte();
-        
         ValueMap colorMap;
-        colorMap["r"] = r;
-        colorMap["g"] = g;
-        colorMap["b"] = b;
+        if(this->_version<6)
+        {
+            colorMap["r"] = readByte();
+            colorMap["g"] = readByte();
+            colorMap["b"] = readByte();
+        }
+        else
+        {
+            colorMap["r"] = static_cast<unsigned char>(readFloat()*255.0);
+            colorMap["g"] = static_cast<unsigned char>(readFloat()*255.0);
+            colorMap["b"] = static_cast<unsigned char>(readFloat()*255.0);
+            colorMap["a"] = static_cast<unsigned char>(readFloat()*255.0);
+        }
         
         value = colorMap;
     }
@@ -791,33 +1130,52 @@ CCBKeyframe* CCBReader::readKeyframe(PropertyType type)
     }
     else if (type == PropertyType::SPRITEFRAME)
     {
-        std::string spriteSheet = readCachedString();
-        std::string spriteFile = readCachedString();
+        SpriteFrame* spriteFrame = nullptr;
         
-        SpriteFrame* spriteFrame;
-
-        if (spriteSheet.length() == 0)
+        if(this->_version<6)
         {
-            spriteFile = _CCBRootPath + spriteFile;
-
-            Texture2D *texture = Director::getInstance()->getTextureCache()->addImage(spriteFile.c_str());
-            Rect bounds = Rect(0, 0, texture->getContentSize().width, texture->getContentSize().height);
+            std::string spriteSheet = readCachedString();
+            std::string spriteFile = readCachedString();
             
-            spriteFrame = SpriteFrame::createWithTexture(texture, bounds);
+            if (spriteSheet.length() == 0)
+            {
+                spriteFile = _CCBRootPath + spriteFile;
+                
+                Texture2D *texture = Director::getInstance()->getTextureCache()->addImage(spriteFile.c_str());
+                Rect bounds = Rect(0, 0, texture->getContentSize().width, texture->getContentSize().height);
+                
+                spriteFrame = SpriteFrame::createWithTexture(texture, bounds);
+            }
+            else
+            {
+                spriteSheet = _CCBRootPath + spriteSheet;
+                SpriteFrameCache* frameCache = SpriteFrameCache::getInstance();
+                
+                // Load the sprite sheet only if it is not loaded
+                if (_loadedSpriteSheets.find(spriteSheet) == _loadedSpriteSheets.end())
+                {
+                    frameCache->addSpriteFramesWithFile(spriteSheet.c_str());
+                    _loadedSpriteSheets.insert(spriteSheet);
+                }
+                
+                spriteFrame = frameCache->getSpriteFrameByName(spriteFile.c_str());
+            }
         }
         else
         {
-            spriteSheet = _CCBRootPath + spriteSheet;
-            SpriteFrameCache* frameCache = SpriteFrameCache::getInstance();
-            
-            // Load the sprite sheet only if it is not loaded            
-            if (_loadedSpriteSheets.find(spriteSheet) == _loadedSpriteSheets.end())
+            std::string spriteFile = readCachedString();
+            if (spriteFile.length() != 0)
             {
-                frameCache->addSpriteFramesWithFile(spriteSheet.c_str());
-                _loadedSpriteSheets.insert(spriteSheet);
+                spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(spriteFile.c_str());
+                if(!spriteFrame)
+                {
+                    Texture2D * texture = Director::getInstance()->getTextureCache()->addImage(spriteFile.c_str());
+                    if(texture != NULL) {
+                        Rect bounds = Rect(0, 0, texture->getContentSize().width, texture->getContentSize().height);
+                        spriteFrame = SpriteFrame::createWithTexture(texture, bounds);
+                    }
+                }
             }
-            
-            spriteFrame = frameCache->getSpriteFrameByName(spriteFile.c_str());
         }
         
         keyframe->setObject(spriteFrame);
@@ -913,6 +1271,12 @@ bool CCBReader::readSequences()
     auto& sequences = _animationManager->getSequences();
     
     int numSeqs = readInt(false);
+    
+    if(_version>7)
+    {
+        /*bool hasPhysicsBodies = */readBool();
+        /*bool hasPhysicsNode = */readBool();
+    }
     
     for (int i = 0; i < numSeqs; i++)
     {
@@ -1071,6 +1435,18 @@ void CCBReader::addOwnerOutletNode(Node *node)
  Static functions
  ************************************************************************/
 
+static float __ccbMainScale = 1.0f;
+
+float CCBReader::getMainScale()
+{
+    return __ccbMainScale;
+}
+
+void CCBReader::setMainScale(float scale)
+{
+    __ccbMainScale = scale;
+}
+    
 static float __ccbResolutionScale = 1.0f;
 
 float CCBReader::getResolutionScale()
@@ -1081,6 +1457,30 @@ float CCBReader::getResolutionScale()
 void CCBReader::setResolutionScale(float scale)
 {
     __ccbResolutionScale = scale;
+}
+
+static float __ccbResolutionScaleX = 1.0f;
+
+float CCBReader::getResolutionScaleX()
+{
+    return __ccbResolutionScaleX * __ccbResolutionScale;
+}
+
+void CCBReader::setResolutionScaleX(float scale)
+{
+    __ccbResolutionScaleX = scale;
+}
+
+static float __ccbResolutionScaleY = 1.0f;
+
+float CCBReader::getResolutionScaleY()
+{
+    return __ccbResolutionScaleY * __ccbResolutionScale;
+}
+
+void CCBReader::setResolutionScaleY(float scale)
+{
+    __ccbResolutionScaleY = scale;
 }
 
 };

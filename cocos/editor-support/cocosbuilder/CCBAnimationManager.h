@@ -199,7 +199,10 @@ public:
 	virtual CCBSoundEffect* clone() const override;
 	virtual CCBSoundEffect* reverse() const override;
 
+    static void setSoundEnabled(bool enabled);
+
 private:
+    static bool _enabled;
     std::string _soundFile;
     float _pitch, _pan, _gain;
 };

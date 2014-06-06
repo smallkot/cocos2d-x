@@ -31,6 +31,16 @@ void LayerGradientLoader::onHandlePropTypeByte(Node * pNode, Node * pParent, con
     }
 }
 
+void LayerGradientLoader::onHandlePropTypeFloat(Node * pNode, Node * pParent, const char* pPropertyName, float pFloat, CCBReader * ccbReader){
+    if(strcmp(pPropertyName, PROPERTY_STARTOPACITY) == 0) {
+        ((LayerGradient *)pNode)->setStartOpacity(static_cast<GLubyte>(pFloat*255.0));
+    } else if(strcmp(pPropertyName, PROPERTY_ENDOPACITY) == 0) {
+        ((LayerGradient *)pNode)->setEndOpacity(static_cast<GLubyte>(pFloat*255.0));
+    } else {
+        LayerLoader::onHandlePropTypeFloat(pNode, pParent, pPropertyName, pFloat, ccbReader);
+    }
+}
+
 void LayerGradientLoader::onHandlePropTypeBlendFunc(Node * pNode, Node * pParent, const char * pPropertyName, BlendFunc pBlendFunc, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_BLENDFUNC) == 0) {
         ((LayerGradient *)pNode)->setBlendFunc(pBlendFunc);
@@ -40,7 +50,7 @@ void LayerGradientLoader::onHandlePropTypeBlendFunc(Node * pNode, Node * pParent
 }
 
 
-void LayerGradientLoader::onHandlePropTypePoint(Node * pNode, Node * pParent, const char * pPropertyName, Vec2 pPoint, CCBReader * ccbReader) {
+void LayerGradientLoader::onHandlePropTypePoint(Node * pNode, Node * pParent, const char * pPropertyName, Point pPoint, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_VECTOR) == 0) {
         ((LayerGradient *)pNode)->setVector(pPoint);
 

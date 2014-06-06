@@ -13,7 +13,7 @@ MenuTestLayer::~MenuTestLayer()
     CC_SAFE_RELEASE(mMenuItemStatusLabelBMFont);
 }
 
-SEL_MenuHandler MenuTestLayer::onResolveCCBCCMenuItemSelector(Ref * pTarget, const char * pSelectorName) {
+SEL_MenuHandler MenuTestLayer::onResolveCCBCCMenuItemSelector(Ref * pTarget, const char * pSelectorName, cocos2d::Node* pNode) {
     CCB_SELECTORRESOLVER_CCMENUITEM_GLUE(this, "onMenuItemAClicked", MenuTestLayer::onMenuItemAClicked);
     CCB_SELECTORRESOLVER_CCMENUITEM_GLUE(this, "onMenuItemBClicked", MenuTestLayer::onMenuItemBClicked);
     CCB_SELECTORRESOLVER_CCMENUITEM_GLUE(this, "onMenuItemCClicked", MenuTestLayer::onMenuItemCClicked);
@@ -21,7 +21,7 @@ SEL_MenuHandler MenuTestLayer::onResolveCCBCCMenuItemSelector(Ref * pTarget, con
     return nullptr;
 }
 
-Control::Handler MenuTestLayer::onResolveCCBCCControlSelector(Ref * pTarget, const char * pSelectorName) {
+Control::Handler MenuTestLayer::onResolveCCBCCControlSelector(Ref * pTarget, const char * pSelectorName, cocos2d::Node* pNode) {
     return nullptr;
 }
 

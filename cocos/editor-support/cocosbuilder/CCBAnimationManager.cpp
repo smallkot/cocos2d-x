@@ -19,6 +19,8 @@ namespace cocosbuilder {
 
 // Implementation of CCBAinmationManager
 
+static int animationTag = 'ccbi';
+
 CCBAnimationManager::CCBAnimationManager()
 : _jsControlled(false)
 , _owner(nullptr)
@@ -55,7 +57,7 @@ CCBAnimationManager::~CCBAnimationManager()
 //     }
     if (_rootNode)
     {
-        _rootNode->stopAllActions();
+        _rootNode->stopActionByTag(animationTag);
     }
     
     setRootNode(nullptr);
@@ -341,7 +343,10 @@ ActionInterval* CCBAnimationManager::getAction(CCBKeyframe *pKeyframe0, CCBKeyfr
     } 
     else if (propName == "opacity")
     {
-        return FadeTo::create(duration, pKeyframe1->getValue().asByte());
+        if(pKeyframe1->getValue().getType() == Value::Type::FLOAT)
+            return FadeTo::create(duration, pKeyframe1->getValue().asFloat()*255.0);
+        else
+            return FadeTo::create(duration, pKeyframe1->getValue().asByte());
     }
     else if (propName == "color")
     {
@@ -362,7 +367,7 @@ ActionInterval* CCBAnimationManager::getAction(CCBKeyframe *pKeyframe0, CCBKeyfr
             return Sequence::createWithTwoActions(DelayTime::create(duration), Hide::create());
         }
     }
-    else if (propName == "displayFrame")
+    else if ((propName == "displayFrame")||((propName == "spriteFrame")))
     {
         return Sequence::createWithTwoActions(DelayTime::create(duration),
                     CCBSetSpriteFrame::create(static_cast<SpriteFrame*>(pKeyframe1->getObject())));
@@ -371,7 +376,9 @@ ActionInterval* CCBAnimationManager::getAction(CCBKeyframe *pKeyframe0, CCBKeyfr
     {
         // Get position type
         auto& array = getBaseValue(pNode, propName).asValueVector();
-        CCBReader::PositionType type = (CCBReader::PositionType)array[2].asInt();
+        CCBReader::PositionReferenceCorner corner = (CCBReader::PositionReferenceCorner)array[2].asInt();
+        CCBReader::PositionUnit xUnit = (CCBReader::PositionUnit)array[3].asInt();
+        CCBReader::PositionUnit yUnit = (CCBReader::PositionUnit)array[4].asInt();
         
         // Get relative position
         auto value = pKeyframe1->getValue().asValueVector();
@@ -380,7 +387,7 @@ ActionInterval* CCBAnimationManager::getAction(CCBKeyframe *pKeyframe0, CCBKeyfr
         
         Size containerSize = getContainerSize(pNode->getParent());
         
-        Vec2 absPos = getAbsolutePosition(Vec2(x,y), type, containerSize, propName);
+        Vec2 absPos = getAbsolutePosition(Vec2(x,y), corner, xUnit, yUnit, containerSize, propName.c_str());
         
         return MoveTo::create(duration, absPos);
     }
@@ -388,21 +395,14 @@ ActionInterval* CCBAnimationManager::getAction(CCBKeyframe *pKeyframe0, CCBKeyfr
     {
         // Get position type
         auto& array = getBaseValue(pNode, propName).asValueVector();
-        CCBReader::ScaleType type = (CCBReader::ScaleType)array[2].asInt();
+        int type = array[2].asInt();
         
         // Get relative scale
         auto value = pKeyframe1->getValue().asValueVector();
-        float x = value[0].asFloat();
-        float y = value[1].asFloat();
         
-        if (type == CCBReader::ScaleType::MULTIPLY_RESOLUTION)
-        {
-            float resolutionScale = CCBReader::getResolutionScale();
-            x *= resolutionScale;
-            y *= resolutionScale;
-        }
+        Size newScale = getRelativeScale(value[0].asFloat(), value[1].asFloat(), type, propName);
         
-        return ScaleTo::create(duration, x, y);
+        return ScaleTo::create(duration, newScale.width, newScale.height);
     }
     else if (propName == "skew")
     {
@@ -436,6 +436,7 @@ void CCBAnimationManager::setAnimatedProperty(const std::string& propName, Node 
         
         // Animate
         ActionInterval *tweenAction = getAction(nullptr, kf1, propName, pNode);
+        tweenAction->setTag(animationTag);
         pNode->runAction(tweenAction);
     }
     else 
@@ -446,26 +447,30 @@ void CCBAnimationManager::setAnimatedProperty(const std::string& propName, Node 
         {
             // Get position type
             auto& array = getBaseValue(pNode, propName).asValueVector();
-            CCBReader::PositionType type = (CCBReader::PositionType)array[2].asInt();
+            CCBReader::PositionReferenceCorner corner = (CCBReader::PositionReferenceCorner)array[2].asInt();
+            CCBReader::PositionUnit xUnit = (CCBReader::PositionUnit)array[3].asInt();
+            CCBReader::PositionUnit yUnit = (CCBReader::PositionUnit)array[4].asInt();
+            
             // Get relative position
             auto& valueVector = value.asValueVector();
             float x = valueVector[0].asFloat();
             float y = valueVector[1].asFloat();
             
-            pNode->setPosition(getAbsolutePosition(Vec2(x,y), type, getContainerSize(pNode->getParent()), propName));
+            pNode->setPosition(getAbsolutePosition(Vec2(x,y), corner, xUnit, yUnit, getContainerSize(pNode->getParent()), propName.c_str()));
         }
         else if (propName == "scale")
         {
             // Get scale type
             auto& array = getBaseValue(pNode, propName).asValueVector();
-            CCBReader::ScaleType type = (CCBReader::ScaleType)array[2].asInt();
+            int type = array[2].asInt();
             
             // Get relative scale
             auto& valueVector = value.asValueVector();
             float x = valueVector[0].asFloat();
             float y = valueVector[1].asFloat();
             
-            setRelativeScale(pNode, x, y, type, propName);
+            Size realScale = getRelativeScale(x, y, type, propName);
+            pNode->setScale(realScale.width,realScale.height);
         }
         else if(propName == "skew")
         {
@@ -497,10 +502,12 @@ void CCBAnimationManager::setAnimatedProperty(const std::string& propName, Node 
             }
             else if (propName == "opacity")
             {
-                unsigned char opacity = value.asByte();
-                pNode->setOpacity(opacity);
+                if(value.getType() == Value::Type::FLOAT)
+                    pNode->setOpacity(value.asFloat()*255.0);
+                else
+                    pNode->setOpacity(value.asByte());
             }
-            else if (propName == "displayFrame")
+            else if ((propName == "displayFrame")||(propName == "spriteFrame"))
             {
                 static_cast<Sprite*>(pNode)->setSpriteFrame(static_cast<SpriteFrame*>(obj));
             }
@@ -777,12 +784,12 @@ void CCBAnimationManager::runAction(Node *pNode, CCBSequenceProperty *pSeqProp, 
             {
                 // Apply easing
                 action = getEaseAction(action, kf0->getEasingType(), kf0->getEasingOpt());
-                
                 actions.pushBack(action);
             }
         }
         
         auto seq = Sequence::create(actions);
+        seq->setTag(animationTag);
         pNode->runAction(seq);
     }
 }
@@ -806,12 +813,12 @@ void CCBAnimationManager::runAnimationsForSequenceIdTweenDuration(int nSeqId, fl
 {
     CCASSERT(nSeqId != -1, "Sequence id couldn't be found");
     
-    _rootNode->stopAllActions();
+    _rootNode->stopActionByTag(animationTag);
     
     for (auto nodeSeqIter = _nodeSequences.begin(); nodeSeqIter != _nodeSequences.end(); ++nodeSeqIter)
     {
         Node *node = nodeSeqIter->first;
-        node->stopAllActions();
+        node->stopActionByTag(animationTag);
         
         // Refer to CCBReader::readKeyframe() for the real type of value
         auto seqs = nodeSeqIter->second;
@@ -865,6 +872,7 @@ void CCBAnimationManager::runAnimationsForSequenceIdTweenDuration(int nSeqId, fl
     CCBSequence *seq = getSequence(nSeqId);
     Action *completeAction = Sequence::createWithTwoActions(DelayTime::create(seq->getDuration() + fTweenDuration),
                                                                 CallFunc::create( CC_CALLBACK_0(CCBAnimationManager::sequenceCompleted,this)));
+    completeAction->setTag(animationTag);
     _rootNode->runAction(completeAction);
     
     // Set the running scene
@@ -872,6 +880,7 @@ void CCBAnimationManager::runAnimationsForSequenceIdTweenDuration(int nSeqId, fl
     if(seq->getCallbackChannel() != nullptr) {
         Action* action = (Action *)actionForCallbackChannel(seq->getCallbackChannel());
         if(action != nullptr) {
+            _rootNode->setTag(animationTag);
             _rootNode->runAction(action);
         }
     } 
@@ -879,6 +888,7 @@ void CCBAnimationManager::runAnimationsForSequenceIdTweenDuration(int nSeqId, fl
     if(seq->getSoundChannel() != nullptr) {
         Action* action = (Action *)actionForSoundChannel(seq->getSoundChannel());
         if(action != nullptr) {
+            _rootNode->setTag(animationTag);
             _rootNode->runAction(action);
         }
     }
@@ -1011,6 +1021,13 @@ void CCBSetSpriteFrame::update(float time)
  CCBSoundEffect
  ************************************************************/
 
+bool CCBSoundEffect::_enabled = true;
+    
+void CCBSoundEffect::setSoundEnabled(bool enabled)
+{
+    _enabled = enabled;
+}
+
 CCBSoundEffect* CCBSoundEffect::actionWithSoundFile(const std::string &filename, float pitch, float pan, float gain) {
   CCBSoundEffect* pRet = new CCBSoundEffect();
   if (pRet != nullptr && pRet->initWithSoundFile(filename, pitch, pan, gain))
@@ -1054,7 +1071,8 @@ CCBSoundEffect* CCBSoundEffect::reverse() const
 
 void CCBSoundEffect::update(float time)
 {
-    CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(_soundFile.c_str());
+    if(_enabled)
+        CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(_soundFile.c_str());
 }
 
 

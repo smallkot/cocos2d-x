@@ -13,12 +13,12 @@ AnimationsTestLayer::~AnimationsTestLayer()
     CC_SAFE_RELEASE_NULL(mAnimationManager);
 }
 
-SEL_MenuHandler AnimationsTestLayer::onResolveCCBCCMenuItemSelector(Ref * pTarget, const char * pSelectorName)
+SEL_MenuHandler AnimationsTestLayer::onResolveCCBCCMenuItemSelector(Ref * pTarget, const char * pSelectorName, cocos2d::Node* pNode)
 {
     return NULL;
 }
 
-Control::Handler AnimationsTestLayer::onResolveCCBCCControlSelector(Ref *pTarget, const char*pSelectorName)
+Control::Handler AnimationsTestLayer::onResolveCCBCCControlSelector(Ref *pTarget, const char *pSelectorName, cocos2d::Node* pNode)
 {
     CCB_SELECTORRESOLVER_CCCONTROL_GLUE(this, "onCCControlButtonIdleClicked", AnimationsTestLayer::onControlButtonIdleClicked);
     CCB_SELECTORRESOLVER_CCCONTROL_GLUE(this, "onCCControlButtonWaveClicked", AnimationsTestLayer::onControlButtonWaveClicked);

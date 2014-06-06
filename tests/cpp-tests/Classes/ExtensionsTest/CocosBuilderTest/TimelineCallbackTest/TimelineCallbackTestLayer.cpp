@@ -14,11 +14,11 @@ TimelineCallbackTestLayer::~TimelineCallbackTestLayer()
     CocosDenshion::SimpleAudioEngine::end();
 }
 
-SEL_MenuHandler TimelineCallbackTestLayer::onResolveCCBCCMenuItemSelector(Ref * pTarget, const char * pSelectorName) {
+SEL_MenuHandler TimelineCallbackTestLayer::onResolveCCBCCMenuItemSelector(Ref * pTarget, const char * pSelectorName, cocos2d::Node* pNode) {
     return NULL;
 }
 
-Control::Handler TimelineCallbackTestLayer::onResolveCCBCCControlSelector(Ref * pTarget, const char * pSelectorName) {
+Control::Handler TimelineCallbackTestLayer::onResolveCCBCCControlSelector(Ref * pTarget, const char * pSelectorName, cocos2d::Node* pNode) {
     return NULL;
 }
 

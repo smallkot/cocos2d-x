@@ -69,11 +69,11 @@ void HelloCocosBuilderLayer::onNodeLoaded(cocos2d::Node * node,  cocosbuilder::N
 }
 
 
-SEL_MenuHandler HelloCocosBuilderLayer::onResolveCCBCCMenuItemSelector(Ref * pTarget, const char * pSelectorName) {
+SEL_MenuHandler HelloCocosBuilderLayer::onResolveCCBCCMenuItemSelector(Ref * pTarget, const char * pSelectorName, cocos2d::Node* pNode) {
     return NULL;    
 }
 
-Control::Handler HelloCocosBuilderLayer::onResolveCCBCCControlSelector(Ref * pTarget, const char * pSelectorName) {
+Control::Handler HelloCocosBuilderLayer::onResolveCCBCCControlSelector(Ref * pTarget, const char * pSelectorName, cocos2d::Node* pNode) {
     CCB_SELECTORRESOLVER_CCCONTROL_GLUE(this, "onMenuTestClicked", HelloCocosBuilderLayer::onMenuTestClicked);
     CCB_SELECTORRESOLVER_CCCONTROL_GLUE(this, "onSpriteTestClicked", HelloCocosBuilderLayer::onSpriteTestClicked);
     CCB_SELECTORRESOLVER_CCCONTROL_GLUE(this, "onButtonTestClicked", HelloCocosBuilderLayer::onButtonTestClicked);

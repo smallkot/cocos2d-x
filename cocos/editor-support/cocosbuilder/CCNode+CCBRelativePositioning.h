@@ -5,9 +5,13 @@
 
 namespace cocosbuilder {
 
-extern cocos2d::Vec2 getAbsolutePosition(const cocos2d::Vec2 &pt, CCBReader::PositionType type, const cocos2d::Size &containerSize, const std::string&propName);
+extern void convertPosition(CCBReader::PositionType type, cocos2d::Point &pt, CCBReader::PositionReferenceCorner &corner, CCBReader::PositionUnit &xUnit, CCBReader::PositionUnit &yUnit);
 
-extern void setRelativeScale(cocos2d::Node *node, float scaleX, float scaleY, CCBReader::ScaleType type, const std::string& propName);
+extern cocos2d::Size getRelativeScale(float scaleX, float scaleY, unsigned int type, const std::string& propName);
+    
+extern cocos2d::Point getAbsolutePosition(const cocos2d::Point &pt, CCBReader::PositionReferenceCorner corner, CCBReader::PositionUnit xUnit, CCBReader::PositionUnit yUnit, const cocos2d::Size &containerSize, const char *pPropName);
+    
+extern cocos2d::Size getAbsoluteSize(const cocos2d::Size &contentSize, CCBReader::SizeUnit widthUnit, CCBReader::SizeUnit heightUnit, const cocos2d::Size &containerSize);
 
 }
 
