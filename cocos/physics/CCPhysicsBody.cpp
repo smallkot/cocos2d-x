@@ -30,7 +30,7 @@
 
 #include "chipmunk.h"
 
-#include "2d/CCScene.h"
+#include "2d/CCPhysicsNode.h"
 
 #include "physics/CCPhysicsShape.h"
 #include "physics/CCPhysicsJoint.h"
@@ -764,11 +764,11 @@ void PhysicsBody::update(float delta)
     if (_node != nullptr)
     {
         Node* parent = _node->getParent();
-        Scene* scene = &_world->getScene();
+        PhysicsNode* physicsNode = &_world->getPhysicsNode();
         
-        Vec2 position = parent != scene ? parent->convertToNodeSpace(scene->convertToWorldSpace(getPosition())) : getPosition();
+        Vec2 position = parent != physicsNode ? parent->convertToNodeSpace(physicsNode->convertToWorldSpace(getPosition())) : getPosition();
         float rotation = getRotation();
-        for (; parent != scene; parent = parent->getParent())
+        for (; parent != physicsNode; parent = parent->getParent())
         {
             rotation -= parent->getRotation();
         }
@@ -880,6 +880,14 @@ void PhysicsBody::updateMass(float oldMass, float newMass)
     if (_dynamic && !_gravityEnabled && _world != nullptr && newMass != PHYSICS_INFINITY)
     {
         applyForce(-_world->getGravity() * newMass);
+    }
+}
+
+void PhysicsBody::rescale(const AffineTransform &transform)
+{
+    for(auto &shape : _shapes)
+    {
+        shape->rescale(transform);
     }
 }
 

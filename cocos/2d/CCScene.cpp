@@ -36,9 +36,6 @@ THE SOFTWARE.
 NS_CC_BEGIN
 
 Scene::Scene()
-#if CC_USE_PHYSICS
-: _physicsWorld(nullptr)
-#endif
 {
     _ignoreAnchorPointForPosition = true;
     setAnchorPoint(Vec2(0.5f, 0.5f));
@@ -46,9 +43,6 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-#if CC_USE_PHYSICS
-    CC_SAFE_DELETE(_physicsWorld);
-#endif
 }
 
 bool Scene::init()
@@ -91,20 +85,6 @@ Scene* Scene::getScene()
 }
 
 #if CC_USE_PHYSICS
-void Scene::addChild(Node* child, int zOrder, int tag)
-{
-    Node::addChild(child, zOrder, tag);
-    addChildToPhysicsWorld(child);
-}
-
-void Scene::update(float delta)
-{
-    Node::update(delta);
-    if (nullptr != _physicsWorld)
-    {
-        _physicsWorld->update(delta);
-    }
-}
 
 Scene *Scene::createWithPhysics()
 {
@@ -118,45 +98,6 @@ Scene *Scene::createWithPhysics()
     {
         CC_SAFE_DELETE(ret);
         return nullptr;
-    }
-}
-
-bool Scene::initWithPhysics()
-{
-    bool ret = false;
-    do
-    {
-        Director * director;
-        CC_BREAK_IF( ! (director = Director::getInstance()) );
-        this->setContentSize(director->getWinSize());
-        CC_BREAK_IF(! (_physicsWorld = PhysicsWorld::construct(*this)));
-        
-        this->scheduleUpdate();
-        // success
-        ret = true;
-    } while (0);
-    return ret;
-}
-
-void Scene::addChildToPhysicsWorld(Node* child)
-{
-    if (_physicsWorld)
-    {
-        std::function<void(Node*)> addToPhysicsWorldFunc = nullptr;
-        addToPhysicsWorldFunc = [this, &addToPhysicsWorldFunc](Node* node) -> void
-        {
-            if (node->getPhysicsBody())
-            {
-                _physicsWorld->addBody(node->getPhysicsBody());
-            }
-            
-            auto& children = node->getChildren();
-            for( const auto &n : children) {
-                addToPhysicsWorldFunc(n);
-            }
-        };
-        
-        addToPhysicsWorldFunc(child);
     }
 }
 #endif

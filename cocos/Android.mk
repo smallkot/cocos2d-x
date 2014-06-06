@@ -54,6 +54,7 @@ cocos2d.cpp \
 2d/CCParticleExamples.cpp \
 2d/CCParticleSystem.cpp \
 2d/CCParticleSystemQuad.cpp \
+2d/CCPhysicsNode.cpp \
 2d/CCProgressTimer.cpp \
 2d/CCRenderTexture.cpp \
 2d/CCScene.cpp \

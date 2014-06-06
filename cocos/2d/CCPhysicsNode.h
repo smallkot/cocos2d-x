@@ -25,13 +25,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#ifndef __CCSCENE_H__
-#define __CCSCENE_H__
+#ifndef __CCPHYSICSNODE_H__
+#define __CCPHYSICSNODE_H__
 
 #include "2d/CCNode.h"
-#include "2d/CCPhysicsNode.h"
 
 NS_CC_BEGIN
+
+class PhysicsWorld;
 
 /**
  * @addtogroup scene
@@ -48,35 +49,37 @@ additional logic.
 
 It is a good practice to use a Scene as the parent of all your nodes.
 */
-class CC_DLL Scene : public PhysicsNode
+class CC_DLL PhysicsNode : public Node
 {
 public:
     /** creates a new Scene object */
-    static Scene *create();
-
-    // Overrides
-    virtual Scene *getScene() override;
+    static PhysicsNode *create();
 
     using Node::addChild;
     virtual std::string getDescription() const override;
-    
-CC_CONSTRUCTOR_ACCESS:
-    Scene();
-    virtual ~Scene();
-    
-    virtual bool init() override;
 
 protected:
+    PhysicsNode();
+    virtual ~PhysicsNode();
+    virtual bool init() override;
+    
     friend class Node;
     friend class ProtectedNode;
-    friend class SpriteBatchNode;
+    //friend class SpriteBatchNode;
     
 private:
-    CC_DISALLOW_COPY_AND_ASSIGN(Scene);
+    CC_DISALLOW_COPY_AND_ASSIGN(PhysicsNode);
     
 #if CC_USE_PHYSICS
 public:
-    static Scene *createWithPhysics();
+    virtual void addChild(Node* child, int zOrder, int tag) override;
+    virtual void update(float delta) override;
+    inline PhysicsWorld* getPhysicsWorld() { return _physicsWorld; }
+protected:
+    bool initWithPhysics();
+    void addChildToPhysicsWorld(Node* child);
+
+    PhysicsWorld* _physicsWorld;
 #endif // CC_USE_PHYSICS
 };
 
@@ -85,4 +88,4 @@ public:
 
 NS_CC_END
 
-#endif // __CCSCENE_H__
+#endif // __CCPHYSICSNODE_H__

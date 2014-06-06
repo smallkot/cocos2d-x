@@ -30,6 +30,7 @@
 
 #include "base/CCRef.h"
 #include "math/CCGeometry.h"
+#include "math/CCAffineTransform.h"
 
 NS_CC_BEGIN
 
@@ -143,6 +144,9 @@ public:
     void setGroup(int group);
     inline int getGroup() { return _group; }
     
+    /** rescale shape */
+    virtual void rescale(const AffineTransform &transform) {};
+    
 protected:
     bool init(Type type);
     
@@ -192,6 +196,9 @@ public:
     
     float getRadius() const;
     virtual Vec2 getOffset() override;
+    
+    virtual void rescale(const AffineTransform &transform) override;
+    
 protected:
     bool init(float radius, const PhysicsMaterial& material = PHYSICSSHAPE_MATERIAL_DEFAULT, const Vec2& offset = Vec2::ZERO);
     virtual float calculateArea() override;
@@ -199,6 +206,10 @@ protected:
 protected:
     PhysicsShapeCircle();
     virtual ~PhysicsShapeCircle();
+    
+private:
+    Point _center;
+    float _radius;
 };
 
 /** A box shape */
@@ -215,6 +226,8 @@ public:
     int getPointsCount() const { return 4; }
     Size getSize() const;
     virtual Vec2 getOffset() override { return _offset; }
+        
+    virtual void rescale(const AffineTransform &transform) override;
     
 protected:
     bool init(const Size& size, const PhysicsMaterial& material = PHYSICSSHAPE_MATERIAL_DEFAULT, const Vec2& offset = Vec2::ZERO);
@@ -224,8 +237,9 @@ protected:
     PhysicsShapeBox();
     virtual ~PhysicsShapeBox();
     
-protected:
-    Vec2 _offset;
+private:
+    Point _offset;
+    Point _points[4];
 };
 
 /** A polygon shape */
@@ -242,6 +256,9 @@ public:
     void getPoints(Vec2* outPoints) const;
     int getPointsCount() const;
     virtual Vec2 getCenter() override;
+        
+    virtual void rescale(const AffineTransform &transform) override;
+    
 protected:
     bool init(const Vec2* points, int count, const PhysicsMaterial& material = PHYSICSSHAPE_MATERIAL_DEFAULT, const Vec2& offset = Vec2::ZERO);
     float calculateArea() override;
@@ -252,6 +269,10 @@ protected:
     
 protected:
     Vec2 _center;
+    Vec2 _offset;
+    
+private:
+    std::vector<Point> _points;
 };
 
 /** A segment shape */
@@ -264,6 +285,8 @@ public:
     Vec2 getPointB() const;
     virtual Vec2 getCenter() override;
     
+    virtual void rescale(const AffineTransform &transform) override;
+    
 protected:
     bool init(const Vec2& a, const Vec2& b, const PhysicsMaterial& material = PHYSICSSHAPE_MATERIAL_DEFAULT, float border = 1);
     
@@ -273,6 +296,10 @@ protected:
     
 protected:
     Vec2 _center;
+    
+    float _radius;
+    Point _a;
+    Point _b;
     
     friend class PhysicsBody;
 };
@@ -286,6 +313,8 @@ public:
     void getPoints(Vec2* outPoints) const;
     int getPointsCount() const { return 4; }
     
+    virtual void rescale(const AffineTransform &transform) override;
+    
 protected:
     bool init(const Size& size, const PhysicsMaterial& material = PHYSICSSHAPE_MATERIAL_DEFAULT, float border = 1, const Vec2& offset = Vec2::ZERO);
     
@@ -295,6 +324,8 @@ protected:
     
 protected:
     Vec2 _offset;
+    float _border;
+    Size _size;
     
     friend class PhysicsBody;
 };
@@ -307,6 +338,8 @@ public:
     virtual Vec2 getCenter() override;
     void getPoints(Vec2* outPoints) const;
     int getPointsCount() const;
+            
+    virtual void rescale(const AffineTransform &transform) override;
     
 protected:
     bool init(const Vec2* points, int count, const PhysicsMaterial& material = PHYSICSSHAPE_MATERIAL_DEFAULT, float border = 1);
@@ -319,6 +352,8 @@ protected:
     
 protected:
     Vec2 _center;
+    float _border;
+    std::vector<Point> _points;
 };
 
 /** a chain shape */
@@ -330,6 +365,8 @@ public:
     void getPoints(Vec2* outPoints) const;
     int getPointsCount() const;
     
+    virtual void rescale(const AffineTransform &transform) override;
+    
 protected:
     bool init(const Vec2* points, int count, const PhysicsMaterial& material = PHYSICSSHAPE_MATERIAL_DEFAULT, float border = 1);
     
@@ -339,7 +376,9 @@ protected:
     
 protected:
     Vec2 _center;
-    
+    float _border;
+    std::vector<Point> _points;
+        
     friend class PhysicsBody;
 };
 

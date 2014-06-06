@@ -56,6 +56,7 @@ class GLProgram;
 class GLProgramState;
 #if CC_USE_PHYSICS
 class PhysicsBody;
+class PhysicsNode;
 #endif
 
 /**
@@ -758,6 +759,21 @@ public:
      */
     virtual void setTag(int tag);
 
+    /**
+     * Returns a name that is used to identify the node easily.
+     *
+     * @return A string that identifies the node.
+     */
+    virtual const std::string& getName() const;
+    /**
+     * Changes the name that is used to identify the node easily.
+     *
+     * Please refer to getName for the sample code.
+     *
+     * @param name   A string that identifies the node.
+     */
+    virtual void setName(const std::string& name);
+
     
     /**
      * Returns a custom user data pointer
@@ -1370,8 +1386,8 @@ protected:
     virtual void updateColor() {}
     
 #if CC_USE_PHYSICS
-    virtual void updatePhysicsBodyPosition(Scene* layer);
-    virtual void updatePhysicsBodyRotation(Scene* layer);
+    virtual void updatePhysicsBodyPosition(PhysicsNode* physicsNode);
+    virtual void updatePhysicsBodyRotation(PhysicsNode* physicsNode);
 #endif // CC_USE_PHYSICS
 
     float _rotationX;               ///< rotation on the X-axis
@@ -1466,7 +1482,7 @@ private:
     CC_DISALLOW_COPY_AND_ASSIGN(Node);
     
 #if CC_USE_PHYSICS
-    friend class Layer;
+    friend class PhysicsNode;
 #endif //CC_USTPS
 };
 

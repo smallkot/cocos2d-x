@@ -51,6 +51,7 @@ THE SOFTWARE.
 
 #if CC_USE_PHYSICS
 #include "physics/CCPhysicsBody.h"
+#include "physics/CCPhysicsWorld.h"
 #endif
 
 
@@ -266,8 +267,8 @@ void Node::setRotation(float rotation)
 #if CC_USE_PHYSICS
     if (_physicsBody && !_physicsBody->_rotationResetTag)
     {
-        Scene* scene = _physicsBody->getWorld() != nullptr ? &_physicsBody->getWorld()->getScene() : nullptr;
-        updatePhysicsBodyRotation(scene);
+        PhysicsNode* physicsNode = _physicsBody->getWorld() != nullptr ? &_physicsBody->getWorld()->getPhysicsNode() : nullptr;
+        updatePhysicsBodyRotation(physicsNode);
     }
 #endif
 }
@@ -295,8 +296,8 @@ void Node::setRotation3D(const Vec3& rotation)
 #if CC_USE_PHYSICS
     if (_physicsBody)
     {
-        Scene* scene = _physicsBody->getWorld() != nullptr ? &_physicsBody->getWorld()->getScene() : nullptr;
-        updatePhysicsBodyRotation(scene);
+        PhysicsNode* physicsNode = _physicsBody->getWorld() != nullptr ? &_physicsBody->getWorld()->getPhysicsNode() : nullptr;
+        updatePhysicsBodyRotation(physicsNode);
     }
 #endif
 }
@@ -427,7 +428,7 @@ void Node::setPosition(const Vec2& position)
 #if CC_USE_PHYSICS
     if (_physicsBody != nullptr && !_physicsBody->_positionResetTag)
     {
-        Scene* scene = _physicsBody->getWorld() != nullptr ? &_physicsBody->getWorld()->getScene() : nullptr;
+        PhysicsNode* scene = _physicsBody->getWorld() != nullptr ? &_physicsBody->getWorld()->getPhysicsNode() : nullptr;
         updatePhysicsBodyPosition(scene);
     }
 #endif
@@ -604,6 +605,18 @@ void Node::setTag(int var)
     _tag = var;
 }
 
+/// name getter
+const std::string& Node::getName() const
+{
+    return _name;
+}
+
+/// name setter
+void Node::setName(const std::string& name)
+{
+    _name = name;
+}
+
 /// userData setter
 void Node::setUserData(void *var)
 {
@@ -755,10 +768,10 @@ void Node::addChild(Node *child, int zOrder, int tag)
     // Recursive add children with which have physics body.
     for (Node* node = this; node != nullptr; node = node->getParent())
     {
-        Scene* scene = dynamic_cast<Scene*>(node);
-        if (scene != nullptr && scene->getPhysicsWorld() != nullptr)
+        PhysicsNode* physicsNode = dynamic_cast<PhysicsNode*>(node);
+        if (physicsNode != nullptr && physicsNode->getPhysicsWorld() != nullptr)
         {
-            scene->addChildToPhysicsWorld(child);
+            physicsNode->addChildToPhysicsWorld(child);
             break;
         }
     }
@@ -1602,13 +1615,13 @@ void Node::removeAllComponents()
 
 #if CC_USE_PHYSICS
 
-void Node::updatePhysicsBodyPosition(Scene* scene)
+void Node::updatePhysicsBodyPosition(PhysicsNode* physicsNode)
 {
     if (_physicsBody != nullptr)
     {
-        if (scene != nullptr && scene->getPhysicsWorld() != nullptr)
+        if (physicsNode != nullptr && physicsNode->getPhysicsWorld() != nullptr)
         {
-            Vec2 pos = getParent() == scene ? getPosition() : scene->convertToNodeSpace(_parent->convertToWorldSpace(getPosition()));
+            Vec2 pos = getParent() == physicsNode ? getPosition() : physicsNode->convertToNodeSpace(_parent->convertToWorldSpace(getPosition()));
             _physicsBody->setPosition(pos);
         }
         else
@@ -1618,14 +1631,14 @@ void Node::updatePhysicsBodyPosition(Scene* scene)
     }
 }
 
-void Node::updatePhysicsBodyRotation(Scene* scene)
+void Node::updatePhysicsBodyRotation(PhysicsNode* physicsNode)
 {
     if (_physicsBody != nullptr)
     {
-        if (scene != nullptr && scene->getPhysicsWorld() != nullptr)
+        if (physicsNode != nullptr && physicsNode->getPhysicsWorld() != nullptr)
         {
             float rotation = _rotationZ_X;
-            for (Node* parent = _parent; parent != scene; parent = parent->getParent())
+            for (Node* parent = _parent; parent != physicsNode; parent = parent->getParent())
             {
                 rotation += parent->getRotation();
             }
@@ -1672,19 +1685,19 @@ void Node::setPhysicsBody(PhysicsBody* body)
     if (body != nullptr)
     {
         Node* node;
-        Scene* scene = nullptr;
+        PhysicsNode* physicsNode = nullptr;
         for (node = this->getParent(); node != nullptr; node = node->getParent())
         {
-            Scene* tmpScene = dynamic_cast<Scene*>(node);
-            if (tmpScene != nullptr && tmpScene->getPhysicsWorld() != nullptr)
+            PhysicsNode* tmpPhysicsNode = dynamic_cast<PhysicsNode*>(node);
+            if (tmpPhysicsNode != nullptr && tmpPhysicsNode->getPhysicsWorld() != nullptr)
             {
-                scene = tmpScene;
+                physicsNode = tmpPhysicsNode;
                 break;
             }
         }
         
-        updatePhysicsBodyPosition(scene);
-        updatePhysicsBodyRotation(scene);
+        updatePhysicsBodyPosition(physicsNode);
+        updatePhysicsBodyRotation(physicsNode);
     }
 }
 

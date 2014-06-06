@@ -28,6 +28,7 @@
 #include <climits>
 
 #include "chipmunk.h"
+#include "chipmunk_unsafe.h"
 
 #include "physics/CCPhysicsBody.h"
 #include "physics/CCPhysicsWorld.h"
@@ -38,6 +39,32 @@
 
 NS_CC_BEGIN
 extern const float PHYSICS_INFINITY;
+
+static cpFloat
+RadiusForTransform(AffineTransform t)
+{
+	// Return the magnitude of the longest basis vector.
+	return cpfsqrt(MAX(t.a*t.a + t.b*t.b, t.c*t.c + t.d*t.d));
+}
+
+static cpFloat
+ScaleXTransform(AffineTransform t)
+{
+	return cpfsqrt(t.a*t.a + t.b*t.b);
+}
+
+static cpFloat
+ScaleYTransform(AffineTransform t)
+{
+	return cpfsqrt(t.c*t.c + t.d*t.d);
+}
+
+static inline cpVect
+cpTransformPoint(AffineTransform t, Point p)
+{
+    return cpv(t.a*p.x + t.c*p.y, t.b*p.x + t.d*p.y);
+}
+
 
 PhysicsShape::PhysicsShape()
 : _body(nullptr)
@@ -304,6 +331,9 @@ bool PhysicsShapeCircle::init(float radius, const PhysicsMaterial& material/* = 
         
         _info->add(shape);
         
+        _radius = radius;
+        _center = offset;
+        
         _area = calculateArea();
         _mass = material.density == PHYSICS_INFINITY ? PHYSICS_INFINITY : material.density * _area;
         _moment = calculateDefaultMoment();
@@ -355,6 +385,13 @@ Vec2 PhysicsShapeCircle::getOffset()
     return PhysicsHelper::cpv2point(cpCircleShapeGetOffset(_info->getShapes().front()));
 }
 
+void PhysicsShapeCircle::rescale(const AffineTransform &transform)
+{
+    cpShape *shape = _info->getShapes().front();
+    cpCircleShapeSetRadius(shape, _radius*RadiusForTransform(transform));
+	cpCircleShapeSetOffset(shape, cpTransformPoint(transform, _center));
+}
+
 // PhysicsShapeEdgeSegment
 PhysicsShapeEdgeSegment* PhysicsShapeEdgeSegment::create(const Vec2& a, const Vec2& b, const PhysicsMaterial& material/* = MaterialDefault*/, float border/* = 1*/)
 {
@@ -384,6 +421,10 @@ bool PhysicsShapeEdgeSegment::init(const Vec2& a, const Vec2& b, const PhysicsMa
         
         _info->add(shape);
         
+        _a = a;
+        _b = b;
+        _radius = border;
+        
         _mass = PHYSICS_INFINITY;
         _moment = PHYSICS_INFINITY;
         _center = a.getMidpoint(b);
@@ -399,17 +440,25 @@ bool PhysicsShapeEdgeSegment::init(const Vec2& a, const Vec2& b, const PhysicsMa
 
 Vec2 PhysicsShapeEdgeSegment::getPointA() const
 {
-    return PhysicsHelper::cpv2point(((cpSegmentShape*)(_info->getShapes().front()))->ta);
+    return PhysicsHelper::cpv2point(cpSegmentShapeGetA(_info->getShapes().front()));
 }
 
 Vec2 PhysicsShapeEdgeSegment::getPointB() const
 {
-    return PhysicsHelper::cpv2point(((cpSegmentShape*)(_info->getShapes().front()))->tb);
+    return PhysicsHelper::cpv2point(cpSegmentShapeGetB(_info->getShapes().front()));
 }
 
 Vec2 PhysicsShapeEdgeSegment::getCenter()
 {
     return _center;
+}
+
+void PhysicsShapeEdgeSegment::rescale(const AffineTransform &transform)
+{
+    cpShape *shape = _info->getShapes().front();
+    
+    cpSegmentShapeSetEndpoints(shape, cpTransformPoint(transform, _a), cpTransformPoint(transform, _b));
+    cpSegmentShapeSetRadius(shape, PhysicsHelper::float2cpfloat(_radius*RadiusForTransform(transform)));
 }
 
 // PhysicsShapeBox
@@ -437,6 +486,11 @@ bool PhysicsShapeBox::init(const Size& size, const PhysicsMaterial& material/* =
         {
             {-wh.x/2.0f, -wh.y/2.0f}, {-wh.x/2.0f, wh.y/2.0f}, {wh.x/2.0f, wh.y/2.0f}, {wh.x/2.0f, -wh.y/2.0f}
         };
+        
+        _points[0] = Point(-wh.x/2.0f, -wh.y/2.0f);
+        _points[1] = Point(-wh.x/2.0f, wh.y/2.0f);
+        _points[2] = Point(wh.x/2.0f, wh.y/2.0f);
+        _points[3] = Point(wh.x/2.0f, -wh.y/2.0f);
         
         cpShape* shape = cpPolyShapeNew(_info->getSharedBody(), 4, vec, PhysicsHelper::point2cpv(offset));
         
@@ -508,6 +562,18 @@ Size PhysicsShapeBox::getSize() const
                                        cpvdist(cpPolyShapeGetVert(shape, 0), cpPolyShapeGetVert(shape, 1))));
 }
 
+void PhysicsShapeBox::rescale(const AffineTransform &transform)
+{
+    cpShape *shape = _info->getShapes().front();
+    
+    cpVect hullVerts[4];
+    for(int i=0; i<4; i++)
+        hullVerts[i] =  cpTransformPoint(transform, _points[i]);
+	
+	unsigned int hullCount = cpConvexHull(4, hullVerts, hullVerts, NULL, 0.0);
+    cpPolyShapeSetVerts(shape, hullCount, hullVerts, PhysicsHelper::point2cpv(_offset));
+}
+
 // PhysicsShapePolygon
 PhysicsShapePolygon* PhysicsShapePolygon::create(const Vec2* points, int count, const PhysicsMaterial& material/* = MaterialDefault*/, const Vec2& offset/* = Vec2(0, 0)*/)
 {
@@ -530,6 +596,8 @@ bool PhysicsShapePolygon::init(const Vec2* points, int count, const PhysicsMater
         
         cpVect* vecs = new cpVect[count];
         PhysicsHelper::points2cpvs(points, vecs, count);
+        _points.assign(points, points+count);
+        cpConvexHull((int)count, vecs, nullptr, nullptr, 0);
         cpShape* shape = cpPolyShapeNew(_info->getSharedBody(), count, vecs, PhysicsHelper::point2cpv(offset));
         CC_SAFE_DELETE_ARRAY(vecs);
         
@@ -538,6 +606,7 @@ bool PhysicsShapePolygon::init(const Vec2* points, int count, const PhysicsMater
         _info->add(shape);
         
         _area = calculateArea();
+        _offset = offset;
         _mass = material.density == PHYSICS_INFINITY ? PHYSICS_INFINITY : material.density * _area;
         _moment = calculateDefaultMoment();
         _center = PhysicsHelper::cpv2point(cpCentroidForPoly(((cpPolyShape*)shape)->numVerts, ((cpPolyShape*)shape)->verts));
@@ -605,6 +674,18 @@ Vec2 PhysicsShapePolygon::getCenter()
     return _center;
 }
 
+void PhysicsShapePolygon::rescale(const AffineTransform &transform)
+{
+    cpShape *shape = _info->getShapes().front();
+    
+    std::vector<cpVect> hullVerts(_points.size());
+    for(int i=0; i<_points.size(); i++)
+        hullVerts[i] =  cpTransformPoint(transform, _points[i]);
+	
+	unsigned int hullCount = cpConvexHull(static_cast<int>(_points.size()), &hullVerts.front(), &hullVerts.front(), NULL, 0.0);
+    cpPolyShapeSetVerts(shape, hullCount, &hullVerts.front(), PhysicsHelper::point2cpv(_offset));
+}
+
 // PhysicsShapeEdgeBox
 PhysicsShapeEdgeBox* PhysicsShapeEdgeBox::create(const Size& size, const PhysicsMaterial& material/* = MaterialDefault*/, float border/* = 1*/, const Vec2& offset/* = Vec2(0, 0)*/)
 {
@@ -644,6 +725,8 @@ bool PhysicsShapeEdgeBox::init(const Size& size, const PhysicsMaterial& material
         _offset = offset;
         _mass = PHYSICS_INFINITY;
         _moment = PHYSICS_INFINITY;
+        _border = border;
+        _size = size;
         
         setMaterial(material);
         
@@ -660,6 +743,34 @@ void PhysicsShapeEdgeBox::getPoints(cocos2d::Vec2 *outPoints) const
     {
         outPoints[i++] = PhysicsHelper::cpv2point(((cpSegmentShape*)shape)->a);
     }
+}
+
+void PhysicsShapeEdgeBox::rescale(const AffineTransform &transform)
+{
+    do
+    {
+        cpVect vec[4] = {};
+        vec[0] = cpTransformPoint(transform, Point(-_size.width/2+_offset.x, -_size.height/2+_offset.y));
+        vec[1] = cpTransformPoint(transform, Point(+_size.width/2+_offset.x, -_size.height/2+_offset.y));
+        vec[2] = cpTransformPoint(transform, Point(+_size.width/2+_offset.x, +_size.height/2+_offset.y));
+        vec[3] = cpTransformPoint(transform, Point(-_size.width/2+_offset.x, +_size.height/2+_offset.y));
+        
+        float xScale = ScaleXTransform(transform);
+        float yScale = ScaleYTransform(transform);
+        float border[4];
+        border[0] = _border * xScale;
+        border[1] = _border * yScale;
+        border[2] = _border * xScale;
+        border[3] = _border * yScale;
+        
+        std::vector<cpShape*>& shapes = _info->getShapes();
+        
+        for(int i=0;i<shapes.size();++i)
+        {
+            cpSegmentShapeSetEndpoints(shapes[i], vec[i], vec[(i+1)%4]);
+            cpSegmentShapeSetRadius(shapes[i], border[i]);
+        }
+    } while (false);
 }
 
 // PhysicsShapeEdgeBox
@@ -703,6 +814,8 @@ bool PhysicsShapeEdgePolygon::init(const Vec2* points, int count, const PhysicsM
         
         _mass = PHYSICS_INFINITY;
         _moment = PHYSICS_INFINITY;
+        _border = border;
+        _points.assign(points, points+count);
         
         setMaterial(material);
         
@@ -731,6 +844,35 @@ void PhysicsShapeEdgePolygon::getPoints(cocos2d::Vec2 *outPoints) const
 int PhysicsShapeEdgePolygon::getPointsCount() const
 {
     return static_cast<int>(_info->getShapes().size() + 1);
+}
+
+void PhysicsShapeEdgePolygon::rescale(const AffineTransform &transform)
+{
+    cpVect* vec = nullptr;
+    do
+    {
+        int count = static_cast<int>(_points.size());
+        vec = new cpVect[_points.size()];
+        for (int i = 0; i < count; ++i)
+        {
+            vec[i] = cpTransformPoint(transform, _points[i]);
+        }
+        
+        _info->removeAll();
+        int i = 0;
+        for (; i < count; ++i)
+        {
+            cpShape* shape = cpSegmentShapeNew(_info->getSharedBody(), vec[i], vec[(i+1)%count],
+                                               PhysicsHelper::float2cpfloat(_border*RadiusForTransform(transform)));
+            CC_BREAK_IF(shape == nullptr);
+            cpShapeSetElasticity(shape, 1.0f);
+            cpShapeSetFriction(shape, 1.0f);
+            _info->add(shape);
+        }
+        CC_SAFE_DELETE_ARRAY(vec);
+        
+        CC_BREAK_IF(i < count);
+    } while (false);
 }
 
 // PhysicsShapeEdgeChain
@@ -773,6 +915,8 @@ bool PhysicsShapeEdgeChain::init(const Vec2* points, int count, const PhysicsMat
         
         _mass = PHYSICS_INFINITY;
         _moment = PHYSICS_INFINITY;
+        _border = border;
+        _points.assign(points, points+count);
         
         setMaterial(material);
         
@@ -803,6 +947,35 @@ void PhysicsShapeEdgeChain::getPoints(Vec2* outPoints) const
 int PhysicsShapeEdgeChain::getPointsCount() const
 {
     return static_cast<int>(_info->getShapes().size() + 1);
+}
+
+void PhysicsShapeEdgeChain::rescale(const AffineTransform &transform)
+{
+    cpVect* vec = nullptr;
+    int count = static_cast<int>(_points.size());
+    do
+    {
+        CC_BREAK_IF(!PhysicsShape::init(Type::EDGECHAIN));
+        
+        vec = new cpVect[count];
+        for (int i = 0; i < count; ++i)
+        {
+            vec[i] = cpTransformPoint(transform, _points[i]);
+        }
+        
+        int i = 0;
+        for (; i < count - 1; ++i)
+        {
+            cpShape* shape = cpSegmentShapeNew(_info->getSharedBody(), vec[i], vec[i+1],
+                                               PhysicsHelper::float2cpfloat(_border*RadiusForTransform(transform)));
+            CC_BREAK_IF(shape == nullptr);
+			cpShapeSetElasticity(shape, 1.0f);
+			cpShapeSetFriction(shape, 1.0f);
+            _info->add(shape);
+        }
+        CC_SAFE_DELETE_ARRAY(vec);
+        CC_BREAK_IF(i < count - 1);
+    } while (false);
 }
 
 void PhysicsShape::setGroup(int group)

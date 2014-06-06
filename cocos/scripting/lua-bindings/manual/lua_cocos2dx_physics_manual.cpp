@@ -103,7 +103,7 @@ int lua_cocos2dx_physics_PhysicsWorld_getScene(lua_State* tolua_S)
     {
         if(!ok)
             return 0;
-        cocos2d::Scene& ret = cobj->getScene();
+        cocos2d::PhysicsNode& ret = cobj->getPhysicsNode();
         do {
             
             std::string hashName = typeid(ret).name();

@@ -173,7 +173,7 @@ Sprite* PhysicsDemo::addGrossiniAtPosition(Vec2 p, float scale/* = 1.0*/)
     
     auto sp = Sprite::createWithTexture(_spriteTexture, Rect(posx, posy, 85, 121));
     sp->setScale(scale);
-    sp->setPhysicsBody(PhysicsBody::createBox(Size(48.0f * scale, 108.0f * scale)));
+    sp->setPhysicsBody(PhysicsBody::createBox(Size(48.0f, 108.0f)));
     this->addChild(sp);
     sp->setPosition(p);
     
@@ -318,7 +318,7 @@ Sprite* PhysicsDemo::makeBall(Vec2 point, float radius, PhysicsMaterial material
     
     ball->setScale(0.13f * radius);
     
-    auto body = PhysicsBody::createCircle(radius, material);
+    auto body = PhysicsBody::createCircle(ball->getContentSize().width, material);
     ball->setPhysicsBody(body);
     ball->setPosition(Vec2(point.x, point.y));
     
@@ -341,7 +341,7 @@ Sprite* PhysicsDemo::makeBox(Vec2 point, Size size, int color, PhysicsMaterial m
     box->setScaleX(size.width/100.0f);
     box->setScaleY(size.height/100.0f);
     
-    auto body = PhysicsBody::createBox(size, material);
+    auto body = PhysicsBody::createBox(box->getContentSize(), material);
     box->setPhysicsBody(body);
     box->setPosition(Vec2(point.x, point.y));
     
@@ -370,7 +370,9 @@ Sprite* PhysicsDemo::makeTriangle(Vec2 point, Size size, int color, PhysicsMater
         triangle->setScaleY(size.height/43.5f);
     }
     
-    Vec2 vers[] = { Vec2(0, size.height/2), Vec2(size.width/2, -size.height/2), Vec2(-size.width/2, -size.height/2)};
+    Size imgSize = triangle->getContentSize();
+    
+    Vec2 vers[] = { Vec2(0, imgSize.height/2), Vec2(imgSize.width/2, -imgSize.height/2), Vec2(-imgSize.width/2, -imgSize.height/2)};
     
     auto body = PhysicsBody::createPolygon(vers, 3, material);
     triangle->setPhysicsBody(body);
@@ -1569,7 +1571,7 @@ void PhysicsPositionRotationTest::onEnter()
     anchorNode->setAnchorPoint(Vec2(0.1f, 0.9f));
     anchorNode->setPosition(100, 100);
     anchorNode->setScale(0.25);
-    anchorNode->setPhysicsBody(PhysicsBody::createBox(anchorNode->getContentSize()*anchorNode->getScale()));
+    anchorNode->setPhysicsBody(PhysicsBody::createBox(anchorNode->getContentSize()));
     anchorNode->getPhysicsBody()->setTag(DRAG_BODYS_TAG);
     addChild(anchorNode);
     
@@ -1577,7 +1579,7 @@ void PhysicsPositionRotationTest::onEnter()
     auto parent = Sprite::create("Images/YellowSquare.png");
     parent->setPosition(200, 100);
     parent->setScale(0.25);
-    parent->setPhysicsBody(PhysicsBody::createBox(parent->getContentSize()*anchorNode->getScale()));
+    parent->setPhysicsBody(PhysicsBody::createBox(parent->getContentSize()));
     parent->getPhysicsBody()->setTag(DRAG_BODYS_TAG);
     addChild(parent);
     
