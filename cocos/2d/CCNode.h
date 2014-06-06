@@ -56,6 +56,7 @@ class GLProgram;
 class GLProgramState;
 #if CC_USE_PHYSICS
 class PhysicsBody;
+class PhysicsNode;
 #endif
 
 /**
@@ -889,7 +890,6 @@ public:
      */
     virtual void setName(const std::string& name);
 
-    
     /**
      * Returns a custom user data pointer
      *
@@ -1458,6 +1458,16 @@ public:
      *   get the PhysicsBody the sprite have
      */
     PhysicsBody* getPhysicsBody() const;
+    
+    /**
+     *   get the PhysicsNode the sprite have
+     */
+    virtual PhysicsNode* getPhysicsNode() const;
+    
+    /**
+     * Converts a Vec2 to physics space coordinates. The result is in Points.
+     */
+    Vec2 convertToPhysicsSpace(const Vec2& nodePoint) const;
 
 #endif
     
@@ -1521,10 +1531,10 @@ protected:
     bool doEnumerateRecursive(const Node* node, const std::string &name, std::function<bool (Node *)> callback) const;
     
 #if CC_USE_PHYSICS
-    void updatePhysicsBodyTransform(Scene* layer);
-    virtual void updatePhysicsBodyPosition(Scene* layer);
-    virtual void updatePhysicsBodyRotation(Scene* layer);
-    virtual void updatePhysicsBodyScale(Scene* scene);
+    void updatePhysicsBodyTransform(PhysicsNode* layer);
+    virtual void updatePhysicsBodyPosition(PhysicsNode* layer);
+    virtual void updatePhysicsBodyRotation(PhysicsNode* layer);
+    virtual void updatePhysicsBodyScale(PhysicsNode* scene);
 #endif // CC_USE_PHYSICS
     
 private:
@@ -1635,7 +1645,7 @@ private:
     CC_DISALLOW_COPY_AND_ASSIGN(Node);
     
 #if CC_USE_PHYSICS
-    friend class Layer;
+    friend class PhysicsNode;
 #endif //CC_USTPS
 };
 

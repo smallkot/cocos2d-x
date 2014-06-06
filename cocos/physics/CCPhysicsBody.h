@@ -36,6 +36,7 @@
 NS_CC_BEGIN
 
 class Node;
+class PhysicsNode;
 class Sprite;
 class PhysicsWorld;
 class PhysicsJoint;
@@ -296,7 +297,7 @@ public:
     Vec2 world2Local(const Vec2& point);
     /** convert the local point to world */
     Vec2 local2World(const Vec2& point);
-    
+        
 protected:
     
     bool init();
@@ -353,8 +354,8 @@ protected:
     friend class PhysicsShape;
     friend class PhysicsJoint;
     friend class Node;
-    friend class Layer;
     friend class ProtectedNode;
+    friend class PhysicsNode;
 };
 
 NS_CC_END

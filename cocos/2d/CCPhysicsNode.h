@@ -3,6 +3,7 @@ Copyright (c) 2008-2010 Ricardo Quesada
 Copyright (c) 2010-2012 cocos2d-x.org
 Copyright (c) 2011      Zynga Inc.
 Copyright (c) 2013-2014 Chukong Technologies Inc.
+Copyright (c) 2014      Sergey Perepelitsa
 
 http://www.cocos2d-x.org
 
@@ -25,69 +26,50 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ****************************************************************************/
 
-#ifndef __CCSCENE_H__
-#define __CCSCENE_H__
+#ifndef __CCPHYSICSNODE_H__
+#define __CCPHYSICSNODE_H__
 
-#include <string>
 #include "2d/CCNode.h"
-#include "2d/CCPhysicsNode.h"
 
 NS_CC_BEGIN
 
-/**
- * @addtogroup scene
- * @{
- */
+class PhysicsWorld;
 
-/** @brief Scene is a subclass of Node that is used only as an abstract concept.
-
-Scene and Node are almost identical with the difference that Scene has its
-anchor point (by default) at the center of the screen.
-
-For the moment Scene has no other logic than that, but in future releases it might have
-additional logic.
-
-It is a good practice to use a Scene as the parent of all your nodes.
-*/
-class CC_DLL Scene : public PhysicsNode
+class CC_DLL PhysicsNode : public Node
 {
 public:
-    /** creates a new Scene object */
-    static Scene *create();
-
-    /** creates a new Scene object with a predefined Size */
-    static Scene *createWithSize(const Size& size);
-
-    // Overrides
-    virtual Scene *getScene() const override;
+    /** creates a new PhysicsNode object */
+    static PhysicsNode *create();
 
     using Node::addChild;
     virtual std::string getDescription() const override;
-    
-CC_CONSTRUCTOR_ACCESS:
-    Scene();
-    virtual ~Scene();
-    
-    bool init();
-    bool initWithSize(const Size& size);
 
 protected:
+    PhysicsNode();
+    virtual ~PhysicsNode();
+    virtual bool init() override;
+    
     friend class Node;
     friend class ProtectedNode;
-    friend class SpriteBatchNode;
     
 private:
-    CC_DISALLOW_COPY_AND_ASSIGN(Scene);
+    CC_DISALLOW_COPY_AND_ASSIGN(PhysicsNode);
     
 #if CC_USE_PHYSICS
 public:
-    static Scene *createWithPhysics();
+    virtual void addChild(Node* child, int zOrder, int tag) override;
+    virtual void addChild(Node* child, int zOrder, const std::string &name) override;
+    virtual void update(float delta) override;
+    inline PhysicsWorld* getPhysicsWorld() { return _physicsWorld; }
+    virtual PhysicsNode* getPhysicsNode() const override;
+protected:
+    bool initWithPhysics();
+    void addChildToPhysicsWorld(Node* child);
+
+    PhysicsWorld* _physicsWorld;
 #endif // CC_USE_PHYSICS
 };
 
-// end of scene group
-/// @}
-
 NS_CC_END
 
-#endif // __CCSCENE_H__
+#endif // __CCPHYSICSNODE_H__
