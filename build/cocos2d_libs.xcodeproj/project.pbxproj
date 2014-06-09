@@ -1759,6 +1759,14 @@
 		A593998A1941D607002FDA82 /* CCLayoutBoxLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A59399871941D607002FDA82 /* CCLayoutBoxLoader.cpp */; };
 		A593998B1941D607002FDA82 /* CCLayoutBoxLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = A59399881941D607002FDA82 /* CCLayoutBoxLoader.h */; };
 		A593998C1941D607002FDA82 /* CCLayoutBoxLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = A59399881941D607002FDA82 /* CCLayoutBoxLoader.h */; };
+		A59D2E5D1945A17F00D9B823 /* CCScrollListViewLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A59D2E5B1945A17F00D9B823 /* CCScrollListViewLoader.cpp */; };
+		A59D2E5E1945A17F00D9B823 /* CCScrollListViewLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A59D2E5B1945A17F00D9B823 /* CCScrollListViewLoader.cpp */; };
+		A59D2E5F1945A17F00D9B823 /* CCScrollListViewLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = A59D2E5C1945A17F00D9B823 /* CCScrollListViewLoader.h */; };
+		A59D2E601945A17F00D9B823 /* CCScrollListViewLoader.h in Headers */ = {isa = PBXBuildFile; fileRef = A59D2E5C1945A17F00D9B823 /* CCScrollListViewLoader.h */; };
+		A59D2E631945A1A600D9B823 /* CCScrollListView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A59D2E611945A1A600D9B823 /* CCScrollListView.cpp */; };
+		A59D2E641945A1A600D9B823 /* CCScrollListView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A59D2E611945A1A600D9B823 /* CCScrollListView.cpp */; };
+		A59D2E651945A1A600D9B823 /* CCScrollListView.h in Headers */ = {isa = PBXBuildFile; fileRef = A59D2E621945A1A600D9B823 /* CCScrollListView.h */; };
+		A59D2E661945A1A600D9B823 /* CCScrollListView.h in Headers */ = {isa = PBXBuildFile; fileRef = A59D2E621945A1A600D9B823 /* CCScrollListView.h */; };
 		B29594B41926D5EC003EEF37 /* CCMeshCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B29594B21926D5EC003EEF37 /* CCMeshCommand.cpp */; };
 		B29594B51926D5EC003EEF37 /* CCMeshCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B29594B21926D5EC003EEF37 /* CCMeshCommand.cpp */; };
 		B29594B61926D5EC003EEF37 /* CCMeshCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = B29594B31926D5EC003EEF37 /* CCMeshCommand.h */; };
@@ -2832,6 +2840,10 @@
 		A559DC8B193E543A006072B5 /* CCPhysicsNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPhysicsNode.h; sourceTree = "<group>"; };
 		A59399871941D607002FDA82 /* CCLayoutBoxLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCLayoutBoxLoader.cpp; sourceTree = "<group>"; };
 		A59399881941D607002FDA82 /* CCLayoutBoxLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLayoutBoxLoader.h; sourceTree = "<group>"; };
+		A59D2E5B1945A17F00D9B823 /* CCScrollListViewLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCScrollListViewLoader.cpp; sourceTree = "<group>"; };
+		A59D2E5C1945A17F00D9B823 /* CCScrollListViewLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCScrollListViewLoader.h; sourceTree = "<group>"; };
+		A59D2E611945A1A600D9B823 /* CCScrollListView.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CCScrollListView.cpp; sourceTree = "<group>"; };
+		A59D2E621945A1A600D9B823 /* CCScrollListView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCScrollListView.h; sourceTree = "<group>"; };
 		B29594AF1926D5D9003EEF37 /* ccShader_3D_Color.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ccShader_3D_Color.frag; sourceTree = "<group>"; };
 		B29594B01926D5D9003EEF37 /* ccShader_3D_ColorTex.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ccShader_3D_ColorTex.frag; sourceTree = "<group>"; };
 		B29594B11926D5D9003EEF37 /* ccShader_3D_PositionTex.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = ccShader_3D_PositionTex.vert; sourceTree = "<group>"; };
@@ -3877,6 +3889,10 @@
 				1AD71D27180E26E600808F54 /* CCScale9SpriteLoader.h */,
 				1AD71D28180E26E600808F54 /* CCScrollViewLoader.cpp */,
 				1AD71D29180E26E600808F54 /* CCScrollViewLoader.h */,
+				A59D2E5B1945A17F00D9B823 /* CCScrollListViewLoader.cpp */,
+				A59D2E5C1945A17F00D9B823 /* CCScrollListViewLoader.h */,
+				A59D2E611945A1A600D9B823 /* CCScrollListView.cpp */,
+				A59D2E621945A1A600D9B823 /* CCScrollListView.h */,
 				1AD71D2A180E26E600808F54 /* CCSpriteLoader.cpp */,
 				1AD71D2B180E26E600808F54 /* CCSpriteLoader.h */,
 				1AD71D2C180E26E600808F54 /* CocosBuilder.h */,
@@ -5036,6 +5052,7 @@
 				1A5702F8180BCE750088DEC7 /* CCTMXTiledMap.h in Headers */,
 				5034CA21191D591100CE6051 /* ccShader_PositionTextureColorAlphaTest.frag in Headers */,
 				50ABBDA11925AB4100A911A9 /* CCGroupCommand.h in Headers */,
+				A59D2E651945A1A600D9B823 /* CCScrollListView.h in Headers */,
 				1A5702FC180BCE750088DEC7 /* CCTMXXMLParser.h in Headers */,
 				50ABBDBB1925AB4100A911A9 /* CCTextureAtlas.h in Headers */,
 				1A570302180BCE890088DEC7 /* CCParallaxNode.h in Headers */,
@@ -5174,6 +5191,7 @@
 				50ABBE211925AB6F00A911A9 /* atitc.h in Headers */,
 				1A8C5999180E930E00EF57C3 /* CCActionNode.h in Headers */,
 				1A8C599D180E930E00EF57C3 /* CCActionObject.h in Headers */,
+				A59D2E5F1945A17F00D9B823 /* CCScrollListViewLoader.h in Headers */,
 				B29594B61926D5EC003EEF37 /* CCMeshCommand.h in Headers */,
 				50ABBE371925AB6F00A911A9 /* CCConsole.h in Headers */,
 				A559DC86193E4D64006072B5 /* CCLayoutNode.h in Headers */,
@@ -5475,6 +5493,7 @@
 				50ABBE681925AB6F00A911A9 /* CCEventListenerCustom.h in Headers */,
 				5034CA42191D591100CE6051 /* ccShader_Position_uColor.frag in Headers */,
 				1A5701C4180BCB5A0088DEC7 /* CCLabelBMFont.h in Headers */,
+				A59D2E661945A1A600D9B823 /* CCScrollListView.h in Headers */,
 				50ABBDA61925AB4100A911A9 /* CCQuadCommand.h in Headers */,
 				50ABBE9E1925AB6F00A911A9 /* CCRefPtr.h in Headers */,
 				1A01C69518F57BE800EFE3A6 /* CCFloat.h in Headers */,
@@ -5516,6 +5535,7 @@
 				50ABBD431925AB0000A911A9 /* CCMathBase.h in Headers */,
 				50ABBE441925AB6F00A911A9 /* CCDirector.h in Headers */,
 				5034CA4A191D591100CE6051 /* ccShader_Label_df.frag in Headers */,
+				A59D2E601945A17F00D9B823 /* CCScrollListViewLoader.h in Headers */,
 				1A570281180BCC900088DEC7 /* CCSprite.h in Headers */,
 				1A570285180BCC900088DEC7 /* CCSpriteBatchNode.h in Headers */,
 				1A570289180BCC900088DEC7 /* CCSpriteFrame.h in Headers */,
@@ -6153,6 +6173,7 @@
 				1A57011B180BC90D0088DEC7 /* CCGrabber.cpp in Sources */,
 				1A57011F180BC90D0088DEC7 /* CCGrid.cpp in Sources */,
 				50FCEBA718C72017004AD434 /* LoadingBarReader.cpp in Sources */,
+				A59D2E5D1945A17F00D9B823 /* CCScrollListViewLoader.cpp in Sources */,
 				06C0F2EF186AD822003594D5 /* ObjectFactory.cpp in Sources */,
 				1A57019D180BCB590088DEC7 /* CCFont.cpp in Sources */,
 				1A5701A1180BCB590088DEC7 /* CCFontAtlas.cpp in Sources */,
@@ -6199,6 +6220,7 @@
 				1A57027E180BCC900088DEC7 /* CCSprite.cpp in Sources */,
 				1A570282180BCC900088DEC7 /* CCSpriteBatchNode.cpp in Sources */,
 				1A570286180BCC900088DEC7 /* CCSpriteFrame.cpp in Sources */,
+				A59D2E631945A1A600D9B823 /* CCScrollListView.cpp in Sources */,
 				50ABC0191926664800A911A9 /* CCSAXParser.cpp in Sources */,
 				1A57028A180BCC900088DEC7 /* CCSpriteFrameCache.cpp in Sources */,
 				1A570292180BCCAB0088DEC7 /* CCAnimation.cpp in Sources */,
@@ -6541,6 +6563,7 @@
 				46A171001807CECB005B8026 /* CCPhysicsJoint.cpp in Sources */,
 				46A171051807CECB005B8026 /* CCPhysicsWorld.cpp in Sources */,
 				50ABBDA01925AB4100A911A9 /* CCGroupCommand.cpp in Sources */,
+				A59D2E5E1945A17F00D9B823 /* CCScrollListViewLoader.cpp in Sources */,
 				46A171031807CECB005B8026 /* CCPhysicsShape.cpp in Sources */,
 				50ABC0161926664800A911A9 /* CCImage.cpp in Sources */,
 				1A01C6A518F58F7500EFE3A6 /* CCNotificationCenter.cpp in Sources */,
@@ -6634,6 +6657,7 @@
 				1A5701EF180BCB8C0088DEC7 /* CCTransitionProgress.cpp in Sources */,
 				1A5701F8180BCBAD0088DEC7 /* CCMenu.cpp in Sources */,
 				50ABBD511925AB0000A911A9 /* Quaternion.cpp in Sources */,
+				A59D2E641945A1A600D9B823 /* CCScrollListView.cpp in Sources */,
 				1A5701FC180BCBAD0088DEC7 /* CCMenuItem.cpp in Sources */,
 				06CAAAD0186AD7FE0012A414 /* TriggerBase.cpp in Sources */,
 				2905FA4F18CF08D100240AA3 /* UIHelper.cpp in Sources */,

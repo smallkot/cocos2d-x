@@ -26,6 +26,8 @@
 #include "cocosbuilder/CCParticleSystemQuadLoader.h"
 #include "cocosbuilder/CCScale9SpriteLoader.h"
 #include "cocosbuilder/CCScrollViewLoader.h"
+#include "cocosbuilder/CCScrollListView.h"
+#include "cocosbuilder/CCScrollListViewLoader.h"
 #include "cocosbuilder/CCSpriteLoader.h"
 #include "cocosbuilder/CCBReaderParams.h"
 
