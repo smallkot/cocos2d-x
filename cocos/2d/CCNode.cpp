@@ -1705,6 +1705,20 @@ PhysicsBody* Node::getPhysicsBody() const
 {
     return _physicsBody;
 }
+
+Vec2 Node::convertToPhysicsSpace(const Vec2& nodePoint) const
+{
+    if(_physicsBody)
+    {
+        PhysicsNode &physicsNode = _physicsBody->getWorld()->getPhysicsNode();
+        return physicsNode.convertToNodeSpace(convertToWorldSpace(nodePoint));
+    }
+    else
+    {
+        return convertToWorldSpace(nodePoint);
+    }
+}
+
 #endif //CC_USE_PHYSICS
 
 GLubyte Node::getOpacity(void) const

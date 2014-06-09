@@ -1336,6 +1336,8 @@ public:
      *   get the PhysicsBody the sprite have
      */
     PhysicsBody* getPhysicsBody() const;
+    
+    Vec2 convertToPhysicsSpace(const Vec2& nodePoint) const;
 
 #endif
     
