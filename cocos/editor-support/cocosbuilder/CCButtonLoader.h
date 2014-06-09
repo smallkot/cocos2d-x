@@ -27,6 +27,8 @@ class ButtonLoader : public ControlLoader {
     
         virtual void onStarPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader) override;
         virtual void onEndPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader) override;
+    
+        virtual void onHandlePropTypeBlock(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, BlockData * pBlockData, CCBReader * ccbReader) override;
 
         virtual void onHandlePropTypeCheck(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, bool pCheck, CCBReader * ccbReader) override;
         virtual void onHandlePropTypeString(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, const char * pString, CCBReader * ccbReader) override;

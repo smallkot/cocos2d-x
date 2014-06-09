@@ -12,6 +12,7 @@ namespace cocosbuilder {;
 #define PROPERTY_LABELANCHORPOINT "labelAnchorPoint"
 #define PROPERTY_PREFERREDSIZE "preferredSize"
 #define PROPERTY_MAXSIZE "maxSize"
+#define PROPERTY_BLOCK "block"
     
 #define PROPERTY_BACKGROUNDSPRITEFRAME_NORMAL "backgroundSpriteFrame|Normal"
 #define PROPERTY_BACKGROUNDSPRITEFRAME_HIGHLIGHTED "backgroundSpriteFrame|Highlighted"
@@ -193,6 +194,15 @@ void ButtonLoader::onHandlePropTypeSpriteFrame(Node * pNode, Node * pParent, con
         }
     } else {
         ControlLoader::onHandlePropTypeSpriteFrame(pNode, pParent, pPropertyName, pSpriteFrame, ccbReader);
+    }
+}
+    
+void ButtonLoader::onHandlePropTypeBlock(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, BlockData * pBlockData, CCBReader * ccbReader)
+{
+    if(strcmp(pPropertyName, PROPERTY_BLOCK) == 0) {
+        ((Button *)pNode)->setCallback( std::bind( pBlockData->mSELMenuHandler, pBlockData->_target, std::placeholders::_1) );
+    } else {
+        NodeLoader::onHandlePropTypeBlock(pNode, pParent, pPropertyName, pBlockData, ccbReader);
     }
 }
 

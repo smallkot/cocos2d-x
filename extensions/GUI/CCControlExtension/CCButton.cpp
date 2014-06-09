@@ -136,6 +136,12 @@ void Button::onTouchEnded(Touch *touch, Event *event)
             setSelected(!_selected);
         }
         sendActionsForControlEvents(Control::EventType::TOUCH_UP_INSIDE);
+        if(_callBack)
+        {
+            retain();
+            _callBack(this);
+            release();
+        }
     }
     else
     {
@@ -503,6 +509,11 @@ SpriteFrame* Button::getBackgroundSpriteFrameForState(Control::State state) cons
         return it->second;
     else
         return nullptr;
+}
+
+void Button::setCallback(const ccButtonCallback& callback)
+{
+    _callBack = callback;
 }
 
 NS_CC_EXT_END

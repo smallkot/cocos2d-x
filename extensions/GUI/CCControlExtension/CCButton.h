@@ -47,6 +47,7 @@ class Scale9Sprite;
  Methods for setting callbacks for the button is inherited from Control through the setCallback method or addTargetWithActionForControlEvents method.
  */
 
+typedef std::function<void(Ref*)> ccButtonCallback;
 
 
 class Button: public Control
@@ -208,6 +209,8 @@ public:
      *  @return Background sprite frame.
      */
     SpriteFrame* getBackgroundSpriteFrameForState(Control::State state) const;
+    
+    void setCallback(const ccButtonCallback& callback);
 
 protected:
     
@@ -236,6 +239,7 @@ protected:
     Size _maxSize;
     bool _needLaout;
     Rect _margin;
+    ccButtonCallback _callBack;
     
     void layout();
     virtual void needsLayout();
