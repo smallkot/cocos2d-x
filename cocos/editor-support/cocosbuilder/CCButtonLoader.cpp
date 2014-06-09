@@ -200,7 +200,8 @@ void ButtonLoader::onHandlePropTypeSpriteFrame(Node * pNode, Node * pParent, con
 void ButtonLoader::onHandlePropTypeBlock(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, BlockData * pBlockData, CCBReader * ccbReader)
 {
     if(strcmp(pPropertyName, PROPERTY_BLOCK) == 0) {
-        ((Button *)pNode)->setCallback( std::bind( pBlockData->mSELMenuHandler, pBlockData->_target, std::placeholders::_1) );
+        if(pBlockData)
+            ((Button *)pNode)->setCallback( std::bind( pBlockData->mSELMenuHandler, pBlockData->_target, std::placeholders::_1) );
     } else {
         NodeLoader::onHandlePropTypeBlock(pNode, pParent, pPropertyName, pBlockData, ccbReader);
     }
