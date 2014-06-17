@@ -1,8 +1,8 @@
 #include "CCBReaderParams.h"
 #include "platform/CCFileUtils.h"
 #include "CCApplication.h"
-#include "CCDirector.h"
-#include "CCSpriteFrameCache.h"
+#include "base/CCDirector.h"
+#include "2d/CCSpriteFrameCache.h"
 #include <unordered_set>
 
 using namespace cocos2d;
