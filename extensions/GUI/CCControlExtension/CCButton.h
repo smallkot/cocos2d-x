@@ -29,7 +29,7 @@
 #define __CCBUTTON_H__
 
 #include "CCControl.h"
-#include "CCMap.h"
+#include "base/CCMap.h"
 
 NS_CC_BEGIN
 
