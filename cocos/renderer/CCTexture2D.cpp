@@ -1121,7 +1121,8 @@ bool Texture2D::initWithString(const char *text, const FontDefinition& textDefin
     textDef._stroke._strokeSize *= contentScaleFactor;
     textDef._shadow._shadowEnabled = false;
     
-    Data outData = Device::getTextureDataForText(text, textDef, align, imageWidth, imageHeight, _hasPremultipliedAlpha);
+    bool hasPremultipliedAlpha = _hasPremultipliedAlpha;
+    Data outData = Device::getTextureDataForText(text, textDef, align, imageWidth, imageHeight, hasPremultipliedAlpha);
     if(outData.isNull())
     {
         return false;
@@ -1131,6 +1132,8 @@ bool Texture2D::initWithString(const char *text, const FontDefinition& textDefin
     pixelFormat = convertDataToFormat(outData.getBytes(), imageWidth*imageHeight*4, PixelFormat::RGBA8888, pixelFormat, &outTempData, &outTempDataLen);
 
     ret = initWithData(outTempData, outTempDataLen, pixelFormat, imageWidth, imageHeight, imageSize);
+    
+    _hasPremultipliedAlpha = hasPremultipliedAlpha;
 
     if (outTempData != nullptr && outTempData != outData.getBytes())
     {
