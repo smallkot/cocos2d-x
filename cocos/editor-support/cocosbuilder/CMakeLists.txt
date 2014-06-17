@@ -26,6 +26,8 @@ set(CCB_SRC
   CCLayoutBoxLoader.cpp
   CCPhysicsNodeLoader.cpp
   CCProgressTimerLoader.cpp
+  CCTextFieldLoader.cpp
+  CCSliderLoader.cpp
   
 )
 

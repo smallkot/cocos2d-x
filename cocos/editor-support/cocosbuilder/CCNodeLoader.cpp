@@ -270,10 +270,10 @@ void NodeLoader::parseProperties(Node * pNode, Node * pParent, CCBReader * ccbRe
             }
             case CCBReader::PropertyType::COLOR3:
             {
-                Color3B color3B = this->parsePropTypeColor3(pNode, pParent, ccbReader, propertyName.c_str());
+                Color4B color4B = this->parsePropTypeColor3(pNode, pParent, ccbReader, propertyName.c_str());
                 if(setProp) 
                 {
-                    this->onHandlePropTypeColor3(pNode, pParent, propertyName.c_str(), color3B, ccbReader);
+                    this->onHandlePropTypeColor3(pNode, pParent, propertyName.c_str(), color4B, ccbReader);
                 }
                 break;
             }
@@ -369,7 +369,7 @@ void NodeLoader::parseProperties(Node * pNode, Node * pParent, CCBReader * ccbRe
                 Color4B color4B = this->parsePropTypeColor4(pNode, pParent, ccbReader, propertyName.c_str());
                 if(setProp)
                 {
-                    this->onHandlePropTypeColor3(pNode, pParent, propertyName.c_str(), Color3B(color4B.r, color4B.g, color4B.b), ccbReader);
+                    this->onHandlePropTypeColor4(pNode, pParent, propertyName.c_str(), color4B, ccbReader);
                 }
                 break;
             }
@@ -706,11 +706,10 @@ unsigned char NodeLoader::parsePropTypeByte(Node * pNode, Node * pParent, CCBRea
     return ret;
 }
 
-Color3B NodeLoader::parsePropTypeColor3(Node * pNode, Node * pParent, CCBReader * ccbReader, const char *pPropertyName) {
+Color4B NodeLoader::parsePropTypeColor3(Node * pNode, Node * pParent, CCBReader * ccbReader, const char *pPropertyName) {
     if(ccbReader->_version>5)
     {
-        Color4B ret=parsePropTypeColor4(pNode, pParent, ccbReader, pPropertyName);
-        return Color3B(ret.r, ret.g, ret.b);
+        return parsePropTypeColor4(pNode, pParent, ccbReader, pPropertyName);
     }
     unsigned char r = ccbReader->readByte();
     unsigned char g = ccbReader->readByte();
@@ -727,7 +726,7 @@ Color3B NodeLoader::parsePropTypeColor3(Node * pNode, Node * pParent, CCBReader 
     {
         ccbReader->getAnimationManager()->setBaseValue(Value(colorMap), pNode, pPropertyName);
     }
-    return color;
+    return Color4B(color);
 }
 
 Color4B NodeLoader::parsePropTypeColor4(Node * pNode, Node * pParent, CCBReader * ccbReader, const char *pPropertyName) {
@@ -1211,11 +1210,16 @@ void NodeLoader::onHandlePropTypeByte(Node * pNode, Node * pParent, const char* 
     ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
 }
 
-void NodeLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char* pPropertyName, Color3B pColor3B, CCBReader * ccbReader) {
+void NodeLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char* pPropertyName, Color4B pColor4B, CCBReader * ccbReader) {
     ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
 }
 
 void NodeLoader::onHandlePropTypeColor4FVar(Node * pNode, Node * pParent, const char* pPropertyName, Color4F * pColor4FVar, CCBReader * ccbReader) {
+    ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
+}
+    
+void NodeLoader::onHandlePropTypeColor4(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, cocos2d::Color4B pColor4B, CCBReader * ccbReader)
+{
     ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
 }
 

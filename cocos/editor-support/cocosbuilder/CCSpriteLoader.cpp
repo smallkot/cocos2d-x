@@ -32,11 +32,11 @@ void SpriteLoader::onHandlePropTypeFlip(Node * pNode, Node * pParent, const char
     }
 }
 
-void SpriteLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color3B pColor3B, CCBReader * ccbReader) {
+void SpriteLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color4B pColor4B, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
-        ((Sprite *)pNode)->setColor(pColor3B);
+        ((Sprite *)pNode)->setColor(Color3B(pColor4B));
     } else {
-        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, ccbReader);
+        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor4B, ccbReader);
     }
 }
 

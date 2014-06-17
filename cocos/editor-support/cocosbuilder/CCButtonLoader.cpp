@@ -67,11 +67,20 @@ namespace cocosbuilder {;
 void ButtonLoader::onStarPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader)
 {
     _margins=Rect::ZERO;
+    _outlineColor = Color4B(0,0,0,0);
+    _shadowColor = Color4B(0,0,0,0);
+    _outlineWidth = 0.0f;
+    _shadowBlurRadius = 0.0f;
+    _shadowOffset = Vec2(0,0);
 }
 
 void ButtonLoader::onEndPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader)
 {
     ((Button *)pNode)->setCapInsets(Rect(_margins.origin.x,_margins.origin.y,1.0-_margins.size.width-_margins.origin.x,1.0-_margins.size.height-_margins.origin.y));
+    if (_outlineColor.a > 0 && _outlineWidth > 0)
+        ((Button *)pNode)->getLabel()->enableOutline(_outlineColor, _outlineWidth);
+    if (_shadowColor.a > 0)
+        ((Button *)pNode)->getLabel()->enableShadow(_shadowColor, _shadowOffset, _shadowBlurRadius);
 }
 
 void ButtonLoader::onHandlePropTypeCheck(Node * pNode, Node * pParent, const char * pPropertyName, bool pCheck, CCBReader * ccbReader) {
@@ -149,9 +158,9 @@ void ButtonLoader::onHandlePropTypeFloatScale(Node * pNode, Node * pParent, cons
     } else if(strcmp(pPropertyName, PROPERTY_VERTICALPADDING) == 0) {
         ((Button *)pNode)->setVerticalPadding(pFloatScale);
     } else if(strcmp(pPropertyName, PROPERTY_OUTLINEWIDTH) == 0) {
-        //((CCLabelTTF *)pNode)->setFontSize(pFloatScale);
+        _outlineWidth = pFloatScale;
     } else if(strcmp(pPropertyName, PROPERTY_SHADOWBLURRADIUS) == 0) {
-        //((CCLabelTTF *)pNode)->setFontSize(pFloatScale);
+        _shadowBlurRadius = pFloatScale;
     } else {
         ControlLoader::onHandlePropTypeFloatScale(pNode, pParent, pPropertyName, pFloatScale, ccbReader);
     }
@@ -206,37 +215,44 @@ void ButtonLoader::onHandlePropTypeBlock(cocos2d::Node * pNode, cocos2d::Node * 
         NodeLoader::onHandlePropTypeBlock(pNode, pParent, pPropertyName, pBlockData, ccbReader);
     }
 }
-
-void ButtonLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color3B pColor3B, CCBReader * ccbReader) {
-    if(strcmp(pPropertyName, PROPERTY_TITLECOLOR_NORMAL) == 0) {
-        ((Button *)pNode)->setLabelColor(pColor3B, Control::State::NORMAL);
-    } else if(strcmp(pPropertyName, PROPERTY_TITLECOLOR_HIGHLIGHTED) == 0) {
-        ((Button *)pNode)->setLabelColor(pColor3B, Control::State::HIGH_LIGHTED);
-    } else if(strcmp(pPropertyName, PROPERTY_TITLECOLOR_DISABLED) == 0) {
-        ((Button *)pNode)->setLabelColor(pColor3B, Control::State::DISABLED);
-    } else if(strcmp(pPropertyName, PROPERTY_TITLECOLOR_SELECTED) == 0) {
-        ((Button *)pNode)->setLabelColor(pColor3B, Control::State::SELECTED);
-    } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDCOLOR_NORMAL) == 0) {
-        ((Button *)pNode)->setBackgroundColor(pColor3B, Control::State::NORMAL);
-    } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDCOLOR_HIGHLIGHTED) == 0) {
-        ((Button *)pNode)->setBackgroundColor(pColor3B, Control::State::HIGH_LIGHTED);
-    } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDCOLOR_DISABLED) == 0) {
-        ((Button *)pNode)->setBackgroundColor(pColor3B, Control::State::DISABLED);
-    } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDCOLOR_SELECTED) == 0) {
-        ((Button *)pNode)->setBackgroundColor(pColor3B, Control::State::SELECTED);
-    } else if(strcmp(pPropertyName, PROPERTY_FONTCOLOR) == 0) {
-        //
-    } else if(strcmp(pPropertyName, PROPERTY_OUTLINECOLOR) == 0) {
-        //
-    } else if(strcmp(pPropertyName, PROPERTY_SHADOWCOLOR) == 0) {
-        //
+    
+void ButtonLoader::onHandlePropTypeColor4(Node * pNode, Node * pParent, const char * pPropertyName, Color4B pColor4B, CCBReader * ccbReader) {
+    if(strcmp(pPropertyName, PROPERTY_FONTCOLOR) == 0){
+        ((Label *)pNode)->setTextColor(pColor4B);
+    } else if(strcmp(pPropertyName, PROPERTY_OUTLINECOLOR) == 0){
+        _outlineColor = pColor4B;
+    } else if(strcmp(pPropertyName, PROPERTY_SHADOWCOLOR) == 0){
+        _shadowColor = pColor4B;
     } else {
-        ControlLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, ccbReader);
+        ControlLoader::onHandlePropTypeColor4(pNode, pParent, pPropertyName, pColor4B, ccbReader);
+    }
+}
+
+void ButtonLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color4B pColor4B, CCBReader * ccbReader) {
+    if(strcmp(pPropertyName, PROPERTY_TITLECOLOR_NORMAL) == 0) {
+        ((Button *)pNode)->setLabelColor(Color3B(pColor4B), Control::State::NORMAL);
+    } else if(strcmp(pPropertyName, PROPERTY_TITLECOLOR_HIGHLIGHTED) == 0) {
+        ((Button *)pNode)->setLabelColor(Color3B(pColor4B), Control::State::HIGH_LIGHTED);
+    } else if(strcmp(pPropertyName, PROPERTY_TITLECOLOR_DISABLED) == 0) {
+        ((Button *)pNode)->setLabelColor(Color3B(pColor4B), Control::State::DISABLED);
+    } else if(strcmp(pPropertyName, PROPERTY_TITLECOLOR_SELECTED) == 0) {
+        ((Button *)pNode)->setLabelColor(Color3B(pColor4B), Control::State::SELECTED);
+    } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDCOLOR_NORMAL) == 0) {
+        ((Button *)pNode)->setBackgroundColor(Color3B(pColor4B), Control::State::NORMAL);
+    } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDCOLOR_HIGHLIGHTED) == 0) {
+        ((Button *)pNode)->setBackgroundColor(Color3B(pColor4B), Control::State::HIGH_LIGHTED);
+    } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDCOLOR_DISABLED) == 0) {
+        ((Button *)pNode)->setBackgroundColor(Color3B(pColor4B), Control::State::DISABLED);
+    } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDCOLOR_SELECTED) == 0) {
+        ((Button *)pNode)->setBackgroundColor(Color3B(pColor4B), Control::State::SELECTED);
+    } else {
+        ControlLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor4B, ccbReader);
     }
 }
     
 void ButtonLoader::onHandlePropTypePosition(Node * pNode, Node * pParent, const char* pPropertyName, Point pPosition, CCBReader * pCCBReader) {
     if(strcmp(pPropertyName, PROPERTY_SHADOWOFFSET) == 0) {
+        _shadowOffset = pPosition;
     } else {
         NodeLoader::onHandlePropTypePosition(pNode, pParent, pPropertyName, pPosition, pCCBReader);
     }

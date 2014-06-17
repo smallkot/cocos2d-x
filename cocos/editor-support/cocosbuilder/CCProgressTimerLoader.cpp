@@ -42,11 +42,11 @@ void ProgressTimerLoader::onHandlePropTypeFlip(Node * pNode, Node * pParent, con
     }
 }
 
-void ProgressTimerLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color3B pCCColor3B, CCBReader * pCCBReader) {
+void ProgressTimerLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color4B pCCColor4B, CCBReader * pCCBReader) {
     if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
-        ((ProgressTimer *)pNode)->setColor(pCCColor3B);
+        ((ProgressTimer *)pNode)->setColor(Color3B(pCCColor4B));
     } else {
-        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pCCColor3B, pCCBReader);
+        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pCCColor4B, pCCBReader);
     }
 }
 

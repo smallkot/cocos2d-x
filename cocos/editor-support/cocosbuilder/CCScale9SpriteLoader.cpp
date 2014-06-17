@@ -41,11 +41,11 @@ void Scale9SpriteLoader::onHandlePropTypeSpriteFrame(Node * pNode, Node * pParen
     }
 }
 
-void Scale9SpriteLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color3B pColor3B, CCBReader * ccbReader) {
+void Scale9SpriteLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color4B pColor4B, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
-        ((Scale9Sprite *)pNode)->setColor(pColor3B);
+        ((Scale9Sprite *)pNode)->setColor(Color3B(pColor4B));
     } else {
-        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, ccbReader);
+        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor4B, ccbReader);
     }
 }
 

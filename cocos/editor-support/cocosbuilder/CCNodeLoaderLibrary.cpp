@@ -18,6 +18,8 @@
 #include "CCLayoutBoxLoader.h"
 #include "CCProgressTimerLoader.h"
 #include "CCPhysicsNodeLoader.h"
+#include "CCTextFieldLoader.h"
+#include "CCSliderLoader.h"
 
 using namespace cocos2d;
 
@@ -54,6 +56,8 @@ void NodeLoaderLibrary::registerDefaultNodeLoaders() {
     this->registerNodeLoader("CCLayoutBox", LayoutBoxLoader::loader());
     this->registerNodeLoader("CCProgressNode", ProgressTimerLoader::loader());
     this->registerNodeLoader("CCPhysicsNode", PhysicsNodeLoader::loader());
+    this->registerNodeLoader("CCTextField", EditBoxLoader::loader());
+    this->registerNodeLoader("CCSlider", SliderLoader::loader());
 }
 
 void NodeLoaderLibrary::registerNodeLoader(const char * pClassName, NodeLoader * pNodeLoader) {

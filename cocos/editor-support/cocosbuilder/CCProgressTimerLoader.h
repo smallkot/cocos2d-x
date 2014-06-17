@@ -22,15 +22,15 @@ protected:
         return cocos2d::ProgressTimer::create(cocos2d::Sprite::create());
     }
     
-    virtual void onHandlePropTypeColor3(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::Color3B pCCColor3B, CCBReader * pCCBReader);
-    virtual void onHandlePropTypeByte(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, unsigned char pByte, CCBReader * pCCBReader);
-    virtual void onHandlePropTypeBlendFunc(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::BlendFunc pCCBBlendFunc, CCBReader * pCCBReader);
-    virtual void onHandlePropTypeSpriteFrame(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::SpriteFrame * pCCSpriteFrame, CCBReader * pCCBReader);
-    virtual void onHandlePropTypeFlip(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, bool * pFlip, CCBReader * pCCBReader);
-    virtual void onHandlePropTypeIntegerLabeled(cocos2d::Node *pNode, cocos2d::Node *pParent, const char *pPropertyName, int pIntegerLabeled, CCBReader *pCCBReader);
-    virtual void onHandlePropTypePoint(cocos2d::Node *pNode, cocos2d::Node * pParent, const char *pPropertyName, cocos2d::Point pPoint, CCBReader * pCCBReader);
-    virtual void onHandlePropTypeFloat(cocos2d::Node *pNode, cocos2d::Node *pParent, const char *pPropertyName, float pFloat, CCBReader *pCCBReader);
-    virtual void onHandlePropTypeCheck(cocos2d::Node *pNode, cocos2d::Node *pParent, const char *pPropertyName, bool pCheck, CCBReader *pCCBReader);
+    virtual void onHandlePropTypeColor3(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::Color4B pCCColor4B, CCBReader * pCCBReader) override;
+    virtual void onHandlePropTypeByte(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, unsigned char pByte, CCBReader * pCCBReader) override;
+    virtual void onHandlePropTypeBlendFunc(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::BlendFunc pCCBBlendFunc, CCBReader * pCCBReader) override;
+    virtual void onHandlePropTypeSpriteFrame(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::SpriteFrame * pCCSpriteFrame, CCBReader * pCCBReader) override;
+    virtual void onHandlePropTypeFlip(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, bool * pFlip, CCBReader * pCCBReader) override;
+    virtual void onHandlePropTypeIntegerLabeled(cocos2d::Node *pNode, cocos2d::Node *pParent, const char *pPropertyName, int pIntegerLabeled, CCBReader *pCCBReader) override;
+    virtual void onHandlePropTypePoint(cocos2d::Node *pNode, cocos2d::Node * pParent, const char *pPropertyName, cocos2d::Point pPoint, CCBReader * pCCBReader) override;
+    virtual void onHandlePropTypeFloat(cocos2d::Node *pNode, cocos2d::Node *pParent, const char *pPropertyName, float pFloat, CCBReader *pCCBReader) override;
+    virtual void onHandlePropTypeCheck(cocos2d::Node *pNode, cocos2d::Node *pParent, const char *pPropertyName, bool pCheck, CCBReader *pCCBReader) override;
 };
     
 }

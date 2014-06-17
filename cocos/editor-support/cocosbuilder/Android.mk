@@ -31,7 +31,9 @@ CCPhysicsNodeLoader.cpp \
 CCProgressTimerLoader.cpp \
 CCScale9SpriteLoader.cpp \
 CCScrollViewLoader.cpp \
-CCSpriteLoader.cpp
+CCSliderLoader.cpp \
+CCSpriteLoader.cpp \
+CCTextFieldLoader.cpp
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/.. \
 $(LOCAL_PATH)/../../..
