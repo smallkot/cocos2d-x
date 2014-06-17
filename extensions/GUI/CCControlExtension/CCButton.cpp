@@ -26,10 +26,10 @@
  */
 
 #include "CCButton.h"
-#include "CCLabel.h"
-#include "CCScale9Sprite.h"
-#include "CCAction.h"
-#include "CCActionInterval.h"
+#include "2d/CCLabel.h"
+#include "extensions/GUI/CCControlExtension/CCScale9Sprite.h"
+#include "2d/CCAction.h"
+#include "2d/CCActionInterval.h"
 
 NS_CC_EXT_BEGIN
 

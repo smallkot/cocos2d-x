@@ -1,6 +1,6 @@
 #include "CCButtonLoader.h"
 #include "extensions/GUI/CCControlExtension/CCScale9Sprite.h"
-#include "CCLabel.h"
+#include "2d/CCLabel.h"
 
 using namespace cocos2d;
 using namespace cocos2d::extension;

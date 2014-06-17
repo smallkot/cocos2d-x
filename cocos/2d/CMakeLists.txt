@@ -45,6 +45,10 @@ set(COCOS_2D_SRC
   2d/CCLabelTextFormatter.cpp
   2d/CCLabelTTF.cpp
   2d/CCLayer.cpp
+  2d/CCLayoutBox.cpp
+  2d/CCLayoutBox.h
+  2d/CCLayoutNode.cpp
+  2d/CCLayoutNode.h
   2d/CCMenu.cpp
   2d/CCMenuItem.cpp
   2d/CCMotionStreak.cpp
