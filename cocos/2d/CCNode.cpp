@@ -744,6 +744,18 @@ Node* Node::getChildByTag(int tag) const
     return nullptr;
 }
 
+Node * Node::getChildByName(const std::string &name) const
+{
+    CCASSERT( name.empty(), "Invalid name");
+    
+    for (auto& child : _children)
+    {
+        if(child && child->_name == name)
+            return child;
+    }
+    return nullptr;
+}
+
 /* "add" logic MUST only be on this method
 * If a class want's to extend the 'addChild' behavior it only needs
 * to override this method

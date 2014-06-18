@@ -646,6 +646,14 @@ public:
      */
     virtual Node * getChildByTag(int tag) const;
     /**
+     * Gets a child from the container with its name
+     *
+     * @param tag   An identifier to find the child node.
+     *
+     * @return a Node object whose tag equals to the input parameter
+     */
+    virtual Node * getChildByName(const std::string &name) const;
+    /**
      * Returns the array of the node's children
      *
      * @return the array the node's children
