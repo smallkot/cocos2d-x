@@ -746,7 +746,7 @@ Node* Node::getChildByTag(int tag) const
 
 Node * Node::getChildByName(const std::string &name) const
 {
-    CCASSERT( name.empty(), "Invalid name");
+    CCASSERT( !name.empty(), "Invalid name");
     
     for (auto& child : _children)
     {

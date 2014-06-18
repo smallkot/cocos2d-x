@@ -373,6 +373,14 @@ void NodeLoader::parseProperties(Node * pNode, Node * pParent, CCBReader * ccbRe
                 }
                 break;
             }
+            case CCBReader::PropertyType::CCB_FILE_NAME:
+            {
+                std::string ccbFileName = this->parsePropTypeCCBFileName(pNode, pParent, ccbReader);
+                if(setProp) {
+                    this->onHandlePropTypeCCBFileName(pNode, pParent, propertyName.c_str(), ccbFileName.c_str(), ccbReader);
+                }
+                break;
+            }
             default:
                 ASSERT_FAIL_UNEXPECTED_PROPERTYTYPE(type);
                 break;
