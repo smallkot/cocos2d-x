@@ -32,7 +32,7 @@ const std::string& ScrollListView::getTemplate(void) const
 void ScrollListView::setTemplate(const std::string& var)
 {
     _template = var;
-    std::string strPath = FileUtils::getInstance()->fullPathForFilename(_template+".ccbi");
+    std::string strPath = FileUtils::getInstance()->fullPathForFilename(_template);
     _data = FileUtils::getInstance()->getDataFromFile(strPath);
 }
 

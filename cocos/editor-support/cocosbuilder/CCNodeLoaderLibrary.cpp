@@ -20,6 +20,7 @@
 #include "CCPhysicsNodeLoader.h"
 #include "CCTextFieldLoader.h"
 #include "CCSliderLoader.h"
+#include "CCScrollListViewLoader.h"
 
 using namespace cocos2d;
 
@@ -45,7 +46,7 @@ void NodeLoaderLibrary::registerDefaultNodeLoaders() {
     this->registerNodeLoader("CCLabelTTF", LabelTTFLoader::loader());
     this->registerNodeLoader("CCScale9Sprite", Scale9SpriteLoader::loader());
     this->registerNodeLoader("CCSprite9Slice", Scale9SpriteLoader::loader());
-    this->registerNodeLoader("CCScrollListView", ScrollViewLoader::loader());
+    this->registerNodeLoader("CCScrollView", ScrollViewLoader::loader());
     this->registerNodeLoader("CCBFile", CCBFileLoader::loader());
     this->registerNodeLoader("CCMenu", MenuLoader::loader());
     this->registerNodeLoader("CCMenuItemImage", MenuItemImageLoader::loader());
@@ -58,6 +59,7 @@ void NodeLoaderLibrary::registerDefaultNodeLoaders() {
     this->registerNodeLoader("CCPhysicsNode", PhysicsNodeLoader::loader());
     this->registerNodeLoader("CCTextField", EditBoxLoader::loader());
     this->registerNodeLoader("CCSlider", SliderLoader::loader());
+    this->registerNodeLoader("CCScrollListView", ScrollListViewLoader::loader());
 }
 
 void NodeLoaderLibrary::registerNodeLoader(const char * pClassName, NodeLoader * pNodeLoader) {

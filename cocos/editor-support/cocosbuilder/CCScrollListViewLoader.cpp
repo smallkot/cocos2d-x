@@ -20,7 +20,7 @@ USING_NS_CC_EXT;
 namespace cocosbuilder {
 
 
-void CCScrollListViewLoader::onHandlePropTypeCCBFileName(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, const char * pCCBFileName, cocosbuilder::CCBReader * ccbReader)
+void ScrollListViewLoader::onHandlePropTypeCCBFileName(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, const char * pCCBFileName, cocosbuilder::CCBReader * ccbReader)
 {
     if(strcmp(pPropertyName, PROPERTY_TEMPLATE) == 0)
         ((ScrollListView *)pNode)->setTemplate(pCCBFileName);
@@ -28,21 +28,21 @@ void CCScrollListViewLoader::onHandlePropTypeCCBFileName(cocos2d::Node * pNode, 
         ScrollViewLoader::onHandlePropTypeCCBFileName(pNode, pParent, pPropertyName, pCCBFileName, ccbReader);
 }
 
-void CCScrollListViewLoader::onHandlePropTypeText(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, const char * pString, cocosbuilder::CCBReader * pCCBReader) {
+void ScrollListViewLoader::onHandlePropTypeText(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, const char * pString, cocosbuilder::CCBReader * pCCBReader) {
     if(strcmp(pPropertyName, PROPERTY_TEMPLATE) == 0)
         ((ScrollListView *)pNode)->setTemplate(pString);
     else
         ScrollViewLoader::onHandlePropTypeText(pNode, pParent, pPropertyName, pString, pCCBReader);
 }
 
-void CCScrollListViewLoader::onHandlePropTypeCheck(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, bool pCheck, cocosbuilder::CCBReader * pCCBReader) {
+void ScrollListViewLoader::onHandlePropTypeCheck(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, bool pCheck, cocosbuilder::CCBReader * pCCBReader) {
     if(strcmp(pPropertyName, PROPERTY_HORIZONTAL) == 0)
         ((ScrollListView *)pNode)->setHorizontal(pCheck);
     else
         ScrollViewLoader::onHandlePropTypeCheck(pNode, pParent, pPropertyName, pCheck, pCCBReader);
 }
 
-void CCScrollListViewLoader::onHandlePropTypeIntegerLabeled(cocos2d::Node *pNode, cocos2d::Node *pParent, const char *pPropertyName, int pIntegerLabeled, cocosbuilder::CCBReader *pCCBReader)
+void ScrollListViewLoader::onHandlePropTypeIntegerLabeled(cocos2d::Node *pNode, cocos2d::Node *pParent, const char *pPropertyName, int pIntegerLabeled, cocosbuilder::CCBReader *pCCBReader)
 {
     if (strcmp(pPropertyName, PROPERTY_HORIZALIGN) == 0) {
         ((ScrollListView *)pNode)->setTextAlignment((TextHAlignment)pIntegerLabeled);
