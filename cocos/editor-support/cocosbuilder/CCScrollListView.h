@@ -4,7 +4,7 @@
 #include "extensions/GUI/CCScrollView/CCScrollView.h"
 #include "CCBMemberVariableAssigner.h"
 #include "CCBSelectorResolver.h"
-#include "cocosbuilder/CCBReader.h"
+#include "CCBReader.h"
 #include "base/CCRef.h"
 
 //#include "cocos-ext.h"
