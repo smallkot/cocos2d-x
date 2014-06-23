@@ -14,6 +14,17 @@
 USING_NS_CC;
 
 namespace cocosbuilder {
+    
+    
+void ProgressTimerLoader::onStarPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader)
+{
+    _percentage = 0.0f;
+}
+    
+void ProgressTimerLoader::onEndPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader)
+{
+    ((ProgressTimer *)pNode)->setPercentage(_percentage);
+}
 
 void ProgressTimerLoader::onHandlePropTypeSpriteFrame(Node * pNode, Node * pParent, const char * pPropertyName, SpriteFrame * pCCSpriteFrame, CCBReader * pCCBReader) {
     if(strcmp(pPropertyName, PROPERTY_DISPLAYFRAME) == 0) {
@@ -92,7 +103,7 @@ void ProgressTimerLoader::onHandlePropTypePoint(Node *pNode, Node *pParent, cons
 void ProgressTimerLoader::onHandlePropTypeFloat(Node *pNode, Node *pParent, const char *pPropertyName, float pFloat, CCBReader *pCCBReader)
 {
     if (strcmp(pPropertyName, PROPERTY_PERCENTAGE) == 0) {
-        ((ProgressTimer *)pNode)->setPercentage(pFloat);
+        _percentage = pFloat;
     }
     else {
         NodeLoader::onHandlePropTypeFloat(pNode, pParent, pPropertyName, pFloat, pCCBReader);
