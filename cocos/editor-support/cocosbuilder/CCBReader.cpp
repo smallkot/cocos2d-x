@@ -242,6 +242,7 @@ Node* CCBReader::readNodeGraphFromData(const cocos2d::Data &data, Ref *pOwner, c
     
     if(scaleType == SceneScaleType::NONE)
     {
+        CCBReaderParams::getInstance();
         CCBReader::setMainScale(1.0);
         CCBReader::setResolutionScaleY(1.0);
         CCBReader::setResolutionScaleX(1.0);
