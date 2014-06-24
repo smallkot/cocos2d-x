@@ -668,7 +668,18 @@ bool Image::isPng(const unsigned char * data, ssize_t dataLen)
 
 bool Image::isPkm(const unsigned char * data, ssize_t dataLen)
 {
-    return etc1_pkm_is_valid((etc1_byte*)data) ? true : false;
+    PKMHeader *header = (PKMHeader *)data;
+    if (memcmp(header->name, PKM_MAGIC, sizeof(PKM_MAGIC))) {
+        return false;
+    }
+    
+    if(header->version[0] == '1' && header->version[1] == '0')
+        return true;
+    
+    if(header->version[0] == '2' && header->version[1] == '0')
+        return true;
+
+    return false;
 }
 
 bool Image::isDds(const unsigned char * data, ssize_t dataLen)
