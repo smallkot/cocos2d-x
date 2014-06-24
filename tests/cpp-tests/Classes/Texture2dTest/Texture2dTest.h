@@ -325,6 +325,42 @@ public:
     virtual void onEnter() override;
 };
 
+class TexturePVRETC1 : public TextureDemo
+{
+public:
+    CREATE_FUNC(TexturePVRETC1);
+    virtual std::string title() const override;
+    virtual std::string subtitle() const override;
+    virtual void onEnter() override;
+};
+
+class TexturePVRETC2RGB : public TextureDemo
+{
+public:
+    CREATE_FUNC(TexturePVRETC2RGB);
+    virtual std::string title() const override;
+    virtual std::string subtitle() const override;
+    virtual void onEnter() override;
+};
+
+class TexturePVRETC2RGBA : public TextureDemo
+{
+public:
+    CREATE_FUNC(TexturePVRETC2RGBA);
+    virtual std::string title() const override;
+    virtual std::string subtitle() const override;
+    virtual void onEnter() override;
+};
+
+class TexturePVRETC2RGBA1 : public TextureDemo
+{
+public:
+    CREATE_FUNC(TexturePVRETC2RGBA1);
+    virtual std::string title() const override;
+    virtual std::string subtitle() const override;
+    virtual void onEnter() override;
+};
+
 class TexturePVRBadEncoding : public TextureDemo
 {
 public:
@@ -528,6 +564,39 @@ class TextureETC1 : public TextureDemo
 public:
     CREATE_FUNC(TextureETC1);
     TextureETC1();
+    
+    virtual std::string title() const override;
+    virtual std::string subtitle() const override;
+};
+
+// ETC2 RGB texture format test
+class TextureETC2RGB : public TextureDemo
+{
+public:
+    CREATE_FUNC(TextureETC2RGB);
+    TextureETC2RGB();
+    
+    virtual std::string title() const override;
+    virtual std::string subtitle() const override;
+};
+
+// ETC2 RGBA8 texture format test
+class TextureETC2RGBA : public TextureDemo
+{
+public:
+    CREATE_FUNC(TextureETC2RGBA);
+    TextureETC2RGBA();
+    
+    virtual std::string title() const override;
+    virtual std::string subtitle() const override;
+};
+
+// ETC2 RGBA1 texture format test
+class TextureETC2RGBA1 : public TextureDemo
+{
+public:
+    CREATE_FUNC(TextureETC2RGBA1);
+    TextureETC2RGBA1();
     
     virtual std::string title() const override;
     virtual std::string subtitle() const override;

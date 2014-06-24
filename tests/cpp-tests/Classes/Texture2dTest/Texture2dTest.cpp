@@ -74,6 +74,11 @@ static std::function<Layer*()> createFunctions[] =
     
     CL(TexturePVRv3Premult),
     
+    CL(TexturePVRETC1),
+    CL(TexturePVRETC2RGB),
+    CL(TexturePVRETC2RGBA),
+    CL(TexturePVRETC2RGBA1),
+    
     CL(TexturePVRBadEncoding),
     CL(TexturePNG),
     CL(TextureJPEG),
@@ -93,6 +98,9 @@ static std::function<Layer*()> createFunctions[] =
     CL(TextureDrawInRect),
     
     CL(TextureETC1),
+    CL(TextureETC2RGB),
+    CL(TextureETC2RGBA),
+    CL(TextureETC2RGBA1),
     
     CL(TextureS3TCDxt1),
     CL(TextureS3TCDxt3),
@@ -1211,6 +1219,127 @@ std::string TexturePVRAI88v3::subtitle() const
     return "Testing PVR File Format v3";
 }
 
+
+//------------------------------------------------------------------
+//
+// TexturePVRETC1
+// Image generated using PVRTexTool:
+// http://www.imgtec.com/powervr/insider/powervr-pvrtextool.asp
+//
+//------------------------------------------------------------------
+void TexturePVRETC1::onEnter()
+{
+    TextureDemo::onEnter();
+    auto s = Director::getInstance()->getWinSize();
+    
+    auto img = Sprite::create("Images/test_image_etc1_v3.pvr");
+    if( img )
+    {
+        img->setPosition(Vec2( s.width/2.0f, s.height/2.0f));
+        addChild(img);
+    }
+}
+
+std::string TexturePVRETC1::title() const
+{
+    return "ETC1 encoding";
+}
+
+std::string TexturePVRETC1::subtitle() const
+{
+    return "Testing PVR File Format v3";
+}
+
+//------------------------------------------------------------------
+//
+// TexturePVRETC1
+// Image generated using PVRTexTool:
+// http://www.imgtec.com/powervr/insider/powervr-pvrtextool.asp
+//
+//------------------------------------------------------------------
+void TexturePVRETC2RGB::onEnter()
+{
+    TextureDemo::onEnter();
+    auto s = Director::getInstance()->getWinSize();
+    
+    auto img = Sprite::create("Images/test_image_etc2_rgb.pvr");
+    if( img )
+    {
+        img->setPosition(Vec2( s.width/2.0f, s.height/2.0f));
+        addChild(img);
+    }
+}
+
+std::string TexturePVRETC2RGB::title() const
+{
+    return "ETC2 RGB encoding";
+}
+
+std::string TexturePVRETC2RGB::subtitle() const
+{
+    return "Testing PVR File Format v3";
+}
+
+//------------------------------------------------------------------
+//
+// TexturePVRETC1
+// Image generated using PVRTexTool:
+// http://www.imgtec.com/powervr/insider/powervr-pvrtextool.asp
+//
+//------------------------------------------------------------------
+void TexturePVRETC2RGBA::onEnter()
+{
+    TextureDemo::onEnter();
+    auto s = Director::getInstance()->getWinSize();
+    
+    auto img = Sprite::create("Images/test_image_etc2_rgba.pvr");
+    if( img )
+    {
+        img->setPosition(Vec2( s.width/2.0f, s.height/2.0f));
+        addChild(img);
+    }
+}
+
+std::string TexturePVRETC2RGBA::title() const
+{
+    return "ETC2 RGBA8 encoding";
+}
+
+std::string TexturePVRETC2RGBA::subtitle() const
+{
+    return "Testing PVR File Format v3";
+}
+
+//------------------------------------------------------------------
+//
+// TexturePVRETC1
+// Image generated using PVRTexTool:
+// http://www.imgtec.com/powervr/insider/powervr-pvrtextool.asp
+//
+//------------------------------------------------------------------
+void TexturePVRETC2RGBA1::onEnter()
+{
+    TextureDemo::onEnter();
+    auto s = Director::getInstance()->getWinSize();
+    
+    auto img = Sprite::create("Images/test_image_etc2_rgba1.pvr");
+    if( img )
+    {
+        img->setPosition(Vec2( s.width/2.0f, s.height/2.0f));
+        addChild(img);
+    }
+}
+
+std::string TexturePVRETC2RGBA1::title() const
+{
+    return "ETC2 RGBA1 encoding";
+}
+
+std::string TexturePVRETC2RGBA1::subtitle() const
+{
+    return "Testing PVR File Format v3";
+}
+
 //------------------------------------------------------------------
 //
 // TexturePVRBadEncoding
@@ -2081,17 +2210,6 @@ void TexturePVRv3Premult::transformSprite(cocos2d::Sprite *sprite)
 
 // Implementation of ETC1
 
-/*
-class TextureETC1 : public TextureDemo
-{
-public:
-    TextureETC1();
-    
-    virtual std::string title() const override;
-    virtual std::string subtitle() const override;
-};
- */
-
 TextureETC1::TextureETC1()
 {
     auto sprite = Sprite::create("Images/ETC1.pkm");
@@ -2109,7 +2227,82 @@ std::string TextureETC1::title() const
 
 std::string TextureETC1::subtitle() const
 {
-    return "only supported on android";
+    return "Hardware supported on android software decoded on other systems";
+}
+
+// Implementation of ETC1
+
+TextureETC2RGB::TextureETC2RGB()
+{
+    auto sprite = Sprite::create("Images/ETC2_RGB.pkm");
+    
+    auto size = Director::getInstance()->getWinSize();
+    
+    if( sprite )
+    {
+        sprite->setPosition(Vec2( size.width/2.0f, size.height/2.0f));
+        addChild(sprite);
+    }
+}
+
+std::string TextureETC2RGB::title() const
+{
+    return "ETC2 RGB texture";
+}
+
+std::string TextureETC2RGB::subtitle() const
+{
+    return "Opengl 3.0 requered";
+}
+
+// Implementation of ETC1
+
+TextureETC2RGBA::TextureETC2RGBA()
+{
+    auto sprite = Sprite::create("Images/ETC2_RGBA.pkm");
+    
+    auto size = Director::getInstance()->getWinSize();
+    
+    if( sprite )
+    {
+        sprite->setPosition(Vec2( size.width/2.0f, size.height/2.0f));
+        addChild(sprite);
+    }
+}
+
+std::string TextureETC2RGBA::title() const
+{
+    return "ETC2 RGBA8 texture";
+}
+
+std::string TextureETC2RGBA::subtitle() const
+{
+    return "Opengl 3.0 requered";
+}
+
+// Implementation of ETC1
+
+TextureETC2RGBA1::TextureETC2RGBA1()
+{
+    auto sprite = Sprite::create("Images/ETC2_RGBA1.pkm");
+    
+    auto size = Director::getInstance()->getWinSize();
+    
+    if( sprite )
+    {
+        sprite->setPosition(Vec2( size.width/2.0f, size.height/2.0f));
+        addChild(sprite);
+    }
+}
+
+std::string TextureETC2RGBA1::title() const
+{
+    return "ETC2 RGBA1 texture";
+}
+
+std::string TextureETC2RGBA1::subtitle() const
+{
+    return "Opengl 3.0 requered";
 }
 
 //Implement of S3TC Dxt1
