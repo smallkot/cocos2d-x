@@ -1465,7 +1465,7 @@ static float __ccbResolutionScaleX = 1.0f;
 
 float CCBReader::getResolutionScaleX()
 {
-    return __ccbResolutionScaleX * __ccbResolutionScale;
+    return __ccbResolutionScaleX;
 }
 
 void CCBReader::setResolutionScaleX(float scale)
@@ -1477,7 +1477,7 @@ static float __ccbResolutionScaleY = 1.0f;
 
 float CCBReader::getResolutionScaleY()
 {
-    return __ccbResolutionScaleY * __ccbResolutionScale;
+    return __ccbResolutionScaleY;
 }
 
 void CCBReader::setResolutionScaleY(float scale)
