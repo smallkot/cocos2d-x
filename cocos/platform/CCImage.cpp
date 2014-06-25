@@ -1760,7 +1760,7 @@ bool Image::initWithPKMData(const unsigned char * data, ssize_t dataLen)
     
     if (it == Texture2D::getPixelFormatInfoMap().end())
     {
-        CCLOG("cocos2d: WARNING: Unsupported PVR Pixel Format: 0x%016hX. Re-encode it with a OpenGL pixel format variant",
+        CCLOG("cocos2d: WARNING: Unsupported ETC Pixel Format: 0x%016hX. Re-encode it with a OpenGL pixel format variant",
               static_cast<uint16_t>(format));
         return false;
     }
@@ -1793,7 +1793,7 @@ bool Image::initWithPKMData(const unsigned char * data, ssize_t dataLen)
     }
     else
     {
-        _dataLen = sizeof(PVRv3TexHeader) - ETC_PKM_HEADER_SIZE;
+        _dataLen = dataLen - sizeof(PKMHeader);
         _data = static_cast<unsigned char*>(malloc(_dataLen * sizeof(unsigned char)));
         memcpy(_data, static_cast<const unsigned char*>(data) + sizeof(PKMHeader), _dataLen);
         return true;
