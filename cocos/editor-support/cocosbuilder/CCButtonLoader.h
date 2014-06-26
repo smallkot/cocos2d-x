@@ -23,7 +23,7 @@ class ButtonLoader : public ControlLoader {
         CCB_STATIC_NEW_AUTORELEASE_OBJECT_METHOD(ButtonLoader, loader);
 
     protected:
-        CCB_VIRTUAL_NEW_AUTORELEASE_CREATECCNODE_METHOD(cocos2d::extension::Button);
+        CCB_VIRTUAL_NEW_AUTORELEASE_CREATECCNODE_METHOD(cocos2d::extension::ButtonControl);
     
         virtual void onStarPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader) override;
         virtual void onEndPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader) override;

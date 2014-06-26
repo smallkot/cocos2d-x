@@ -50,7 +50,7 @@ class Scale9Sprite;
 typedef std::function<void(Ref*)> ccButtonCallback;
 
 
-class Button: public Control
+class ButtonControl: public Control
 {
 public:
     
@@ -65,7 +65,7 @@ public:
      *
      *  @return A new button.
      */
-    static Button *create();
+    static ButtonControl *create();
     
     /**
      *  Creates a new button with a title and sprite frames for its background in different states.
@@ -80,7 +80,7 @@ public:
      *
      *  @return A new button.
      */
-    static Button *create(const std::string &title, const std::string &fontName, float size, SpriteFrame* normal, SpriteFrame* highlighted, SpriteFrame* disabled, SpriteFrame* selected);
+    static ButtonControl *create(const std::string &title, const std::string &fontName, float size, SpriteFrame* normal, SpriteFrame* highlighted, SpriteFrame* disabled, SpriteFrame* selected);
     
     virtual void setEnabled(bool enabled);
     virtual void setSelected(bool enabled);
@@ -214,8 +214,8 @@ public:
 
 protected:
     
-    Button();
-    virtual ~Button();
+    ButtonControl();
+    virtual ~ButtonControl();
     
     virtual bool onTouchBegan(Touch *touch, Event *event) override;
     virtual void onTouchMoved(Touch *touch, Event *event) override;

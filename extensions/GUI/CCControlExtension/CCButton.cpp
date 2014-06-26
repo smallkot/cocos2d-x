@@ -33,7 +33,7 @@
 
 NS_CC_EXT_BEGIN
 
-Button::Button():_background(Scale9Sprite::create()),_label(Label::create()),_zoomWhenHighlighted(false),_horizontalPadding(0),_verticalPadding(0),_togglesSelectedState(false),_preferredSize(0,0),_maxSize(0,0),_needLaout(true)
+ButtonControl::ButtonControl():_background(Scale9Sprite::create()),_label(Label::create()),_zoomWhenHighlighted(false),_horizontalPadding(0),_verticalPadding(0),_togglesSelectedState(false),_preferredSize(0,0),_maxSize(0,0),_needLaout(true)
 {
     _ignoreAnchorPointForPosition = false;
     addChild(_background);
@@ -41,14 +41,14 @@ Button::Button():_background(Scale9Sprite::create()),_label(Label::create()),_zo
     _label->setHorizontalAlignment(cocos2d::TextHAlignment::CENTER);
     _label->setVerticalAlignment(cocos2d::TextVAlignment::CENTER);
 }
-Button::~Button()
+ButtonControl::~ButtonControl()
 {
     
 }
 
-Button *Button::create()
+ButtonControl *ButtonControl::create()
 {
-    Button *ret = new Button();
+    ButtonControl *ret = new ButtonControl();
     
     if (!ret)
         return nullptr;
@@ -63,9 +63,9 @@ Button *Button::create()
     
     return ret;
 }
-Button *Button::create(const std::string &title, const std::string &fontName, float size, SpriteFrame* normal, SpriteFrame* highlighted, SpriteFrame* disabled, SpriteFrame* selected)
+ButtonControl *ButtonControl::create(const std::string &title, const std::string &fontName, float size, SpriteFrame* normal, SpriteFrame* highlighted, SpriteFrame* disabled, SpriteFrame* selected)
 {
-    Button *ret = new Button();
+    ButtonControl *ret = new ButtonControl();
     
     if (ret)
     {
@@ -87,7 +87,7 @@ Button *Button::create(const std::string &title, const std::string &fontName, fl
     return ret;
 }
 
-bool Button::onTouchBegan(Touch *touch, Event *event)
+bool ButtonControl::onTouchBegan(Touch *touch, Event *event)
 {
     if (!isTouchInside(touch) || !isEnabled() || !isVisible() || !hasVisibleParents() )
     {
@@ -97,7 +97,7 @@ bool Button::onTouchBegan(Touch *touch, Event *event)
     sendActionsForControlEvents(Control::EventType::TOUCH_DOWN);
     return true;
 }
-void Button::onTouchMoved(Touch *touch, Event *event)
+void ButtonControl::onTouchMoved(Touch *touch, Event *event)
 {
     if (!isEnabled())
     {
@@ -126,7 +126,7 @@ void Button::onTouchMoved(Touch *touch, Event *event)
     }
 
 }
-void Button::onTouchEnded(Touch *touch, Event *event)
+void ButtonControl::onTouchEnded(Touch *touch, Event *event)
 {
     setHighlighted(false);
     if (isTouchInside(touch))
@@ -148,31 +148,31 @@ void Button::onTouchEnded(Touch *touch, Event *event)
         sendActionsForControlEvents(Control::EventType::TOUCH_UP_OUTSIDE);
     }
 }
-void Button::onTouchCancelled(Touch *touch, Event *event)
+void ButtonControl::onTouchCancelled(Touch *touch, Event *event)
 {
     setHighlighted(false);
     sendActionsForControlEvents(Control::EventType::TOUCH_CANCEL);
 }
 
-void Button::setEnabled(bool enabled)
+void ButtonControl::setEnabled(bool enabled)
 {
     Control::setEnabled(enabled);
     stateChanged();
 }
 
-void Button::setSelected(bool enabled)
+void ButtonControl::setSelected(bool enabled)
 {
     Control::setSelected(enabled);
     stateChanged();
 }
 
-void Button::setHighlighted(bool enabled)
+void ButtonControl::setHighlighted(bool enabled)
 {
     Control::setHighlighted(enabled);
     stateChanged();
 }
 
-void Button::visit(Renderer *renderer, const Mat4 &parentTransform, bool parentTransformUpdated)
+void ButtonControl::visit(Renderer *renderer, const Mat4 &parentTransform, bool parentTransformUpdated)
 {
     if (!_visible)
         return;
@@ -183,16 +183,16 @@ void Button::visit(Renderer *renderer, const Mat4 &parentTransform, bool parentT
     Control::visit(renderer, parentTransform, parentTransformUpdated);
 }
 
-const Size& Button::getContentSize() const
+const Size& ButtonControl::getContentSize() const
 {
     if (_needLaout)
     {
-        const_cast<Button*>(this)->layout();
+        const_cast<ButtonControl*>(this)->layout();
     }
     return Node::getContentSize();
 }
 
-void Button::updatePropertiesForState(Control::State state)
+void ButtonControl::updatePropertiesForState(Control::State state)
 {
     // Update background
     _background->setColor(getBackgroundColorForState(state));
@@ -215,7 +215,7 @@ void Button::updatePropertiesForState(Control::State state)
     needsLayout();
 }
 
-void Button::stateChanged()
+void ButtonControl::stateChanged()
 {
     if (isEnabled())
     {
@@ -260,13 +260,13 @@ void Button::stateChanged()
     }
 }
 
-void Button::needsLayout()
+void ButtonControl::needsLayout()
 {
     _needLaout = true;
     Control::needsLayout();
 }
 
-void Button::layout()
+void ButtonControl::layout()
 {
     _label->setDimensions(0,0);
     Size originalLabelSize = _label->getContentSize();
@@ -313,127 +313,127 @@ void Button::layout()
     _needLaout = false;
 }
 
-void Button::setPreferredSize(const Size& value)
+void ButtonControl::setPreferredSize(const Size& value)
 {
     _preferredSize = value;
     needsLayout();
 }
 
-const Size& Button::getPreferredSize() const
+const Size& ButtonControl::getPreferredSize() const
 {
     return _preferredSize;
 }
 
-void Button::setMaxSize(const Size& value)
+void ButtonControl::setMaxSize(const Size& value)
 {
     _maxSize = value;
     needsLayout();
 }
 
-const Size& Button::getMaxSize() const
+const Size& ButtonControl::getMaxSize() const
 {
     return _maxSize;
 }
 
-Scale9Sprite* Button::getBackground() const
+Scale9Sprite* ButtonControl::getBackground() const
 {
     return _background;
 }
-Label* Button::getLabel() const
+Label* ButtonControl::getLabel() const
 {
     return _label;
 }
 
-void Button::setZoomWhenHighlighted(bool value)
+void ButtonControl::setZoomWhenHighlighted(bool value)
 {
     _zoomWhenHighlighted = value;
 }
-const bool Button::getZoomWhenHighlighted() const
+const bool ButtonControl::getZoomWhenHighlighted() const
 {
     return _zoomWhenHighlighted;
 }
 
-void Button::setHorizontalPadding(float value)
+void ButtonControl::setHorizontalPadding(float value)
 {
     _horizontalPadding = value;
     needsLayout();
 }
-const float Button::getHorizontalPadding() const
+const float ButtonControl::getHorizontalPadding() const
 {
     return _horizontalPadding;
 }
 
-void Button::setVerticalPadding(float value)
+void ButtonControl::setVerticalPadding(float value)
 {
     _verticalPadding = value;
     needsLayout();
 }
 
-const float Button::getVerticalPadding() const
+const float ButtonControl::getVerticalPadding() const
 {
     return _verticalPadding;
 }
 
-void Button::setTogglesSelectedState(bool value)
+void ButtonControl::setTogglesSelectedState(bool value)
 {
     _togglesSelectedState = true;
 }
 
-const bool Button::getTogglesSelectedState() const
+const bool ButtonControl::getTogglesSelectedState() const
 {
     return _togglesSelectedState;
 }
 
-void Button::setTitle(const std::string& value)
+void ButtonControl::setTitle(const std::string& value)
 {
     _title = value;
     _label->setString(value);
     needsLayout();
 }
-const std::string& Button::getTitle() const
+const std::string& ButtonControl::getTitle() const
 {
     return _title;
 }
 
-void Button::setFontName(const std::string& value)
+void ButtonControl::setFontName(const std::string& value)
 {
     _label->setSystemFontName(value);
     needsLayout();
 }
 
-const std::string& Button::getFontName() const
+const std::string& ButtonControl::getFontName() const
 {
     return _label->getSystemFontName();
 }
 
-void Button::setFontSize(float value)
+void ButtonControl::setFontSize(float value)
 {
     _label->setSystemFontSize(value);
     needsLayout();
 }
-const float Button::getFontSize() const
+const float ButtonControl::getFontSize() const
 {
     return _label->getSystemFontSize();
 }
 
-void Button::setCapInsets(const Rect& value)
+void ButtonControl::setCapInsets(const Rect& value)
 {
     _margin = value;
     stateChanged();
 }
 
-const Rect& Button::getCapInsets() const
+const Rect& ButtonControl::getCapInsets() const
 {
     return _margin;
 }
 
-void Button::setBackgroundColor(const Color3B& color, Control::State state)
+void ButtonControl::setBackgroundColor(const Color3B& color, Control::State state)
 {
     _backgroundColors[state] = color;
     stateChanged();
 }
 
-const Color3B& Button::getBackgroundColorForState(Control::State state) const
+const Color3B& ButtonControl::getBackgroundColorForState(Control::State state) const
 {
     auto it = _backgroundColors.find(state);
     if(it != _backgroundColors.end())
@@ -442,13 +442,13 @@ const Color3B& Button::getBackgroundColorForState(Control::State state) const
         return Color3B::WHITE;
 }
 
-void Button::setBackgroundOpacity(GLubyte opacity, Control::State state)
+void ButtonControl::setBackgroundOpacity(GLubyte opacity, Control::State state)
 {
     _backgroundOpacities[state] = opacity;
     stateChanged();
 }
 
-GLubyte Button::getBackgroundOpacityForState(Control::State state) const
+GLubyte ButtonControl::getBackgroundOpacityForState(Control::State state) const
 {
     auto it = _backgroundOpacities.find(state);
     if(it != _backgroundOpacities.end())
@@ -458,14 +458,14 @@ GLubyte Button::getBackgroundOpacityForState(Control::State state) const
 }
 
 
-void Button::setLabelColor(const Color3B& color, Control::State state)
+void ButtonControl::setLabelColor(const Color3B& color, Control::State state)
 {
     _labelColors[state] = color;
     stateChanged();
 }
 
 
-const Color3B& Button::getLabelColorForState(Control::State state) const
+const Color3B& ButtonControl::getLabelColorForState(Control::State state) const
 {
     auto it = _labelColors.find(state);
     if(it != _labelColors.end())
@@ -475,14 +475,14 @@ const Color3B& Button::getLabelColorForState(Control::State state) const
 }
 
 
-void Button::setLabelOpacity(GLubyte opacity, Control::State state)
+void ButtonControl::setLabelOpacity(GLubyte opacity, Control::State state)
 {
     _labelOpacities[state] = opacity;
     stateChanged();
 }
 
 
-GLubyte Button::getLabelOpacityForState(Control::State state) const
+GLubyte ButtonControl::getLabelOpacityForState(Control::State state) const
 {
     auto it = _labelOpacities.find(state);
     if(it != _labelOpacities.end())
@@ -492,7 +492,7 @@ GLubyte Button::getLabelOpacityForState(Control::State state) const
 }
 
 
-void Button::setBackgroundSpriteFrame(SpriteFrame* spriteFrame, Control::State state)
+void ButtonControl::setBackgroundSpriteFrame(SpriteFrame* spriteFrame, Control::State state)
 {
     auto it=_backgroundSpriteFrames.find(static_cast<int>(state));
     if(it!=_backgroundSpriteFrames.end())
@@ -502,7 +502,7 @@ void Button::setBackgroundSpriteFrame(SpriteFrame* spriteFrame, Control::State s
 }
 
 
-SpriteFrame* Button::getBackgroundSpriteFrameForState(Control::State state) const
+SpriteFrame* ButtonControl::getBackgroundSpriteFrameForState(Control::State state) const
 {
     auto it=_backgroundSpriteFrames.find(static_cast<int>(state));
     if(it!=_backgroundSpriteFrames.end())
@@ -511,7 +511,7 @@ SpriteFrame* Button::getBackgroundSpriteFrameForState(Control::State state) cons
         return nullptr;
 }
 
-void Button::setCallback(const ccButtonCallback& callback)
+void ButtonControl::setCallback(const ccButtonCallback& callback)
 {
     _callBack = callback;
 }
