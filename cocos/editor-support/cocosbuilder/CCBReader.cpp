@@ -244,8 +244,7 @@ Node* CCBReader::readNodeGraphFromData(const cocos2d::Data &data, Ref *pOwner, c
     {
         CCBReaderParams::getInstance();
         CCBReader::setMainScale(1.0);
-        CCBReader::setResolutionScaleY(1.0);
-        CCBReader::setResolutionScaleX(1.0);
+        CCBReader::setAdditionalScale(1.0);
     }
     else
     {
@@ -257,32 +256,46 @@ Node* CCBReader::readNodeGraphFromData(const cocos2d::Data &data, Ref *pOwner, c
         
         if(scaleType == SceneScaleType::MINSCALE)
         {
-            float mainScale = std::min(resolutionAspectX / designAspectX, resolutionAspectY / designAspectY);
-            CCBReader::setMainScale(mainScale);
-            CCBReader::setResolutionScaleX((resolutionAspectX/mainScale)/designAspectX);
-            CCBReader::setResolutionScaleY((resolutionAspectY/mainScale)/designAspectY);
+            float mainScale1 = resolutionAspectX / designAspectX;
+            float mainScale2 = resolutionAspectY / designAspectY;
+            if(mainScale1<mainScale2)
+            {
+                CCBReader::setMainScale(mainScale1);
+                CCBReader::setAdditionalScale((resolutionAspectX/mainScale1)/designAspectX);
+            }
+            else
+            {
+                CCBReader::setMainScale(mainScale2);
+                CCBReader::setAdditionalScale((resolutionAspectY/mainScale2)/designAspectY);
+            }
         }
         else if(scaleType == SceneScaleType::MAXSCALE)
         {
-            float mainScale = std::max(resolutionAspectX / designAspectX, resolutionAspectY / designAspectY);
-            CCBReader::setMainScale(mainScale);
-            CCBReader::setResolutionScaleX((resolutionAspectX/mainScale)/designAspectX);
-            CCBReader::setResolutionScaleY((resolutionAspectY/mainScale)/designAspectY);
+            float mainScale1 = resolutionAspectX / designAspectX;
+            float mainScale2 = resolutionAspectY / designAspectY;
+            if(mainScale1>mainScale2)
+            {
+                CCBReader::setMainScale(mainScale1);
+                CCBReader::setAdditionalScale((resolutionAspectX/mainScale1)/designAspectX);
+            }
+            else
+            {
+                CCBReader::setMainScale(mainScale2);
+                CCBReader::setAdditionalScale((resolutionAspectY/mainScale2)/designAspectY);
+            }
         }
 
         else if((CCBReaderParams::getInstance()->getDesignResolution().width>CCBReaderParams::getInstance()->getDesignResolution().height)==(scaleType == SceneScaleType::MINSIZE))
         {
             float mainScale = resolutionAspectY / designAspectY;
             CCBReader::setMainScale(mainScale);
-            CCBReader::setResolutionScaleY(1.0);
-            CCBReader::setResolutionScaleX((resolutionAspectX/mainScale)/designAspectX);
+            CCBReader::setAdditionalScale((resolutionAspectX/mainScale)/designAspectX);
         }
         else
         {
             float mainScale = resolutionAspectX / designAspectX;
             CCBReader::setMainScale(mainScale);
-            CCBReader::setResolutionScaleX(1.0);
-            CCBReader::setResolutionScaleY((resolutionAspectY/mainScale)/designAspectY);
+            CCBReader::setAdditionalScale((resolutionAspectY/mainScale)/designAspectY);
         }
     }
 
@@ -1461,28 +1474,16 @@ void CCBReader::setResolutionScale(float scale)
     __ccbResolutionScale = scale;
 }
 
-static float __ccbResolutionScaleX = 1.0f;
+static float __ccbAdditionalScale = 1.0f;
 
-float CCBReader::getResolutionScaleX()
+float CCBReader::getAdditionalScale()
 {
-    return __ccbResolutionScaleX;
+    return __ccbAdditionalScale;
 }
 
-void CCBReader::setResolutionScaleX(float scale)
+void CCBReader::setAdditionalScale(float scale)
 {
-    __ccbResolutionScaleX = scale;
-}
-
-static float __ccbResolutionScaleY = 1.0f;
-
-float CCBReader::getResolutionScaleY()
-{
-    return __ccbResolutionScaleY;
-}
-
-void CCBReader::setResolutionScaleY(float scale)
-{
-    __ccbResolutionScaleY = scale;
+    __ccbAdditionalScale = scale;
 }
 
 };

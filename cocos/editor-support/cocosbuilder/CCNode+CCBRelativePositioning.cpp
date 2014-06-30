@@ -65,10 +65,14 @@ cocos2d::Size getRelativeScale(float scaleX, float scaleY, unsigned int type, co
         scaleYCoef *= CCBReader::getMainScale();
     }
     
-    if (type & static_cast<int>(CCBReader::ScaleType::MULTIPLY_ADDITION_SCALE))
+    if (type & static_cast<int>(CCBReader::ScaleType::MULTIPLY_ADDITION_SCALE_X))
     {
-        scaleXCoef *= CCBReader::getResolutionScaleX();
-        scaleYCoef *= CCBReader::getResolutionScaleY();
+        scaleXCoef *= CCBReader::getAdditionalScale();
+    }
+    
+    if (type & static_cast<int>(CCBReader::ScaleType::MULTIPLY_ADDITION_SCALE_Y))
+    {
+        scaleYCoef *= CCBReader::getAdditionalScale();
     }
         
     if (type & static_cast<int>(CCBReader::ScaleType::INVERT_SCALE))

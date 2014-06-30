@@ -204,8 +204,9 @@ public:
         ABSOLUTE = 0,
         MULTIPLY_RESOURCES_SCALE = 1,
         MULTIPLY_MAIN_SCALE = 2,
-        MULTIPLY_ADDITION_SCALE = 4,
-        INVERT_SCALE = 8,
+        MULTIPLY_ADDITION_SCALE_X = 4,
+        MULTIPLY_ADDITION_SCALE_Y = 8,
+        INVERT_SCALE = 16,
     };
     
     enum class SceneScaleType
@@ -416,14 +417,8 @@ public:
      * @js NA
      * @lua NA
      */
-    static float getResolutionScaleX();
-    static void setResolutionScaleX(float scale);
-    /**
-     * @js NA
-     * @lua NA
-     */
-    static float getResolutionScaleY();
-    static void setResolutionScaleY(float scale);
+    static float getAdditionalScale();
+    static void setAdditionalScale(float scale);
     /**
      * @js NA
      * @lua NA
