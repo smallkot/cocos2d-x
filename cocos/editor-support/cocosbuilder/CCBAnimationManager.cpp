@@ -813,7 +813,16 @@ void CCBAnimationManager::runAnimationsForSequenceIdTweenDuration(int nSeqId, fl
 {
     CCASSERT(nSeqId != -1, "Sequence id couldn't be found");
     
-    _rootNode->stopActionByTag(animationTag);
+    std::function<void(Node*)> removeActionsFunc = nullptr;
+    removeActionsFunc = [&removeActionsFunc](Node* node) -> void
+    {
+        node->stopActionByTag(animationTag);
+        for(auto child:node->getChildren())
+        {
+            removeActionsFunc(child);
+        }
+    };
+    removeActionsFunc(_rootNode);
     
     for (auto nodeSeqIter = _nodeSequences.begin(); nodeSeqIter != _nodeSequences.end(); ++nodeSeqIter)
     {
@@ -880,7 +889,7 @@ void CCBAnimationManager::runAnimationsForSequenceIdTweenDuration(int nSeqId, fl
     if(seq->getCallbackChannel() != nullptr) {
         Action* action = (Action *)actionForCallbackChannel(seq->getCallbackChannel());
         if(action != nullptr) {
-            _rootNode->setTag(animationTag);
+            action->setTag(animationTag);
             _rootNode->runAction(action);
         }
     } 
@@ -888,7 +897,7 @@ void CCBAnimationManager::runAnimationsForSequenceIdTweenDuration(int nSeqId, fl
     if(seq->getSoundChannel() != nullptr) {
         Action* action = (Action *)actionForSoundChannel(seq->getSoundChannel());
         if(action != nullptr) {
-            _rootNode->setTag(animationTag);
+            action->setTag(animationTag);
             _rootNode->runAction(action);
         }
     }
