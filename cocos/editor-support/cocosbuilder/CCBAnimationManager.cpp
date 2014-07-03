@@ -813,16 +813,10 @@ void CCBAnimationManager::runAnimationsForSequenceIdTweenDuration(int nSeqId, fl
 {
     CCASSERT(nSeqId != -1, "Sequence id couldn't be found");
     
-    std::function<void(Node*)> removeActionsFunc = nullptr;
-    removeActionsFunc = [&removeActionsFunc](Node* node) -> void
+    for(const auto &it : _nodeSequences)
     {
-        node->stopActionByTag(animationTag);
-        for(auto child:node->getChildren())
-        {
-            removeActionsFunc(child);
-        }
-    };
-    removeActionsFunc(_rootNode);
+        it.first->stopActionByTag(animationTag);
+    }
     
     for (auto nodeSeqIter = _nodeSequences.begin(); nodeSeqIter != _nodeSequences.end(); ++nodeSeqIter)
     {
