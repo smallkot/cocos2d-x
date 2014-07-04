@@ -411,14 +411,14 @@ public:
      * @js NA
      * @lua NA
      */
-    static float getMainScale();
-    static void setMainScale(float scale);
+    float getMainScale();
+    void setMainScale(float scale);
     /**
      * @js NA
      * @lua NA
      */
-    static float getAdditionalScale();
-    static void setAdditionalScale(float scale);
+    float getAdditionalScale();
+    void setAdditionalScale(float scale);
     /**
      * @js NA
      * @lua NA
@@ -482,6 +482,8 @@ private:
     
     bool _jsControlled;
     bool _ccbx;
+    float _ccbMainScale;
+    float _ccbAdditionalScale;
 };
 
 // end of effects group

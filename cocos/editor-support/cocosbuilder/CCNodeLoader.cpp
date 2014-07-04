@@ -412,7 +412,7 @@ Vec2 NodeLoader::parsePropTypePosition(Node * pNode, Node * pParent, CCBReader *
         yUnit = static_cast<CCBReader::PositionUnit>(ccbReader->readByte());
     }
     
-    Point pos = getAbsolutePosition(pt, corner, xUnit, yUnit, containerSize, pPropertyName);
+    Point pos = getAbsolutePosition(ccbReader->getMainScale(), ccbReader->getAdditionalScale(),pt, corner, xUnit, yUnit, containerSize, pPropertyName);
     
     if (ccbReader->getAnimatedProperties()->find(pPropertyName) != ccbReader->getAnimatedProperties()->end())
     {
@@ -484,8 +484,8 @@ Size NodeLoader::parsePropTypeSize(Node * pNode, Node * pParent, CCBReader * ccb
             }
             case CCBReader::SizeType::MULTIPLY_RESOLUTION:
             {
-                width *= CCBReader::getResolutionScale();
-                height *= CCBReader::getResolutionScale();
+                width *= ccbReader->getResolutionScale();
+                height *= ccbReader->getResolutionScale();
                 break;
             }
             default:
@@ -499,7 +499,7 @@ Size NodeLoader::parsePropTypeSize(Node * pNode, Node * pParent, CCBReader * ccb
     {
         CCBReader::SizeUnit xUnit = static_cast<CCBReader::SizeUnit>(ccbReader->readByte());
         CCBReader::SizeUnit yUnit = static_cast<CCBReader::SizeUnit>(ccbReader->readByte());
-        return getAbsoluteSize(Size(width, height), xUnit, yUnit, containerSize);
+        return getAbsoluteSize(ccbReader->getMainScale(), ccbReader->getAdditionalScale(), Size(width, height), xUnit, yUnit, containerSize);
     }
     
     return Size(width, height);
@@ -525,7 +525,7 @@ Size NodeLoader::parsePropTypeScaleLock(Node * pNode, Node * pParent, CCBReader 
     else
         type = ccbReader->readInt(false);
     
-    Size realScale = getRelativeScale(x, y, type, pPropertyName);
+    Size realScale = getRelativeScale(ccbReader->getMainScale(), ccbReader->getAdditionalScale(),  x, y, type, pPropertyName);
     pNode->setScale(realScale.width,realScale.height);
     
     if (ccbReader->getAnimatedProperties()->find(pPropertyName) != ccbReader->getAnimatedProperties()->end())

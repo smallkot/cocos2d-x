@@ -68,6 +68,8 @@ CCBReader::CCBReader(NodeLoaderLibrary * pNodeLoaderLibrary, CCBMemberVariableAs
 , _animationManager(nullptr)
 , _animatedProps(nullptr)
 , _ccbx(false)
+, _ccbMainScale(1.0f)
+, _ccbAdditionalScale(1.0f)
 {
     this->_nodeLoaderLibrary = pNodeLoaderLibrary;
     this->_nodeLoaderLibrary->retain();
@@ -84,7 +86,11 @@ CCBReader::CCBReader(CCBReader * ccbReader)
 , _owner(nullptr)
 , _animationManager(nullptr)
 , _animatedProps(nullptr)
+, _ccbMainScale(1.0f)
+, _ccbAdditionalScale(1.0f)
 {
+    this->_ccbMainScale = ccbReader->_ccbMainScale;
+    this->_ccbAdditionalScale = ccbReader->_ccbAdditionalScale;
     this->_loadedSpriteSheets = ccbReader->_loadedSpriteSheets;
     this->_nodeLoaderLibrary = ccbReader->_nodeLoaderLibrary;
     this->_nodeLoaderLibrary->retain();
@@ -143,7 +149,7 @@ const std::string& CCBReader::getCCBRootPath() const
 bool CCBReader::init()
 {
     // Setup action manager
-    CCBAnimationManager *pActionManager = new CCBAnimationManager();
+    CCBAnimationManager *pActionManager = new CCBAnimationManager(_ccbMainScale, _ccbAdditionalScale);
     setAnimationManager(pActionManager);
     pActionManager->release();
     
@@ -243,8 +249,8 @@ Node* CCBReader::readNodeGraphFromData(const cocos2d::Data &data, Ref *pOwner, c
     if(scaleType == SceneScaleType::NONE)
     {
         CCBReaderParams::getInstance();
-        CCBReader::setMainScale(1.0);
-        CCBReader::setAdditionalScale(1.0);
+        setMainScale(1.0);
+        setAdditionalScale(1.0);
     }
     else
     {
@@ -260,13 +266,13 @@ Node* CCBReader::readNodeGraphFromData(const cocos2d::Data &data, Ref *pOwner, c
             float mainScale2 = resolutionAspectY / designAspectY;
             if(mainScale1<mainScale2)
             {
-                CCBReader::setMainScale(mainScale1);
-                CCBReader::setAdditionalScale((resolutionAspectX/mainScale1)/designAspectX);
+                setMainScale(mainScale1);
+                setAdditionalScale((resolutionAspectX/mainScale1)/designAspectX);
             }
             else
             {
-                CCBReader::setMainScale(mainScale2);
-                CCBReader::setAdditionalScale((resolutionAspectY/mainScale2)/designAspectY);
+                setMainScale(mainScale2);
+                setAdditionalScale((resolutionAspectY/mainScale2)/designAspectY);
             }
         }
         else if(scaleType == SceneScaleType::MAXSCALE)
@@ -275,27 +281,27 @@ Node* CCBReader::readNodeGraphFromData(const cocos2d::Data &data, Ref *pOwner, c
             float mainScale2 = resolutionAspectY / designAspectY;
             if(mainScale1>mainScale2)
             {
-                CCBReader::setMainScale(mainScale1);
-                CCBReader::setAdditionalScale((resolutionAspectX/mainScale1)/designAspectX);
+                setMainScale(mainScale1);
+                setAdditionalScale((resolutionAspectX/mainScale1)/designAspectX);
             }
             else
             {
-                CCBReader::setMainScale(mainScale2);
-                CCBReader::setAdditionalScale((resolutionAspectY/mainScale2)/designAspectY);
+                setMainScale(mainScale2);
+                setAdditionalScale((resolutionAspectY/mainScale2)/designAspectY);
             }
         }
 
         else if((CCBReaderParams::getInstance()->getDesignResolution().width>CCBReaderParams::getInstance()->getDesignResolution().height)==(scaleType == SceneScaleType::MINSIZE))
         {
             float mainScale = resolutionAspectY / designAspectY;
-            CCBReader::setMainScale(mainScale);
-            CCBReader::setAdditionalScale((resolutionAspectX/mainScale)/designAspectX);
+            setMainScale(mainScale);
+            setAdditionalScale((resolutionAspectX/mainScale)/designAspectX);
         }
         else
         {
             float mainScale = resolutionAspectX / designAspectX;
-            CCBReader::setMainScale(mainScale);
-            CCBReader::setAdditionalScale((resolutionAspectY/mainScale)/designAspectY);
+            setMainScale(mainScale);
+            setAdditionalScale((resolutionAspectY/mainScale)/designAspectY);
         }
     }
 
@@ -1450,16 +1456,15 @@ void CCBReader::addOwnerOutletNode(Node *node)
  Static functions
  ************************************************************************/
 
-static float __ccbMainScale = 1.0f;
-
 float CCBReader::getMainScale()
 {
-    return __ccbMainScale;
+    return _ccbMainScale;
 }
 
 void CCBReader::setMainScale(float scale)
 {
-    __ccbMainScale = scale;
+    _animationManager->setMainScale(scale);
+    _ccbMainScale = scale;
 }
     
 static float __ccbResolutionScale = 1.0f;
@@ -1474,16 +1479,15 @@ void CCBReader::setResolutionScale(float scale)
     __ccbResolutionScale = scale;
 }
 
-static float __ccbAdditionalScale = 1.0f;
-
 float CCBReader::getAdditionalScale()
 {
-    return __ccbAdditionalScale;
+    return _ccbAdditionalScale;
 }
 
 void CCBReader::setAdditionalScale(float scale)
 {
-    __ccbAdditionalScale = scale;
+    _animationManager->setAdditionalScale(scale);
+    _ccbAdditionalScale = scale;
 }
 
 };

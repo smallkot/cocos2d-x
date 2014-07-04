@@ -27,7 +27,7 @@ public:
     /**
      * @js ctor
      */
-    CCBAnimationManager();
+    CCBAnimationManager(float mainScale, float additionalScale);
     /**
      * @js NA
      * @lua NA
@@ -117,6 +117,12 @@ public:
     // get timeline duration
     float getSequenceDuration(const char* pSequenceName);
     
+    float getMainScale();
+    void setMainScale(float scale);
+    
+    float getAdditionalScale();
+    void setAdditionalScale(float scale);
+    
 private:
     const cocos2d::Value& getBaseValue(cocos2d::Node *pNode, const std::string& propName);
     Ref* getObject(cocos2d::Node *pNode, const std::string& propName);
@@ -157,6 +163,8 @@ private:
     
     cocos2d::SEL_CallFunc _animationCompleteCallbackFunc;
     cocos2d::Ref *_target;
+    float _mainScale;
+    float _additionalScale;
     
 };
 

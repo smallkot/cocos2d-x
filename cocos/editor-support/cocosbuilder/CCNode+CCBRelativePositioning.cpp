@@ -47,7 +47,7 @@ void convertPosition(CCBReader::PositionType type, Point &pt, CCBReader::Positio
     }
 }
 
-cocos2d::Size getRelativeScale(float scaleX, float scaleY, unsigned int type, const std::string& propName)
+cocos2d::Size getRelativeScale(float mainScale, float additionalScale, float scaleX, float scaleY, unsigned int type, const std::string& propName)
 {
     
     float scaleXCoef = 1.0;
@@ -61,18 +61,18 @@ cocos2d::Size getRelativeScale(float scaleX, float scaleY, unsigned int type, co
     
     if (type & static_cast<int>(CCBReader::ScaleType::MULTIPLY_MAIN_SCALE))
     {
-        scaleXCoef *= CCBReader::getMainScale();
-        scaleYCoef *= CCBReader::getMainScale();
+        scaleXCoef *= mainScale;
+        scaleYCoef *= mainScale;
     }
     
     if (type & static_cast<int>(CCBReader::ScaleType::MULTIPLY_ADDITION_SCALE_X))
     {
-        scaleXCoef *= CCBReader::getAdditionalScale();
+        scaleXCoef *= additionalScale;
     }
     
     if (type & static_cast<int>(CCBReader::ScaleType::MULTIPLY_ADDITION_SCALE_Y))
     {
-        scaleYCoef *= CCBReader::getAdditionalScale();
+        scaleYCoef *= additionalScale;
     }
         
     if (type & static_cast<int>(CCBReader::ScaleType::INVERT_SCALE))
@@ -84,7 +84,7 @@ cocos2d::Size getRelativeScale(float scaleX, float scaleY, unsigned int type, co
     return Size(scaleX*scaleXCoef,scaleY*scaleYCoef);
 }
 
-Point getAbsolutePosition(const Point &pt, CCBReader::PositionReferenceCorner corner, CCBReader::PositionUnit xUnit, CCBReader::PositionUnit yUnit, const Size &containerSize, const char *pPropName)
+Point getAbsolutePosition(float mainScale, float additionalScale, const Point &pt, CCBReader::PositionReferenceCorner corner, CCBReader::PositionUnit xUnit, CCBReader::PositionUnit yUnit, const Size &containerSize, const char *pPropName)
 {
     Point positionInPoints=Point(0,0);
     float x = 0;
@@ -92,11 +92,11 @@ Point getAbsolutePosition(const Point &pt, CCBReader::PositionReferenceCorner co
     
     // Convert position to points
     if (xUnit == CCBReader::PositionUnit::POINTS) x = pt.x;
-    else if (xUnit == CCBReader::PositionUnit::UIPOINTS) x = pt.x * CCBReader::getResolutionScale() * CCBReader::getMainScale();
+    else if (xUnit == CCBReader::PositionUnit::UIPOINTS) x = pt.x * CCBReader::getResolutionScale() * mainScale;
     else if (xUnit == CCBReader::PositionUnit::NORMALIZED) x = pt.x * containerSize.width;
     
     if (yUnit == CCBReader::PositionUnit::POINTS) y = pt.y;
-    else if (yUnit == CCBReader::PositionUnit::UIPOINTS) y = pt.y * CCBReader::getResolutionScale() * CCBReader::getMainScale();
+    else if (yUnit == CCBReader::PositionUnit::UIPOINTS) y = pt.y * CCBReader::getResolutionScale() * mainScale;
     else if (yUnit == CCBReader::PositionUnit::NORMALIZED) y = pt.y * containerSize.height;
     
     // Account for reference corner
@@ -128,7 +128,7 @@ Point getAbsolutePosition(const Point &pt, CCBReader::PositionReferenceCorner co
     return positionInPoints;
 }
 
-Size getAbsoluteSize(const Size &contentSize, CCBReader::SizeUnit widthUnit, CCBReader::SizeUnit heightUnit, const Size &containerSize)
+Size getAbsoluteSize(float mainScale, float additionalScale, const Size &contentSize, CCBReader::SizeUnit widthUnit, CCBReader::SizeUnit heightUnit, const Size &containerSize)
 {
     Size size = Size::ZERO;
     
@@ -139,7 +139,7 @@ Size getAbsoluteSize(const Size &contentSize, CCBReader::SizeUnit widthUnit, CCB
     }
     else if (widthUnit == CCBReader::SizeUnit::UIPOINTS)
     {
-        size.width = CCBReader::getResolutionScale() * CCBReader::getMainScale() * contentSize.width;
+        size.width = CCBReader::getResolutionScale() * mainScale * contentSize.width;
     }
     else if (widthUnit == CCBReader::SizeUnit::NORMALIZED)
     {
@@ -151,7 +151,7 @@ Size getAbsoluteSize(const Size &contentSize, CCBReader::SizeUnit widthUnit, CCB
     }
     else if (widthUnit == CCBReader::SizeUnit::INSETUIPOINTS)
     {
-        size.width = containerSize.width - contentSize.width * CCBReader::getResolutionScale() * CCBReader::getMainScale();
+        size.width = containerSize.width - contentSize.width * CCBReader::getResolutionScale() * mainScale;
     }
         
     // Height
@@ -161,7 +161,7 @@ Size getAbsoluteSize(const Size &contentSize, CCBReader::SizeUnit widthUnit, CCB
     }
     else if (heightUnit == CCBReader::SizeUnit::UIPOINTS)
     {
-        size.height = CCBReader::getResolutionScale() * CCBReader::getMainScale() * contentSize.height;
+        size.height = CCBReader::getResolutionScale() * mainScale * contentSize.height;
     }
     else if (heightUnit == CCBReader::SizeUnit::NORMALIZED)
     {
@@ -173,7 +173,7 @@ Size getAbsoluteSize(const Size &contentSize, CCBReader::SizeUnit widthUnit, CCB
     }
     else if (heightUnit == CCBReader::SizeUnit::INSETUIPOINTS)
     {
-        size.height = containerSize.height - contentSize.height * CCBReader::getResolutionScale() * CCBReader::getMainScale();
+        size.height = containerSize.height - contentSize.height * CCBReader::getResolutionScale() * mainScale;
     }
     
     return size;

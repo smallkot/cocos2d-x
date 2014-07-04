@@ -21,7 +21,7 @@ namespace cocosbuilder {
 
 static int animationTag = 'ccbi';
 
-CCBAnimationManager::CCBAnimationManager()
+CCBAnimationManager::CCBAnimationManager(float mainScale, float additionalScale)
 : _jsControlled(false)
 , _owner(nullptr)
 , _autoPlaySequenceId(0)
@@ -29,6 +29,8 @@ CCBAnimationManager::CCBAnimationManager()
 , _rootContainerSize(Size::ZERO)
 , _delegate(nullptr)
 , _runningSequence(nullptr)
+, _mainScale(mainScale)
+, _additionalScale(additionalScale)
 {
     init();
 }
@@ -291,6 +293,26 @@ float CCBAnimationManager::getSequenceDuration(const char *pSequenceName)
         return getSequence(id)->getDuration();
     return 0;
 }
+    
+float CCBAnimationManager::getMainScale()
+{
+    return _mainScale;
+}
+    
+void CCBAnimationManager::setMainScale(float scale)
+{
+    _mainScale = scale;
+}
+    
+float CCBAnimationManager::getAdditionalScale()
+{
+    return _additionalScale;
+}
+    
+void CCBAnimationManager::setAdditionalScale(float scale)
+{
+    _additionalScale = scale;
+}
 
 
 void CCBAnimationManager::moveAnimationsFromNode(Node* fromNode, Node* toNode)
@@ -387,7 +409,7 @@ ActionInterval* CCBAnimationManager::getAction(CCBKeyframe *pKeyframe0, CCBKeyfr
         
         Size containerSize = getContainerSize(pNode->getParent());
         
-        Vec2 absPos = getAbsolutePosition(Vec2(x,y), corner, xUnit, yUnit, containerSize, propName.c_str());
+        Vec2 absPos = getAbsolutePosition(_mainScale, _additionalScale, Vec2(x,y), corner, xUnit, yUnit, containerSize, propName.c_str());
         
         return MoveTo::create(duration, absPos);
     }
@@ -400,7 +422,7 @@ ActionInterval* CCBAnimationManager::getAction(CCBKeyframe *pKeyframe0, CCBKeyfr
         // Get relative scale
         auto value = pKeyframe1->getValue().asValueVector();
         
-        Size newScale = getRelativeScale(value[0].asFloat(), value[1].asFloat(), type, propName);
+        Size newScale = getRelativeScale(_mainScale, _additionalScale, value[0].asFloat(), value[1].asFloat(), type, propName);
         
         return ScaleTo::create(duration, newScale.width, newScale.height);
     }
@@ -456,7 +478,7 @@ void CCBAnimationManager::setAnimatedProperty(const std::string& propName, Node 
             float x = valueVector[0].asFloat();
             float y = valueVector[1].asFloat();
             
-            pNode->setPosition(getAbsolutePosition(Vec2(x,y), corner, xUnit, yUnit, getContainerSize(pNode->getParent()), propName.c_str()));
+            pNode->setPosition(getAbsolutePosition(_mainScale, _additionalScale, Vec2(x,y), corner, xUnit, yUnit, getContainerSize(pNode->getParent()), propName.c_str()));
         }
         else if (propName == "scale")
         {
@@ -469,7 +491,7 @@ void CCBAnimationManager::setAnimatedProperty(const std::string& propName, Node 
             float x = valueVector[0].asFloat();
             float y = valueVector[1].asFloat();
             
-            Size realScale = getRelativeScale(x, y, type, propName);
+            Size realScale = getRelativeScale(_mainScale, _additionalScale, x, y, type, propName);
             pNode->setScale(realScale.width,realScale.height);
         }
         else if(propName == "skew")
