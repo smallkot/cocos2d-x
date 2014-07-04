@@ -104,8 +104,9 @@ void ProgressTimerLoader::onHandlePropTypeFloat(Node *pNode, Node *pParent, cons
 {
     if (strcmp(pPropertyName, PROPERTY_PERCENTAGE) == 0) {
         _percentage = pFloat;
-    }
-    else {
+    } else if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
+        ((ProgressTimer *)pNode)->setOpacity(static_cast<GLubyte>(pFloat*255.0));
+    } else {
         NodeLoader::onHandlePropTypeFloat(pNode, pParent, pPropertyName, pFloat, pCCBReader);
     }
 }
