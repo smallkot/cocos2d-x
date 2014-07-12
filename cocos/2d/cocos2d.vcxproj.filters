@@ -568,6 +568,12 @@
     <ClCompile Include="..\3d\CCSprite3DDataCache.cpp">
       <Filter>3d</Filter>
     </ClCompile>
+    <ClCompile Include="CCLayoutBox.cpp">
+      <Filter>2d</Filter>
+    </ClCompile>
+    <ClCompile Include="CCLayoutNode.cpp">
+      <Filter>2d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\physics\CCPhysicsBody.h">
@@ -1149,6 +1155,12 @@
     </ClInclude>
     <ClInclude Include="..\3d\CCSprite3DDataCache.h">
       <Filter>3d</Filter>
+    </ClInclude>
+    <ClInclude Include="CCLayoutBox.h">
+      <Filter>2d</Filter>
+    </ClInclude>
+    <ClInclude Include="CCLayoutNode.h">
+      <Filter>2d</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 #define _CCB_CCPROGRESSTIMERLOADER_H_
 
 #include "CCNodeLoader.h"
-#include "CCProgressTimer.h"
+#include "2d/CCProgressTimer.h"
 
 namespace cocosbuilder {
     

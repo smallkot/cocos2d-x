@@ -2,7 +2,7 @@
 #define _CCB_CCPHYSICSNODELOADER_H_
 
 #include "CCNodeLoader.h"
-#include "CCPhysicsNode.h"
+#include "2d/CCPhysicsNode.h"
 
 namespace cocosbuilder {
 

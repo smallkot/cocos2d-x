@@ -218,7 +218,7 @@ void ButtonLoader::onHandlePropTypeBlock(cocos2d::Node * pNode, cocos2d::Node * 
     
 void ButtonLoader::onHandlePropTypeColor4(Node * pNode, Node * pParent, const char * pPropertyName, Color4B pColor4B, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_FONTCOLOR) == 0){
-        ((Label *)pNode)->setTextColor(pColor4B);
+		((ButtonControl *)pNode)->getLabel()->setTextColor(pColor4B);
     } else if(strcmp(pPropertyName, PROPERTY_OUTLINECOLOR) == 0){
         _outlineColor = pColor4B;
     } else if(strcmp(pPropertyName, PROPERTY_SHADOWCOLOR) == 0){

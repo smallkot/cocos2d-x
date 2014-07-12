@@ -2,7 +2,7 @@
 #define _CCB_CCLAYOUTBOXLOADER_H_
 
 #include "CCNodeLoader.h"
-#include "CCLayoutBox.h"
+#include "2d/CCLayoutBox.h"
 
 namespace cocosbuilder {
 
