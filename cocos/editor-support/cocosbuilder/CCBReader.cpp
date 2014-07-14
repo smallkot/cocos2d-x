@@ -237,28 +237,26 @@ Node* CCBReader::readNodeGraphFromFile(const char *pCCBFileName, Ref *pOwner, co
     
     return ret;
 }
-
-Node* CCBReader::readNodeGraphFromData(const cocos2d::Data &data, Ref *pOwner, const Size &parentSize, SceneScaleType scaleType)
-{
-    _bytes =data.getBytes();
-    _currentByte = 0;
-    _currentBit = 0;
-    _owner = pOwner;
-    _stringCache.clear();
     
+void CCBReader::calcScales(const Size &designResolution, float designScale, SceneScaleType scaleType)
+{
     if(scaleType == SceneScaleType::NONE)
     {
         CCBReaderParams::getInstance();
         setMainScale(1.0);
         setAdditionalScale(1.0);
     }
+    else if(scaleType == SceneScaleType::CUSTOM)
+    {
+        //do nothing
+    }
     else
     {
         float resolutionAspectX = Director::getInstance()->getWinSize().width / CCBReader::getResolutionScale();
         float resolutionAspectY = Director::getInstance()->getWinSize().height / CCBReader::getResolutionScale();
         
-        float designAspectX = CCBReaderParams::getInstance()->getDesignResolution().width / CCBReaderParams::getInstance()->getDesignResolutionScale();
-        float designAspectY = CCBReaderParams::getInstance()->getDesignResolution().height / CCBReaderParams::getInstance()->getDesignResolutionScale();
+        float designAspectX = designResolution.width / designScale;
+        float designAspectY = designResolution.height / designScale;
         
         if(scaleType == SceneScaleType::MINSCALE)
         {
@@ -290,8 +288,8 @@ Node* CCBReader::readNodeGraphFromData(const cocos2d::Data &data, Ref *pOwner, c
                 setAdditionalScale((resolutionAspectY/mainScale2)/designAspectY);
             }
         }
-
-        else if((CCBReaderParams::getInstance()->getDesignResolution().width>CCBReaderParams::getInstance()->getDesignResolution().height)==(scaleType == SceneScaleType::MINSIZE))
+        
+        else if((designResolution.width>designResolution.height)==(scaleType == SceneScaleType::MINSIZE))
         {
             float mainScale = resolutionAspectY / designAspectY;
             setMainScale(mainScale);
@@ -304,7 +302,18 @@ Node* CCBReader::readNodeGraphFromData(const cocos2d::Data &data, Ref *pOwner, c
             setAdditionalScale((resolutionAspectY/mainScale)/designAspectY);
         }
     }
+}
 
+
+Node* CCBReader::readNodeGraphFromData(const cocos2d::Data &data, Ref *pOwner, const Size &parentSize, SceneScaleType scaleType)
+{
+    _bytes =data.getBytes();
+    _currentByte = 0;
+    _currentBit = 0;
+    _owner = pOwner;
+    _stringCache.clear();
+    
+    calcScales(CCBReaderParams::getInstance()->getDesignResolution(), CCBReaderParams::getInstance()->getDesignResolutionScale(), scaleType);
     
     CC_SAFE_RETAIN(_owner);
 

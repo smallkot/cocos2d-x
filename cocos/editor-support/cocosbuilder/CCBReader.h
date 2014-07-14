@@ -212,6 +212,7 @@ public:
     enum class SceneScaleType
     {
         NONE,
+        CUSTOM,
         MINSIZE,
         MAXSIZE,
         MINSCALE,
@@ -240,6 +241,8 @@ public:
    
     void setCCBRootPath(const char* ccbRootPath);
     const std::string& getCCBRootPath() const;
+    
+    void calcScales(const cocos2d::Size &designResolution, float designScale, SceneScaleType scaleType);
 
     cocos2d::Node* readNodeGraphFromFile(const char *pCCBFileName, SceneScaleType scaleType = SceneScaleType::NONE);
     cocos2d::Node* readNodeGraphFromFile(const char *pCCBFileName, cocos2d::Ref *pOwner, SceneScaleType scaleType = SceneScaleType::NONE);
