@@ -296,14 +296,18 @@ void ActionManager::removeAllActionsByTag(int tag, Node *target)
     
     if (element)
     {
-        auto limit = element->actions->num;
-        for (int i = 0; i < limit; ++i)
+        auto &limit = element->actions->num;
+        for (int i = 0; i < limit;)
         {
             Action *action = (Action*)element->actions->arr[i];
             
             if (action->getTag() == (int)tag && action->getOriginalTarget() == target)
             {
                 removeActionAtIndex(i, element);
+            }
+            else
+            {
+                ++i;
             }
         }
     }
