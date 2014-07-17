@@ -835,11 +835,11 @@ void CCBAnimationManager::runAnimationsForSequenceIdTweenDuration(int nSeqId, fl
 {
     CCASSERT(nSeqId != -1, "Sequence id couldn't be found");
     
-    _rootNode->stopActionByTag(animationTag);
+    _rootNode->stopAllActionsByTag(animationTag);
     
     for(const auto &it : _nodeSequences)
     {
-        it.first->stopActionByTag(animationTag);
+        it.first->stopAllActionsByTag(animationTag);
     }
     
     for (auto nodeSeqIter = _nodeSequences.begin(); nodeSeqIter != _nodeSequences.end(); ++nodeSeqIter)
