@@ -1023,6 +1023,13 @@ public:
      * @param tag   A tag that indicates the action to be removed.
      */
     void stopActionByTag(int tag);
+    
+    /**
+     * Removes all actions from the running action list by its tag.
+     *
+     * @param tag   A tag that indicates the action to be removed.
+     */
+    void stopAllActionsByTag(int tag);
 
     /**
      * Gets an action from the running action list by its tag.
