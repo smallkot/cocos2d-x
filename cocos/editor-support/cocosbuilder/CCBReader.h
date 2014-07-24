@@ -33,7 +33,7 @@
 #define CCB_MAX_VERSION 6
 
 #define CCBX_MIN_VERSION 7
-#define CCBX_MAX_VERSION 7
+#define CCBX_MAX_VERSION 8
 
 namespace cocosbuilder {
 
