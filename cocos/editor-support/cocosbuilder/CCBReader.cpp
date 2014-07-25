@@ -789,7 +789,7 @@ Node * CCBReader::readNodeGraph(Node * pParent)
         _animationManager->addNode(node, seqs);
     }
     
-    if(this->_version >= 7)
+    if(this->_version >= 8)
         /*int uuid = */readInt(false);
     
     // Read properties
