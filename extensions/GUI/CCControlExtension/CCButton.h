@@ -124,6 +124,12 @@ public:
     virtual void visit(Renderer *renderer, const Mat4 &parentTransform, bool parentTransformUpdated) override;
     
     virtual const Size& getContentSize() const override;
+    
+    void setHorizontalAlignment(TextHAlignment hAlignment);
+    TextHAlignment getHorizontalAlignment() const;
+    
+    void setVerticalAlignment(TextVAlignment vAlignment);
+    TextVAlignment getVerticalAlignment() const;
 
     /**
      *  Sets the background color for the specified state. The color is multiplied into the background sprite frame.

@@ -192,6 +192,26 @@ const Size& ButtonControl::getContentSize() const
     return Node::getContentSize();
 }
 
+void ButtonControl::setHorizontalAlignment(TextHAlignment hAlignment)
+{
+    _label->setHorizontalAlignment(hAlignment);
+}
+
+TextHAlignment ButtonControl::getHorizontalAlignment() const
+{
+    return _label->getHorizontalAlignment();
+}
+
+void ButtonControl::setVerticalAlignment(TextVAlignment vAlignment)
+{
+    _label->setVerticalAlignment(vAlignment);
+}
+
+TextVAlignment ButtonControl::getVerticalAlignment() const
+{
+    return _label->getVerticalAlignment();
+}
+
 void ButtonControl::updatePropertiesForState(Control::State state)
 {
     // Update background

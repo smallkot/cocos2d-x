@@ -44,6 +44,9 @@ namespace cocosbuilder {;
 #define PROPERTY_HORIZONTALPADDING "horizontalPadding"
 #define PROPERTY_VERTICALPADDING "verticalPadding"
     
+#define PROPERTY_HORIZONTALALIGMENT "horizontalAlignment"
+#define PROPERTY_VERTICALALIGMENT "verticalAlignment"
+    
 #define PROPERTY_FONTNAME "fontName"
 #define PROPERTY_FONTSIZE "fontSize"
     
@@ -81,6 +84,17 @@ void ButtonLoader::onEndPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccb
         ((ButtonControl *)pNode)->getLabel()->enableOutline(_outlineColor, _outlineWidth);
     if (_shadowColor.a > 0)
         ((ButtonControl *)pNode)->getLabel()->enableShadow(_shadowColor, _shadowOffset, _shadowBlurRadius);
+}
+    
+void ButtonLoader::onHandlePropTypeIntegerLabeled(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, int pIntegerLabeled, CCBReader * ccbReader)
+{
+    if(strcmp(pPropertyName, PROPERTY_HORIZONTALALIGMENT) == 0){
+        ((ButtonControl *)pNode)->setHorizontalAlignment(static_cast<TextHAlignment>(pIntegerLabeled));
+    } else if(strcmp(pPropertyName, PROPERTY_VERTICALALIGMENT) == 0) {
+        ((ButtonControl *)pNode)->setVerticalAlignment(static_cast<TextVAlignment>(pIntegerLabeled));
+    } else {
+        ControlLoader::onHandlePropTypeIntegerLabeled(pNode, pParent, pPropertyName, pIntegerLabeled, ccbReader);
+    }
 }
 
 void ButtonLoader::onHandlePropTypeCheck(Node * pNode, Node * pParent, const char * pPropertyName, bool pCheck, CCBReader * ccbReader) {
