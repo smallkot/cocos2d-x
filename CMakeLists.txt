@@ -156,13 +156,15 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/external/xxtea
 )
 
-if(WIN32 AND NOT MINGW)
-  include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/external/${PLATFORM_FOLDER}-specific/gles/include/OGLES
-    ${CMAKE_CURRENT_SOURCE_DIR}/external/${PLATFORM_FOLDER}-specific/icon/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/external/${PLATFORM_FOLDER}-specific/zlib/include
-    external/curl/include/${PLATFORM_FOLDER}
-  )
+if(WIN32)
+  if(NOT MINGW)
+    include_directories(
+      ${CMAKE_CURRENT_SOURCE_DIR}/external/${PLATFORM_FOLDER}-specific/gles/include/OGLES
+      ${CMAKE_CURRENT_SOURCE_DIR}/external/${PLATFORM_FOLDER}-specific/icon/include
+      ${CMAKE_CURRENT_SOURCE_DIR}/external/${PLATFORM_FOLDER}-specific/zlib/include
+      external/curl/include/${PLATFORM_FOLDER}
+    )
+  endif()
 elseif(APPLE)
   include_directories(
   	${CMAKE_CURRENT_SOURCE_DIR}/external/curl/include/${PLATFORM_FOLDER}
@@ -172,7 +174,6 @@ else()
     /usr/include
     /usr/include/GLFW
     /usr/local/include/GLFW
-    ${CMAKE_CURRENT_SOURCE_DIR}/external/${PLATFORM_FOLDER}-specific/fmod/include/${ARCH_DIR}
   )
 endif()
 
