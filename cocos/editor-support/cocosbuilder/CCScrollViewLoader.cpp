@@ -18,6 +18,7 @@ void ScrollViewLoader::onStarPropertiesParsing(cocos2d::Node * pNode, CCBReader 
 {
     _verticalScrollEnabled = false;
     _horizontalScrollEnabled = false;
+    pNode->ignoreAnchorPointForPosition(false);
 }
     
 void ScrollViewLoader::onEndPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader)
