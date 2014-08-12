@@ -4,6 +4,7 @@ using namespace cocos2d;
 
 #define PROPERTY_FLIP "flip"
 #define PROPERTY_DISPLAYFRAME "displayFrame"
+#define PROPERTY_SPRITEFRAME "spriteFrame"
 #define PROPERTY_COLOR "color"
 #define PROPERTY_OPACITY "opacity"
 #define PROPERTY_BLENDFUNC "blendFunc"
@@ -11,7 +12,7 @@ using namespace cocos2d;
 namespace cocosbuilder {
 
 void SpriteLoader::onHandlePropTypeSpriteFrame(Node * pNode, Node * pParent, const char * pPropertyName, SpriteFrame * pSpriteFrame, CCBReader * ccbReader) {
-    if(strcmp(pPropertyName, PROPERTY_DISPLAYFRAME) == 0) {
+    if((strcmp(pPropertyName, PROPERTY_DISPLAYFRAME) == 0)||(strcmp(pPropertyName, PROPERTY_SPRITEFRAME) == 0)) {
         if(pSpriteFrame != nullptr) {
             ((Sprite *)pNode)->setSpriteFrame(pSpriteFrame);
         } else {
@@ -31,11 +32,11 @@ void SpriteLoader::onHandlePropTypeFlip(Node * pNode, Node * pParent, const char
     }
 }
 
-void SpriteLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color3B pColor3B, CCBReader * ccbReader) {
+void SpriteLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color4B pColor4B, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
-        ((Sprite *)pNode)->setColor(pColor3B);
+        ((Sprite *)pNode)->setColor(Color3B(pColor4B));
     } else {
-        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, ccbReader);
+        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor4B, ccbReader);
     }
 }
 
@@ -44,6 +45,14 @@ void SpriteLoader::onHandlePropTypeByte(Node * pNode, Node * pParent, const char
         ((Sprite *)pNode)->setOpacity(pByte);
     } else {
         NodeLoader::onHandlePropTypeByte(pNode, pParent, pPropertyName, pByte, ccbReader);
+    }
+}
+
+void SpriteLoader::onHandlePropTypeFloat(Node * pNode, Node * pParent, const char* pPropertyName, float pFloat, CCBReader * ccbReader){
+    if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
+        ((LayerColor *)pNode)->setOpacity(static_cast<GLubyte>(pFloat*255.0));
+    } else {
+        NodeLoader::onHandlePropTypeFloat(pNode, pParent, pPropertyName, pFloat, ccbReader);
     }
 }
 

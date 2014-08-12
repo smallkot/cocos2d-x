@@ -592,6 +592,12 @@
     <ClCompile Include="CCFastTMXTiledMap.cpp">
       <Filter>2d</Filter>
     </ClCompile>
+    <ClCompile Include="CCLayoutBox.cpp">
+      <Filter>2d</Filter>
+    </ClCompile>
+    <ClCompile Include="CCLayoutNode.cpp">
+      <Filter>2d</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\physics\CCPhysicsBody.h">
@@ -1202,6 +1208,12 @@
       <Filter>2d</Filter>
     </ClInclude>
     <ClInclude Include="CCFastTMXLayer.h">
+      <Filter>2d</Filter>
+    </ClInclude>
+    <ClInclude Include="CCLayoutBox.h">
+      <Filter>2d</Filter>
+    </ClInclude>
+    <ClInclude Include="CCLayoutNode.h">
       <Filter>2d</Filter>
     </ClInclude>
   </ItemGroup>

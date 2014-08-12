@@ -11,13 +11,13 @@ using namespace cocos2d;
 
 namespace cocosbuilder {
 
-void LayerGradientLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color3B pColor3B, CCBReader * ccbReader) {
+void LayerGradientLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color4B pColor4B, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_STARTCOLOR) == 0) {
-        ((LayerGradient *)pNode)->setStartColor(pColor3B);
+        ((LayerGradient *)pNode)->setStartColor(Color3B(pColor4B));
     } else if(strcmp(pPropertyName, PROPERTY_ENDCOLOR) == 0) {
-        ((LayerGradient *)pNode)->setEndColor(pColor3B);
+        ((LayerGradient *)pNode)->setEndColor(Color3B(pColor4B));
     } else {
-        LayerLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, ccbReader);
+        LayerLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor4B, ccbReader);
     }
 }
 
@@ -31,6 +31,16 @@ void LayerGradientLoader::onHandlePropTypeByte(Node * pNode, Node * pParent, con
     }
 }
 
+void LayerGradientLoader::onHandlePropTypeFloat(Node * pNode, Node * pParent, const char* pPropertyName, float pFloat, CCBReader * ccbReader){
+    if(strcmp(pPropertyName, PROPERTY_STARTOPACITY) == 0) {
+        ((LayerGradient *)pNode)->setStartOpacity(static_cast<GLubyte>(pFloat*255.0));
+    } else if(strcmp(pPropertyName, PROPERTY_ENDOPACITY) == 0) {
+        ((LayerGradient *)pNode)->setEndOpacity(static_cast<GLubyte>(pFloat*255.0));
+    } else {
+        LayerLoader::onHandlePropTypeFloat(pNode, pParent, pPropertyName, pFloat, ccbReader);
+    }
+}
+
 void LayerGradientLoader::onHandlePropTypeBlendFunc(Node * pNode, Node * pParent, const char * pPropertyName, BlendFunc pBlendFunc, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_BLENDFUNC) == 0) {
         ((LayerGradient *)pNode)->setBlendFunc(pBlendFunc);
@@ -40,7 +50,7 @@ void LayerGradientLoader::onHandlePropTypeBlendFunc(Node * pNode, Node * pParent
 }
 
 
-void LayerGradientLoader::onHandlePropTypePoint(Node * pNode, Node * pParent, const char * pPropertyName, Vec2 pPoint, CCBReader * ccbReader) {
+void LayerGradientLoader::onHandlePropTypePoint(Node * pNode, Node * pParent, const char * pPropertyName, Point pPoint, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_VECTOR) == 0) {
         ((LayerGradient *)pNode)->setVector(pPoint);
 

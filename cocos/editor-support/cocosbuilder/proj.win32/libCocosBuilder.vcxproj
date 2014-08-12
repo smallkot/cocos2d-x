@@ -97,8 +97,10 @@
     <ClCompile Include="..\CCBFileLoader.cpp" />
     <ClCompile Include="..\CCBKeyframe.cpp" />
     <ClCompile Include="..\CCBReader.cpp" />
+    <ClCompile Include="..\CCBReaderParams.cpp" />
     <ClCompile Include="..\CCBSequence.cpp" />
     <ClCompile Include="..\CCBSequenceProperty.cpp" />
+    <ClCompile Include="..\CCButtonLoader.cpp" />
     <ClCompile Include="..\CCControlButtonLoader.cpp" />
     <ClCompile Include="..\CCControlLoader.cpp" />
     <ClCompile Include="..\CCLabelBMFontLoader.cpp" />
@@ -106,15 +108,22 @@
     <ClCompile Include="..\CCLayerColorLoader.cpp" />
     <ClCompile Include="..\CCLayerGradientLoader.cpp" />
     <ClCompile Include="..\CCLayerLoader.cpp" />
+    <ClCompile Include="..\CCLayoutBoxLoader.cpp" />
     <ClCompile Include="..\CCMenuItemImageLoader.cpp" />
     <ClCompile Include="..\CCMenuItemLoader.cpp" />
     <ClCompile Include="..\CCNode+CCBRelativePositioning.cpp" />
     <ClCompile Include="..\CCNodeLoader.cpp" />
     <ClCompile Include="..\CCNodeLoaderLibrary.cpp" />
     <ClCompile Include="..\CCParticleSystemQuadLoader.cpp" />
+    <ClCompile Include="..\CCPhysicsNodeLoader.cpp" />
+    <ClCompile Include="..\CCProgressTimerLoader.cpp" />
     <ClCompile Include="..\CCScale9SpriteLoader.cpp" />
+    <ClCompile Include="..\CCScrollListView.cpp" />
+    <ClCompile Include="..\CCScrollListViewLoader.cpp" />
     <ClCompile Include="..\CCScrollViewLoader.cpp" />
+    <ClCompile Include="..\CCSliderLoader.cpp" />
     <ClCompile Include="..\CCSpriteLoader.cpp" />
+    <ClCompile Include="..\CCTextFieldLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CCBAnimationManager.h" />
@@ -122,9 +131,11 @@
     <ClInclude Include="..\CCBKeyframe.h" />
     <ClInclude Include="..\CCBMemberVariableAssigner.h" />
     <ClInclude Include="..\CCBReader.h" />
+    <ClInclude Include="..\CCBReaderParams.h" />
     <ClInclude Include="..\CCBSelectorResolver.h" />
     <ClInclude Include="..\CCBSequence.h" />
     <ClInclude Include="..\CCBSequenceProperty.h" />
+    <ClInclude Include="..\CCButtonLoader.h" />
     <ClInclude Include="..\CCControlButtonLoader.h" />
     <ClInclude Include="..\CCControlLoader.h" />
     <ClInclude Include="..\CCLabelBMFontLoader.h" />
@@ -132,6 +143,7 @@
     <ClInclude Include="..\CCLayerColorLoader.h" />
     <ClInclude Include="..\CCLayerGradientLoader.h" />
     <ClInclude Include="..\CCLayerLoader.h" />
+    <ClInclude Include="..\CCLayoutBoxLoader.h" />
     <ClInclude Include="..\CCMenuItemImageLoader.h" />
     <ClInclude Include="..\CCMenuItemLoader.h" />
     <ClInclude Include="..\CCMenuLoader.h" />
@@ -140,9 +152,15 @@
     <ClInclude Include="..\CCNodeLoaderLibrary.h" />
     <ClInclude Include="..\CCNodeLoaderListener.h" />
     <ClInclude Include="..\CCParticleSystemQuadLoader.h" />
+    <ClInclude Include="..\CCPhysicsNodeLoader.h" />
+    <ClInclude Include="..\CCProgressTimerLoader.h" />
     <ClInclude Include="..\CCScale9SpriteLoader.h" />
+    <ClInclude Include="..\CCScrollListView.h" />
+    <ClInclude Include="..\CCScrollListViewLoader.h" />
     <ClInclude Include="..\CCScrollViewLoader.h" />
+    <ClInclude Include="..\CCSliderLoader.h" />
     <ClInclude Include="..\CCSpriteLoader.h" />
+    <ClInclude Include="..\CCTextFieldLoader.h" />
     <ClInclude Include="..\CocosBuilder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

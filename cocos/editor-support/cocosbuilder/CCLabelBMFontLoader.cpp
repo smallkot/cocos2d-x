@@ -10,11 +10,11 @@ namespace cocosbuilder {
 #define PROPERTY_FNTFILE "fntFile"
 #define PROPERTY_STRING "string"
 
-void LabelBMFontLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color3B pColor3B, CCBReader * ccbReader) {
+void LabelBMFontLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color4B pColor4B, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
-        ((Label *)pNode)->setColor(pColor3B);
+        ((Label *)pNode)->setColor(Color3B(pColor4B));
     } else {
-        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, ccbReader);
+        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor4B, ccbReader);
     }
 }
 
@@ -23,6 +23,14 @@ void LabelBMFontLoader::onHandlePropTypeByte(Node * pNode, Node * pParent, const
         ((Label *)pNode)->setOpacity(pByte);
     } else {
         NodeLoader::onHandlePropTypeByte(pNode, pParent, pPropertyName, pByte, ccbReader);
+    }
+}
+
+void LabelBMFontLoader::onHandlePropTypeFloat(Node * pNode, Node * pParent, const char* pPropertyName, float pFloat, CCBReader * ccbReader){
+    if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
+        ((LayerColor *)pNode)->setOpacity(static_cast<GLubyte>(pFloat*255.0));
+    } else {
+        NodeLoader::onHandlePropTypeFloat(pNode, pParent, pPropertyName, pFloat, ccbReader);
     }
 }
 

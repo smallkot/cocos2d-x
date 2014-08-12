@@ -11,6 +11,8 @@ CCBKeyframe.cpp \
 CCBReader.cpp \
 CCBSequence.cpp \
 CCBSequenceProperty.cpp \
+CCBReaderParams.cpp \
+CCButtonLoader.cpp \
 CCControlButtonLoader.cpp \
 CCControlLoader.cpp \
 CCLabelBMFontLoader.cpp \
@@ -18,15 +20,23 @@ CCLabelTTFLoader.cpp \
 CCLayerColorLoader.cpp \
 CCLayerGradientLoader.cpp \
 CCLayerLoader.cpp \
+CCLayoutBoxLoader.cpp \
 CCMenuItemImageLoader.cpp \
 CCMenuItemLoader.cpp \
 CCNode+CCBRelativePositioning.cpp \
 CCNodeLoader.cpp \
 CCNodeLoaderLibrary.cpp \
 CCParticleSystemQuadLoader.cpp \
+CCPhysicsNodeLoader.cpp \
+CCProgressTimerLoader.cpp \
 CCScale9SpriteLoader.cpp \
 CCScrollViewLoader.cpp \
 CCSpriteLoader.cpp
+CCScrollListViewLoader.cpp \
+CCScrollListView.cpp \
+CCSliderLoader.cpp \
+CCSpriteLoader.cpp \
+CCTextFieldLoader.cpp
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/.. \
 $(LOCAL_PATH)/../../..

@@ -21,6 +21,14 @@ set(CCB_SRC
   CCBSequence.cpp
   CCBSequenceProperty.cpp
   CCNode+CCBRelativePositioning.cpp
+  CCBReaderParams.cpp
+  CCButtonLoader.cpp
+  CCLayoutBoxLoader.cpp
+  CCPhysicsNodeLoader.cpp
+  CCProgressTimerLoader.cpp
+  CCTextFieldLoader.cpp
+  CCSliderLoader.cpp
+  
 )
 
 include_directories(
