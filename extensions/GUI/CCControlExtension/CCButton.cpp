@@ -242,7 +242,10 @@ void ButtonControl::stateChanged()
         // Button is enabled
         if (isHighlighted())
         {
-            updatePropertiesForState(Control::State::HIGH_LIGHTED);
+            if(isSelected())
+                updatePropertiesForState(Control::State::SELECTED_HIGH_LIGHTED);
+            else
+                updatePropertiesForState(Control::State::HIGH_LIGHTED);
             
             if (_zoomWhenHighlighted)
             {

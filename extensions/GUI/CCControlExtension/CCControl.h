@@ -83,10 +83,11 @@ public:
     /** The possible state for a control.  */
     enum class State
     {
-        NORMAL         = 1 << 0, // The normal, or default state of a control¡ªthat is, enabled but neither selected nor highlighted.
-        HIGH_LIGHTED   = 1 << 1, // Highlighted state of a control. A control enters this state when a touch down, drag inside or drag enter is performed. You can retrieve and set this value through the highlighted property.
-        DISABLED       = 1 << 2, // Disabled state of a control. This state indicates that the control is currently disabled. You can retrieve and set this value through the enabled property.
-        SELECTED       = 1 << 3  // Selected state of a control. This state indicates that the control is currently selected. You can retrieve and set this value through the selected property.
+        NORMAL                = 1 << 0, // The normal, or default state of a control¡ªthat is, enabled but neither selected nor highlighted.
+        HIGH_LIGHTED          = 1 << 1, // Highlighted state of a control. A control enters this state when a touch down, drag inside or drag enter is performed. You can retrieve and set this value through the highlighted property.
+        DISABLED              = 1 << 2, // Disabled state of a control. This state indicates that the control is currently disabled. You can retrieve and set this value through the enabled property.
+        SELECTED              = 1 << 3,  // Selected state of a control. This state indicates that the control is currently selected. You can retrieve and set this value through the selected property.
+        SELECTED_HIGH_LIGHTED  = 1 << 4  // Highlighted Selected state of a control. This state indicates that the control is currently selected and HIGHLIGHTED. You can retrieve and set this value through the selected property.
     };
 
     /** Creates a Control object */
