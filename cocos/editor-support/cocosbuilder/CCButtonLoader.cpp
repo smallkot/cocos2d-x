@@ -18,16 +18,19 @@ namespace cocosbuilder {;
 #define PROPERTY_BACKGROUNDSPRITEFRAME_HIGHLIGHTED "backgroundSpriteFrame|Highlighted"
 #define PROPERTY_BACKGROUNDSPRITEFRAME_DISABLED "backgroundSpriteFrame|Disabled"
 #define PROPERTY_BACKGROUNDSPRITEFRAME_SELECTED "backgroundSpriteFrame|Selected"
+#define PROPERTY_BACKGROUNDSPRITEFRAME_HIHGLIGHTED_SELECTED "backgroundSpriteFrame|HighlightedSelected"
     
 #define PROPERTY_BACKGROUNDOPACITY_NORMAL "backgroundOpacity|Normal"
 #define PROPERTY_BACKGROUNDOPACITY_HIGHLIGHTED "backgroundOpacity|Highlighted"
 #define PROPERTY_BACKGROUNDOPACITY_DISABLED "backgroundOpacity|Disabled"
 #define PROPERTY_BACKGROUNDOPACITY_SELECTED "backgroundOpacity|Selected"
+#define PROPERTY_BACKGROUNDOPACITY_HIHGLIGHTED_SELECTED "backgroundOpacity|HighlightedSelected"
     
 #define PROPERTY_LABELOPACITY_NORMAL "labelOpacity|Normal"
 #define PROPERTY_LABELOPACITY_HIGHLIGHTED "labelOpacity|Highlighted"
 #define PROPERTY_LABELOPACITY_DISABLED "labelOpacity|Disabled"
 #define PROPERTY_LABELOPACITY_SELECTED "labelOpacity|Selected"
+#define PROPERTY_LABELOPACITY_HIHGLIGHTED_SELECTED "labelOpacity|HighlightedSelected"
     
 #define PROPERTY_TITLE "title"
     
@@ -35,11 +38,13 @@ namespace cocosbuilder {;
 #define PROPERTY_TITLECOLOR_HIGHLIGHTED "labelColor|Highlighted"
 #define PROPERTY_TITLECOLOR_DISABLED "labelColor|Disabled"
 #define PROPERTY_TITLECOLOR_SELECTED "labelColor|Selected"
+#define PROPERTY_TITLECOLOR_HIHGLIGHTED_SELECTED "labelColor|Selected"
     
 #define PROPERTY_BACKGROUNDCOLOR_NORMAL "backgroundColor|Normal"
 #define PROPERTY_BACKGROUNDCOLOR_HIGHLIGHTED "backgroundColor|Highlighted"
 #define PROPERTY_BACKGROUNDCOLOR_DISABLED "backgroundColor|Disabled"
 #define PROPERTY_BACKGROUNDCOLOR_SELECTED "backgroundColor|Selected"
+#define PROPERTY_BACKGROUNDCOLOR_HIHGLIGHTED_SELECTED "backgroundColor|Selected"
     
 #define PROPERTY_HORIZONTALPADDING "horizontalPadding"
 #define PROPERTY_VERTICALPADDING "verticalPadding"
@@ -151,6 +156,8 @@ void ButtonLoader::onHandlePropTypeFloat(cocos2d::Node * pNode, cocos2d::Node * 
         ((ButtonControl *)pNode)->setBackgroundOpacity(pFloat*255, Control::State::DISABLED);
     } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDOPACITY_SELECTED) == 0) {
         ((ButtonControl *)pNode)->setBackgroundOpacity(pFloat*255, Control::State::SELECTED);
+    } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDOPACITY_HIHGLIGHTED_SELECTED) == 0) {
+        ((ButtonControl *)pNode)->setBackgroundOpacity(pFloat*255, Control::State::SELECTED_HIGH_LIGHTED);
     } else if(strcmp(pPropertyName, PROPERTY_LABELOPACITY_NORMAL) == 0) {
         ((ButtonControl *)pNode)->setLabelOpacity(pFloat*255, Control::State::NORMAL);
     } else if(strcmp(pPropertyName, PROPERTY_LABELOPACITY_HIGHLIGHTED) == 0) {
@@ -159,6 +166,8 @@ void ButtonLoader::onHandlePropTypeFloat(cocos2d::Node * pNode, cocos2d::Node * 
         ((ButtonControl *)pNode)->setLabelOpacity(pFloat*255, Control::State::DISABLED);
     } else if(strcmp(pPropertyName, PROPERTY_LABELOPACITY_SELECTED) == 0) {
         ((ButtonControl *)pNode)->setLabelOpacity(pFloat*255, Control::State::SELECTED);
+    } else if(strcmp(pPropertyName, PROPERTY_LABELOPACITY_HIHGLIGHTED_SELECTED) == 0) {
+        ((ButtonControl *)pNode)->setLabelOpacity(pFloat*255, Control::State::SELECTED_HIGH_LIGHTED);
     } else {
         ControlLoader::onHandlePropTypeFloat(pNode, pParent, pPropertyName, pFloat, ccbReader);
     }
@@ -215,6 +224,10 @@ void ButtonLoader::onHandlePropTypeSpriteFrame(Node * pNode, Node * pParent, con
         if(pSpriteFrame != NULL) {
             ((ButtonControl *)pNode)->setBackgroundSpriteFrame(pSpriteFrame, Control::State::SELECTED);
         }
+    } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDSPRITEFRAME_HIHGLIGHTED_SELECTED) == 0) {
+        if(pSpriteFrame != NULL) {
+            ((ButtonControl *)pNode)->setBackgroundSpriteFrame(pSpriteFrame, Control::State::SELECTED_HIGH_LIGHTED);
+        }
     } else {
         ControlLoader::onHandlePropTypeSpriteFrame(pNode, pParent, pPropertyName, pSpriteFrame, ccbReader);
     }
@@ -251,6 +264,8 @@ void ButtonLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const ch
         ((ButtonControl *)pNode)->setLabelColor(Color3B(pColor4B), Control::State::DISABLED);
     } else if(strcmp(pPropertyName, PROPERTY_TITLECOLOR_SELECTED) == 0) {
         ((ButtonControl *)pNode)->setLabelColor(Color3B(pColor4B), Control::State::SELECTED);
+    } else if(strcmp(pPropertyName, PROPERTY_TITLECOLOR_HIHGLIGHTED_SELECTED) == 0) {
+        ((ButtonControl *)pNode)->setLabelColor(Color3B(pColor4B), Control::State::SELECTED_HIGH_LIGHTED);
     } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDCOLOR_NORMAL) == 0) {
         ((ButtonControl *)pNode)->setBackgroundColor(Color3B(pColor4B), Control::State::NORMAL);
     } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDCOLOR_HIGHLIGHTED) == 0) {
@@ -259,6 +274,8 @@ void ButtonLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const ch
         ((ButtonControl *)pNode)->setBackgroundColor(Color3B(pColor4B), Control::State::DISABLED);
     } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDCOLOR_SELECTED) == 0) {
         ((ButtonControl *)pNode)->setBackgroundColor(Color3B(pColor4B), Control::State::SELECTED);
+    } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDCOLOR_HIHGLIGHTED_SELECTED) == 0) {
+        ((ButtonControl *)pNode)->setBackgroundColor(Color3B(pColor4B), Control::State::SELECTED_HIGH_LIGHTED);
     } else {
         ControlLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor4B, ccbReader);
     }
