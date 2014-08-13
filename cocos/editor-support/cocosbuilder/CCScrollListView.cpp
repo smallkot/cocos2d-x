@@ -259,6 +259,13 @@ ScrollListView::ItemStruct *ScrollListView::addElement(const std::string &name)
     RecalcPositions();
     return &_curitem->second;
 }
+    
+ScrollListView::ItemStruct * ScrollListView::getElement(const std::string &name)
+{
+    auto elemIt=_items.find(name);
+    return elemIt==_items.end() ? nullptr : &elemIt->second;
+}
+    
 bool ScrollListView::removeElement(const std::string &name)
 {
     auto elemIt=_items.find(name);
