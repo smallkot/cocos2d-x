@@ -28,6 +28,7 @@ public:
     ScrollListView();
     ~ScrollListView();
     ItemStruct *addElement(const std::string &name);
+    ItemStruct *getElement(const std::string &name);
     bool removeElement(const std::string &name);
     void clear();
     void move(int elements);
