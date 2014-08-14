@@ -178,6 +178,30 @@ void ScrollView::resume(Ref* sender)
     _container->resume();
 }
 
+void ScrollView::setTopScrollOffset(float value)
+{
+    _topScrollOffset = value;
+    updateInset();
+}
+
+void ScrollView::setBottomScrollOffset(float value)
+{
+    _bottomScrollOffset = value;
+    updateInset();
+}
+
+void ScrollView::setLeftScrollOffset(float value)
+{
+    _leftScrollOffset = value;
+    updateInset();
+}
+
+void ScrollView::setRightScrollOffset(float value)
+{
+    _rightScrollOffset = value;
+    updateInset();
+}
+
 bool ScrollView::isTouchEnabled() const
 {
 	return _touchListener != nullptr;
@@ -377,13 +401,13 @@ void ScrollView::relocateContainer(bool animated)
 
 Vec2 ScrollView::maxContainerOffset()
 {
-    return Vec2(0.0f, 0.0f);
+    return Vec2(0.0f - _leftScrollOffset, 0.0f - _bottomScrollOffset);
 }
 
 Vec2 ScrollView::minContainerOffset()
 {
-    return Vec2(_viewSize.width - _container->getContentSize().width*_container->getScaleX(), 
-               _viewSize.height - _container->getContentSize().height*_container->getScaleY());
+    return Vec2(_viewSize.width - _container->getContentSize().width*_container->getScaleX() - _rightScrollOffset,
+               _viewSize.height - _container->getContentSize().height*_container->getScaleY() - _topScrollOffset);
 }
 
 void ScrollView::deaccelerateScrolling(float dt)
