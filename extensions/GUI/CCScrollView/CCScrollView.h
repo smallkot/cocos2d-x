@@ -167,6 +167,16 @@ public:
      * Provided to make scroll view compatible with SWLayer's resume method
      */
     void resume(Ref* sender);
+    
+    void setTopScrollOffset(float value);
+    void setBottomScrollOffset(float value);
+    void setLeftScrollOffset(float value);
+    void setRightScrollOffset(float value);
+    
+    float getTopScrollOffset() const { return _topScrollOffset; }
+    float getBottomScrollOffset() const { return _bottomScrollOffset; }
+    float getLeftScrollOffset() const { return _leftScrollOffset; }
+    float getRightScrollOffset() const { return _rightScrollOffset; }
 
     void setTouchEnabled(bool enabled);
 	bool isTouchEnabled() const;
@@ -302,6 +312,26 @@ protected:
      * Content offset. Note that left-bottom point is the origin
      */
     Vec2 _contentOffset;
+    
+    /**
+     *  Top scroll content offset.
+     */
+    float _topScrollOffset;
+    
+    /**
+     *  Bottom scroll content offset.
+     */
+    float _bottomScrollOffset;
+    
+    /**
+     *  Left scroll content offset.
+     */
+    float _leftScrollOffset;
+    
+    /**
+     *  Right scroll content offset.
+     */
+    float _rightScrollOffset;
 
     /**
      * Container holds scroll view contents, Sets the scrollable container object of the scroll view
