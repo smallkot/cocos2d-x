@@ -31,7 +31,6 @@ CCPhysicsNodeLoader.cpp \
 CCProgressTimerLoader.cpp \
 CCScale9SpriteLoader.cpp \
 CCScrollViewLoader.cpp \
-CCSpriteLoader.cpp
 CCScrollListViewLoader.cpp \
 CCScrollListView.cpp \
 CCSliderLoader.cpp \
