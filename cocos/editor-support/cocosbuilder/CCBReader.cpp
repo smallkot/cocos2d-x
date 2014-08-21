@@ -204,19 +204,19 @@ Ref*  CCBReader::getOwner()
     return _owner;
 }
 
-Node* CCBReader::readNodeGraphFromFile(const char *pCCBFileName, SceneScaleType scaleType)
+Node* CCBReader::readNodeGraphFromFile(const std::string &pCCBFileName, SceneScaleType scaleType)
 {
     return this->readNodeGraphFromFile(pCCBFileName, nullptr, scaleType);
 }
 
-Node* CCBReader::readNodeGraphFromFile(const char* pCCBFileName, Ref* pOwner, SceneScaleType scaleType)
+Node* CCBReader::readNodeGraphFromFile(const std::string &pCCBFileName, Ref* pOwner, SceneScaleType scaleType)
 {
     return this->readNodeGraphFromFile(pCCBFileName, pOwner, Director::getInstance()->getWinSize(), scaleType);
 }
 
-Node* CCBReader::readNodeGraphFromFile(const char *pCCBFileName, Ref *pOwner, const Size &parentSize, SceneScaleType scaleType)
+Node* CCBReader::readNodeGraphFromFile(const std::string &pCCBFileName, Ref *pOwner, const Size &parentSize, SceneScaleType scaleType)
 {
-    if (nullptr == pCCBFileName || strlen(pCCBFileName) == 0)
+    if (pCCBFileName.empty())
     {
         return nullptr;
     }
@@ -349,17 +349,17 @@ Node* CCBReader::readNodeGraphFromData(const cocos2d::Data &data, Ref *pOwner, c
     return pNodeGraph;
 }
 
-Scene* CCBReader::createSceneWithNodeGraphFromFile(const char *pCCBFileName, SceneScaleType scaleType)
+Scene* CCBReader::createSceneWithNodeGraphFromFile(const std::string &pCCBFileName, SceneScaleType scaleType)
 {
     return createSceneWithNodeGraphFromFile(pCCBFileName, nullptr, scaleType);
 }
 
-Scene* CCBReader::createSceneWithNodeGraphFromFile(const char *pCCBFileName, Ref *pOwner, SceneScaleType scaleType)
+Scene* CCBReader::createSceneWithNodeGraphFromFile(const std::string &pCCBFileName, Ref *pOwner, SceneScaleType scaleType)
 {
     return createSceneWithNodeGraphFromFile(pCCBFileName, pOwner, Director::getInstance()->getWinSize(), scaleType);
 }
 
-Scene* CCBReader::createSceneWithNodeGraphFromFile(const char *pCCBFileName, Ref *pOwner, const Size &parentSize, SceneScaleType scaleType)
+Scene* CCBReader::createSceneWithNodeGraphFromFile(const std::string &pCCBFileName, Ref *pOwner, const Size &parentSize, SceneScaleType scaleType)
 {
     Node *pNode = readNodeGraphFromFile(pCCBFileName, pOwner, parentSize, scaleType);
     Scene *pScene = Scene::create();

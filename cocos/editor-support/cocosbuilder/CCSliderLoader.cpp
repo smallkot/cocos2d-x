@@ -82,7 +82,7 @@ void SliderLoader::onEndPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccb
         _selectedHandleSprite->release();
 }
 
-void SliderLoader::onHandlePropTypeSize(Node * pNode, Node * pParent, const char* pPropertyName, Size pSize, CCBReader * ccbReader) {
+void SliderLoader::onHandlePropTypeSize(Node * pNode, Node * pParent, const char* pPropertyName, const Size &pSize, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, "preferredSize") == 0) {
         _contentSize = pSize;
     } else {

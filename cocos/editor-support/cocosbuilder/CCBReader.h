@@ -244,9 +244,9 @@ public:
     
     void calcScales(const cocos2d::Size &designResolution, float designScale, SceneScaleType scaleType);
 
-    cocos2d::Node* readNodeGraphFromFile(const char *pCCBFileName, SceneScaleType scaleType = SceneScaleType::NONE);
-    cocos2d::Node* readNodeGraphFromFile(const char *pCCBFileName, cocos2d::Ref *pOwner, SceneScaleType scaleType = SceneScaleType::NONE);
-    cocos2d::Node* readNodeGraphFromFile(const char *pCCBFileName, cocos2d::Ref *pOwner, const cocos2d::Size &parentSize, SceneScaleType scaleType = SceneScaleType::NONE);
+    cocos2d::Node* readNodeGraphFromFile(const std::string &pCCBFileName, SceneScaleType scaleType = SceneScaleType::NONE);
+    cocos2d::Node* readNodeGraphFromFile(const std::string &pCCBFileName, cocos2d::Ref *pOwner, SceneScaleType scaleType = SceneScaleType::NONE);
+    cocos2d::Node* readNodeGraphFromFile(const std::string &pCCBFileName, cocos2d::Ref *pOwner, const cocos2d::Size &parentSize, SceneScaleType scaleType = SceneScaleType::NONE);
     /**
      * @js NA
      * @lua NA
@@ -256,15 +256,15 @@ public:
     /**
      @lua NA
      */
-    cocos2d::Scene* createSceneWithNodeGraphFromFile(const char *pCCBFileName, SceneScaleType scaleType = SceneScaleType::NONE);
+    cocos2d::Scene* createSceneWithNodeGraphFromFile(const std::string &pCCBFileName, SceneScaleType scaleType = SceneScaleType::NONE);
     /**
      @lua NA
      */
-    cocos2d::Scene* createSceneWithNodeGraphFromFile(const char *pCCBFileName, cocos2d::Ref *pOwner, SceneScaleType scaleType = SceneScaleType::NONE);
+    cocos2d::Scene* createSceneWithNodeGraphFromFile(const std::string &pCCBFileName, cocos2d::Ref *pOwner, SceneScaleType scaleType = SceneScaleType::NONE);
     /**
      @lua NA
      */
-    cocos2d::Scene* createSceneWithNodeGraphFromFile(const char *pCCBFileName, cocos2d::Ref *pOwner, const cocos2d::Size &parentSize, SceneScaleType scaleType = SceneScaleType::NONE);
+    cocos2d::Scene* createSceneWithNodeGraphFromFile(const std::string &pCCBFileName, cocos2d::Ref *pOwner, const cocos2d::Size &parentSize, SceneScaleType scaleType = SceneScaleType::NONE);
     
     /**
      * @js NA

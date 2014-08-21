@@ -52,7 +52,7 @@ protected:
     virtual void onStarPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader) override;
     virtual void onEndPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader) override;
     
-    virtual void onHandlePropTypeSize(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, cocos2d::Size pSize, CCBReader * ccbReader) override;
+    virtual void onHandlePropTypeSize(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, const cocos2d::Size &pSize, CCBReader * ccbReader) override;
     virtual void onHandlePropTypeSpriteFrame(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, cocos2d::SpriteFrame * pSpriteFrame, CCBReader * ccbReader) override;
 protected:
     cocos2d::SpriteFrame* _progressSprite;

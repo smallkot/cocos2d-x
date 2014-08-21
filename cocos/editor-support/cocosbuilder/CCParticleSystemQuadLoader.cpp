@@ -35,7 +35,7 @@ void ParticleSystemQuadLoader::onHandlePropTypeIntegerLabeled(Node * pNode, Node
     }
 }
 
-void ParticleSystemQuadLoader::onHandlePropTypePoint(Node * pNode, Node * pParent, const char * pPropertyName, Vec2 pPoint, CCBReader * ccbReader) {
+void ParticleSystemQuadLoader::onHandlePropTypePoint(Node * pNode, Node * pParent, const char * pPropertyName, const Vec2 &pPoint, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_POSVAR) == 0) {
         ((ParticleSystemQuad *)pNode)->setPosVar(pPoint);
     } else if(strcmp(pPropertyName, PROPERTY_GRAVITY) == 0) {
@@ -105,7 +105,7 @@ void ParticleSystemQuadLoader::onHandlePropTypeFloatVar(Node * pNode, Node * pPa
     }
 }
 
-void ParticleSystemQuadLoader::onHandlePropTypeColor4FVar(Node * pNode, Node * pParent, const char * pPropertyName, Color4F * pColor4FVar, CCBReader * ccbReader) {
+void ParticleSystemQuadLoader::onHandlePropTypeColor4FVar(Node * pNode, Node * pParent, const char * pPropertyName, const Color4F *pColor4FVar, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_STARTCOLOR) == 0) {
         ((ParticleSystemQuad *)pNode)->setStartColor(pColor4FVar[0]);
         ((ParticleSystemQuad *)pNode)->setStartColorVar(pColor4FVar[1]);

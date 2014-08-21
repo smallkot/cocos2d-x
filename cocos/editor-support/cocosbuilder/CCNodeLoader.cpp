@@ -270,10 +270,10 @@ void NodeLoader::parseProperties(Node * pNode, Node * pParent, CCBReader * ccbRe
             }
             case CCBReader::PropertyType::COLOR3:
             {
-                Color4B color4B = this->parsePropTypeColor3(pNode, pParent, ccbReader, propertyName.c_str());
+                Color3B color3B = this->parsePropTypeColor3(pNode, pParent, ccbReader, propertyName.c_str());
                 if(setProp) 
                 {
-                    this->onHandlePropTypeColor3(pNode, pParent, propertyName.c_str(), color4B, ccbReader);
+                    this->onHandlePropTypeColor3(pNode, pParent, propertyName.c_str(), color3B, ccbReader);
                 }
                 break;
             }
@@ -714,10 +714,15 @@ unsigned char NodeLoader::parsePropTypeByte(Node * pNode, Node * pParent, CCBRea
     return ret;
 }
 
-Color4B NodeLoader::parsePropTypeColor3(Node * pNode, Node * pParent, CCBReader * ccbReader, const char *pPropertyName) {
+Color3B NodeLoader::parsePropTypeColor3(Node * pNode, Node * pParent, CCBReader * ccbReader, const char *pPropertyName) {
     if(ccbReader->_version>5)
     {
-        return parsePropTypeColor4(pNode, pParent, ccbReader, pPropertyName);
+        unsigned char r = std::min(ccbReader->readFloat(),1.0f) * 255.0;
+        unsigned char g = std::min(ccbReader->readFloat(),1.0f) * 255.0;
+        unsigned char b = std::min(ccbReader->readFloat(),1.0f) * 255.0;
+        ccbReader->readFloat();
+        Color3B color(r, g, b);
+        return color;
     }
     unsigned char r = ccbReader->readByte();
     unsigned char g = ccbReader->readByte();
@@ -734,14 +739,14 @@ Color4B NodeLoader::parsePropTypeColor3(Node * pNode, Node * pParent, CCBReader 
     {
         ccbReader->getAnimationManager()->setBaseValue(Value(colorMap), pNode, pPropertyName);
     }
-    return Color4B(color);
+    return color;
 }
 
 Color4B NodeLoader::parsePropTypeColor4(Node * pNode, Node * pParent, CCBReader * ccbReader, const char *pPropertyName) {
-    unsigned char r = ccbReader->readFloat() * 255.0;
-    unsigned char g = ccbReader->readFloat() * 255.0;
-    unsigned char b = ccbReader->readFloat() * 255.0;
-    unsigned char a = ccbReader->readFloat() * 255.0;
+    unsigned char r = std::min(ccbReader->readFloat(),1.0f) * 255.0;
+    unsigned char g = std::min(ccbReader->readFloat(),1.0f) * 255.0;
+    unsigned char b = std::min(ccbReader->readFloat(),1.0f) * 255.0;
+    unsigned char a = std::min(ccbReader->readFloat(),1.0f) * 255.0;
     
     Color4B color(r, g, b, a);
     
@@ -1102,7 +1107,7 @@ std::string NodeLoader::parsePropTypeCCBFileName(cocos2d::Node * pNode, cocos2d:
 
 
 
-void NodeLoader::onHandlePropTypePosition(Node * pNode, Node * pParent, const char* pPropertyName, Point pPosition, CCBReader * ccbReader) {
+void NodeLoader::onHandlePropTypePosition(Node * pNode, Node * pParent, const char* pPropertyName, const Point &pPosition, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_POSITION) == 0) {
         pNode->setPosition(pPosition);
     } else {
@@ -1110,7 +1115,7 @@ void NodeLoader::onHandlePropTypePosition(Node * pNode, Node * pParent, const ch
     }
 }
 
-void NodeLoader::onHandlePropTypePoint(Node * pNode, Node * pParent, const char* pPropertyName, Point pPoint, CCBReader * ccbReader) {
+void NodeLoader::onHandlePropTypePoint(Node * pNode, Node * pParent, const char* pPropertyName, const Point &pPoint, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_ANCHORPOINT) == 0) {
         pNode->setAnchorPoint(pPoint);
     } else {
@@ -1118,11 +1123,11 @@ void NodeLoader::onHandlePropTypePoint(Node * pNode, Node * pParent, const char*
     }
 }
 
-void NodeLoader::onHandlePropTypePointLock(Node * pNode, Node * pParent, const char* pPropertyName, Point pPointLock, CCBReader * ccbReader) {
+void NodeLoader::onHandlePropTypePointLock(Node * pNode, Node * pParent, const char* pPropertyName, const Point &pPointLock, CCBReader * ccbReader) {
     ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
 }
 
-void NodeLoader::onHandlePropTypeSize(Node * pNode, Node * pParent, const char* pPropertyName, Size pSize, CCBReader * ccbReader) {
+void NodeLoader::onHandlePropTypeSize(Node * pNode, Node * pParent, const char* pPropertyName, const Size &pSize, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_CONTENTSIZE) == 0) {
         pNode->setContentSize(pSize);
     } else {
@@ -1140,7 +1145,7 @@ void NodeLoader::onHandlePropTypeFloatXY(Node * pNode, Node * pParent, const cha
 }
 
 
-void NodeLoader::onHandlePropTypeScaleLock(Node * pNode, Node * pParent, const char* pPropertyName, cocos2d::Size pScaleLock, CCBReader * ccbReader) {
+void NodeLoader::onHandlePropTypeScaleLock(Node * pNode, Node * pParent, const char* pPropertyName, const cocos2d::Size &pScaleLock, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_SCALE) == 0) {
         pNode->setScale(pScaleLock.width,pScaleLock.height);
     } else {
@@ -1218,15 +1223,15 @@ void NodeLoader::onHandlePropTypeByte(Node * pNode, Node * pParent, const char* 
     ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
 }
 
-void NodeLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char* pPropertyName, Color4B pColor4B, CCBReader * ccbReader) {
+void NodeLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char* pPropertyName, const Color3B &pColor3B, CCBReader * ccbReader) {
     ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
 }
 
-void NodeLoader::onHandlePropTypeColor4FVar(Node * pNode, Node * pParent, const char* pPropertyName, Color4F * pColor4FVar, CCBReader * ccbReader) {
+void NodeLoader::onHandlePropTypeColor4FVar(Node * pNode, Node * pParent, const char* pPropertyName, const Color4F * pColor4FVar, CCBReader * ccbReader) {
     ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
 }
     
-void NodeLoader::onHandlePropTypeColor4(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, cocos2d::Color4B pColor4B, CCBReader * ccbReader)
+void NodeLoader::onHandlePropTypeColor4(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, const cocos2d::Color4B &pColor4B, CCBReader * ccbReader)
 {
     ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
 }

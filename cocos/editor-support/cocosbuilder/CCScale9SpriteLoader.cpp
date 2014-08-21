@@ -25,12 +25,18 @@ namespace cocosbuilder {
 void Scale9SpriteLoader::onStarPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader)
 {
     _margins=Rect::ZERO;
+    _size=Size::ZERO;
 }
 
 void Scale9SpriteLoader::onEndPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader)
 {
+     ((Scale9Sprite *)pNode)->setPreferredSize(_size);
     if(ccbReader->getVersion()>5)
-        ((Scale9Sprite *)pNode)->setCapInsets(Rect(_margins.origin.x,_margins.origin.y,1.0-_margins.size.width-_margins.origin.x,1.0-_margins.size.height-_margins.origin.y));
+    {
+        Rect margin(_margins.origin.x,_margins.origin.y,1.0-_margins.size.width-_margins.origin.x,1.0-_margins.size.height-_margins.origin.y);
+        Size size = ((Scale9Sprite *)pNode)->getOriginalSize();
+        ((Scale9Sprite *)pNode)->setCapInsets(Rect(margin.origin.x*size.width,margin.origin.y*size.height,margin.size.width*size.width,margin.size.height*size.height));
+    }
 }
 
 void Scale9SpriteLoader::onHandlePropTypeSpriteFrame(Node * pNode, Node * pParent, const char * pPropertyName, SpriteFrame * pSpriteFrame, CCBReader * ccbReader) {
@@ -41,11 +47,11 @@ void Scale9SpriteLoader::onHandlePropTypeSpriteFrame(Node * pNode, Node * pParen
     }
 }
 
-void Scale9SpriteLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color4B pColor4B, CCBReader * ccbReader) {
+void Scale9SpriteLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, const Color3B &pColor3B, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
-        ((Scale9Sprite *)pNode)->setColor(Color3B(pColor4B));
+        ((Scale9Sprite *)pNode)->setColor(pColor3B);
     } else {
-        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor4B, ccbReader);
+        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, ccbReader);
     }
 }
 
@@ -60,17 +66,17 @@ void Scale9SpriteLoader::onHandlePropTypeByte(Node * pNode, Node * pParent, cons
 void Scale9SpriteLoader::onHandlePropTypeBlendFunc(Node * pNode, Node * pParent, const char * pPropertyName, BlendFunc pBlendFunc, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_BLENDFUNC) == 0) {
         // TODO Not exported by CocosBuilder yet!
-        // ((Scale9Sprite *)pNode)->setBlendFunc(pBlendFunc);
+        //((Scale9Sprite *)pNode)->setBlendFunc(pBlendFunc);
     } else {
         NodeLoader::onHandlePropTypeBlendFunc(pNode, pParent, pPropertyName, pBlendFunc, ccbReader);
     }
 }
 
-void Scale9SpriteLoader::onHandlePropTypeSize(Node * pNode, Node * pParent, const char * pPropertyName, Size pSize, CCBReader * ccbReader) {
+void Scale9SpriteLoader::onHandlePropTypeSize(Node * pNode, Node * pParent, const char * pPropertyName, const Size &pSize, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_CONTENTSIZE) == 0) {
-        //((Scale9Sprite *)pNode)->setContentSize(pSize);
+        _size = pSize;
     } else if(strcmp(pPropertyName, PROPERTY_PREFEREDSIZE) == 0) {
-        ((Scale9Sprite *)pNode)->setPreferredSize(pSize);
+        _size = pSize;
     } else {
         NodeLoader::onHandlePropTypeSize(pNode, pParent, pPropertyName, pSize, ccbReader);
     }

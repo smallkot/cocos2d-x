@@ -39,7 +39,7 @@ protected:
      * @js NA
      * @lua NA
      */
-    virtual void onHandlePropTypePoint(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::Point pPoint, CCBReader * ccbReader) override;
+    virtual void onHandlePropTypePoint(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, const cocos2d::Point &pPoint, CCBReader * ccbReader) override;
     /**
      * @js NA
      * @lua NA
@@ -59,7 +59,7 @@ protected:
      * @js NA
      * @lua NA
      */
-    virtual void onHandlePropTypeColor4FVar(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::Color4F * pColor4FVar, CCBReader * ccbReader) override;
+    virtual void onHandlePropTypeColor4FVar(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, const cocos2d::Color4F *pColor4FVar, CCBReader * ccbReader) override;
     /**
      * @js NA
      * @lua NA

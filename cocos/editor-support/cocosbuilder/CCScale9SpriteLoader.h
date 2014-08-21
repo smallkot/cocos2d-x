@@ -43,7 +43,7 @@ protected:
      * @js NA
      * @lua NA
      */
-    virtual void onHandlePropTypeColor3(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::Color4B pColor4B, CCBReader * ccbReader) override;
+    virtual void onHandlePropTypeColor3(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, const cocos2d::Color3B &pColor3B, CCBReader * ccbReader) override;
     /**
      * @js NA
      * @lua NA
@@ -54,6 +54,7 @@ protected:
      * @lua NA
      */
     virtual void onHandlePropTypeBlendFunc(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::BlendFunc pBlendFunc, CCBReader * ccbReader) override;
+    
     /**
      * @js NA
      * @lua NA
@@ -63,7 +64,7 @@ protected:
      * @js NA
      * @lua NA
      */
-    virtual void onHandlePropTypeSize(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::Size pSize, CCBReader * ccbReader) override;
+    virtual void onHandlePropTypeSize(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, const cocos2d::Size &pSize, CCBReader * ccbReader) override;
     /**
      * @js NA
      * @lua NA
@@ -71,6 +72,7 @@ protected:
     virtual void onHandlePropTypeFloat(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, float pFloat, CCBReader * ccbReader);
 private:
     cocos2d::Rect _margins;
+    cocos2d::Size _size;
 };
 
 }

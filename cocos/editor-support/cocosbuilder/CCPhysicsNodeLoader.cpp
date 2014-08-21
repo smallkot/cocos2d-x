@@ -7,7 +7,7 @@ namespace cocosbuilder {
 #define PROPERTY_GRAVITY "gravity"
 #define PROPERTY_SLEEPTIMETHRESHOLD "sleepTimeThreshold"
     
-void PhysicsNodeLoader::onHandlePropTypePoint(Node * pNode, Node * pParent, const char* pPropertyName, Point pPoint, CCBReader * ccbReader) {
+void PhysicsNodeLoader::onHandlePropTypePoint(Node * pNode, Node * pParent, const char* pPropertyName, const Point &pPoint, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_GRAVITY) == 0) {
         ((PhysicsNode*)pNode)->getPhysicsWorld()->setGravity(pPoint);
     } else {

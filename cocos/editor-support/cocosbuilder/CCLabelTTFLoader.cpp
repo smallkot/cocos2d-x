@@ -42,7 +42,7 @@ void LabelTTFLoader::onEndPropertiesParsing(cocos2d::Node * pNode, CCBReader * c
         ((Label *)pNode)->enableShadow(_shadowColor, _shadowOffset, _shadowBlurRadius);
 }
     
-void LabelTTFLoader::onHandlePropTypeColor4(Node * pNode, Node * pParent, const char * pPropertyName, Color4B pColor4B, CCBReader * ccbReader) {
+void LabelTTFLoader::onHandlePropTypeColor4(Node * pNode, Node * pParent, const char * pPropertyName, const Color4B &pColor4B, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_FONTCOLOR) == 0){
         ((Label *)pNode)->setTextColor(pColor4B);
     } else if(strcmp(pPropertyName, PROPERTY_OUTLINECOLOR) == 0){
@@ -54,15 +54,15 @@ void LabelTTFLoader::onHandlePropTypeColor4(Node * pNode, Node * pParent, const 
     }
 }
 
-void LabelTTFLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color4B pColor4B, CCBReader * ccbReader) {
+void LabelTTFLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, const Color3B &pColor3B, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
-        ((Label *)pNode)->setColor(Color3B(pColor4B));
+        ((Label *)pNode)->setColor(pColor3B);
     } else {
-        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor4B, ccbReader);
+        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, ccbReader);
     }
 }
 
-void LabelTTFLoader::onHandlePropTypePosition(Node * pNode, Node * pParent, const char* pPropertyName, Point pPosition, CCBReader * pCCBReader) {
+void LabelTTFLoader::onHandlePropTypePosition(Node * pNode, Node * pParent, const char* pPropertyName, const Point &pPosition, CCBReader * pCCBReader) {
     if(strcmp(pPropertyName, PROPERTY_SHADOWOFFSET) == 0) {
         _shadowOffset = pPosition;
     } else {
@@ -133,7 +133,7 @@ void LabelTTFLoader::onHandlePropTypeIntegerLabeled(Node * pNode, Node * pParent
     }
 }
 
-void LabelTTFLoader::onHandlePropTypeSize(Node * pNode, Node * pParent, const char * pPropertyName, Size size, CCBReader * ccbReader) {
+void LabelTTFLoader::onHandlePropTypeSize(Node * pNode, Node * pParent, const char * pPropertyName, const Size &size, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_DIMENSIONS) == 0) {
         ((Label *)pNode)->setDimensions(size.width,size.height);
     } else {

@@ -32,7 +32,7 @@ cocos2d::extension::EditBox * EditBoxLoader::createNode(cocos2d::Node * pParent,
 }
 
 
-void EditBoxLoader::onHandlePropTypeSize(Node * pNode, Node * pParent, const char* pPropertyName, Size pSize, CCBReader * ccbReader) {
+void EditBoxLoader::onHandlePropTypeSize(Node * pNode, Node * pParent, const char* pPropertyName, const Size &pSize, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_PREFERREDSIZE) == 0) {
         ((EditBox*)pNode)->setPreferredSize(pSize);
     } else {
@@ -69,14 +69,14 @@ void EditBoxLoader::onHandlePropTypeFontTTF(cocos2d::Node * pNode, cocos2d::Node
     }
 }
 
-void EditBoxLoader::onHandlePropTypeColor3(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::Color4B pColor4B, CCBReader * ccbReader)
+void EditBoxLoader::onHandlePropTypeColor3(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, const cocos2d::Color3B &pColor3B, CCBReader * ccbReader)
 {
     if(strcmp(pPropertyName, PROPERTY_FONTCOLOR) == 0){
-        ((EditBox*)pNode)->setFontColor(Color3B(pColor4B));
+        ((EditBox*)pNode)->setFontColor(pColor3B);
     } else if(strcmp(pPropertyName, PROPERTY_PLACEHOLDER_FONTCOLOR) == 0){
-        ((EditBox*)pNode)->setPlaceholderFontColor(Color3B(pColor4B));
+        ((EditBox*)pNode)->setPlaceholderFontColor(pColor3B);
     } else {
-        ControlLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor4B, ccbReader);
+        ControlLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, ccbReader);
     }
 
 }

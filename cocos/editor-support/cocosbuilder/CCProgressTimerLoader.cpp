@@ -53,11 +53,11 @@ void ProgressTimerLoader::onHandlePropTypeFlip(Node * pNode, Node * pParent, con
     }
 }
 
-void ProgressTimerLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, Color4B pCCColor4B, CCBReader * pCCBReader) {
+void ProgressTimerLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, const Color3B &pColor3B, CCBReader * pCCBReader) {
     if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
-        ((ProgressTimer *)pNode)->setColor(Color3B(pCCColor4B));
+        ((ProgressTimer *)pNode)->setColor(pColor3B);
     } else {
-        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pCCColor4B, pCCBReader);
+        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, pCCBReader);
     }
 }
 
@@ -86,7 +86,7 @@ void ProgressTimerLoader::onHandlePropTypeIntegerLabeled(Node *pNode, Node *pPar
     }
 }
 
-void ProgressTimerLoader::onHandlePropTypePoint(Node *pNode, Node *pParent, const char *pPropertyName, Point pPoint, CCBReader *pCCBReader)
+void ProgressTimerLoader::onHandlePropTypePoint(Node *pNode, Node *pParent, const char *pPropertyName, const Point &pPoint, CCBReader *pCCBReader)
 {
     if (strcmp(pPropertyName, PROPERTY_MIDPOINT) == 0) {
         ((ProgressTimer *)pNode)->setMidpoint(pPoint);
