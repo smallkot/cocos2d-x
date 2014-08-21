@@ -28,6 +28,8 @@ set(CCB_SRC
   CCProgressTimerLoader.cpp
   CCTextFieldLoader.cpp
   CCSliderLoader.cpp
+  CCScrollListViewLoader.cpp
+  CCScrollListView.cpp
   
 )
 
