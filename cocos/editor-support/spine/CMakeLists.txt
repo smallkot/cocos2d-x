@@ -29,10 +29,6 @@ set(SPINE_SRC
   PolygonBatch.cpp
   extension.cpp
   spine-cocos2dx.cpp
-  BoundingBoxAttachment.cpp
-  Event.cpp
-  EventData.cpp
-  SkeletonBounds.cpp
 )
 
 include_directories(
