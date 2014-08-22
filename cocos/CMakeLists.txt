@@ -46,8 +46,6 @@ set(COCOS_LINK
   tiff
   curl
   lzma
-  ssl
-  crypto
   glfw3
   glew32
   opengl32

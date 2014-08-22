@@ -1,4 +1,4 @@
-if(WIN32)
+if(WIN32 AND NOT MINGW)
   set(PLATFORM_SRC
     network/WebSocket.cpp
   )
