@@ -113,10 +113,16 @@ public:
     // Overrides
     virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags) override;
     virtual void setAnchorPoint(const Vec2& anchorPoint) override;
-    virtual void setColor(const Color3B &color) override;
-    virtual const Color3B& getColor() const override;
-    virtual void setOpacity(GLubyte opacity) override;
+    
     virtual GLubyte getOpacity() const override;
+    virtual GLubyte getDisplayedOpacity() const override;
+    virtual void setOpacity(GLubyte opacity) override;
+    virtual void updateDisplayedOpacity(GLubyte parentOpacity) override;
+    
+    virtual const Color3B& getColor() const override;
+    virtual const Color3B& getDisplayedColor() const override;
+    virtual void setColor(const Color3B& color) override;
+    virtual void updateDisplayedColor(const Color3B& parentColor) override;
     
 CC_CONSTRUCTOR_ACCESS:
     /**

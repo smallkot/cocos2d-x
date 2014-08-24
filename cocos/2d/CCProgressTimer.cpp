@@ -228,26 +228,48 @@ Vec2 ProgressTimer::getMidpoint() const
     return _midpoint;
 }
 
-void ProgressTimer::setColor(const Color3B &color)
+GLubyte ProgressTimer::getOpacity() const
 {
-    _sprite->setColor(color);
-    updateColor();
+    return _sprite->getOpacity();
 }
+GLubyte ProgressTimer::getDisplayedOpacity() const
+{
+    return _sprite->getDisplayedOpacity();
+}
+
+void ProgressTimer::setOpacity(GLubyte opacity)
+{
+    _sprite->setOpacity(opacity);
+    Node::setOpacity(opacity);
+}
+
+void ProgressTimer::updateDisplayedOpacity(GLubyte parentOpacity)
+{
+    _sprite->updateDisplayedOpacity(parentOpacity);
+    Node::updateDisplayedOpacity(parentOpacity);
+}
+
 
 const Color3B& ProgressTimer::getColor() const
 {
     return _sprite->getColor();
 }
 
-void ProgressTimer::setOpacity(GLubyte opacity)
+const Color3B& ProgressTimer::getDisplayedColor() const
 {
-    _sprite->setOpacity(opacity);
-    updateColor();
+    return _sprite->getDisplayedColor();
 }
 
-GLubyte ProgressTimer::getOpacity() const
+void ProgressTimer::setColor(const Color3B& color)
 {
-    return _sprite->getOpacity();
+    _sprite->setColor(color);
+    Node::setColor(color);
+}
+
+void ProgressTimer::updateDisplayedColor(const Color3B& parentColor)
+{
+    _sprite->updateDisplayedColor(parentColor);
+    Node::updateDisplayedColor(parentColor);
 }
 
 void ProgressTimer::setMidpoint(const Vec2& midPoint)
