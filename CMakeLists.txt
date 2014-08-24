@@ -166,6 +166,7 @@ if(WIN32)
   endif()
     include_directories(
       ${CMAKE_CURRENT_SOURCE_DIR}/external/curl/include/${PLATFORM_FOLDER}
+      ${CMAKE_CURRENT_SOURCE_DIR}/external/sqlite3/include
     )
 elseif(APPLE)
   include_directories(
@@ -189,12 +190,19 @@ if(WIN32)
     ${CMAKE_CURRENT_SOURCE_DIR}/external/png/prebuilt/${PLATFORM_FOLDER}
     ${CMAKE_CURRENT_SOURCE_DIR}/external/freetype2/prebuilt/${PLATFORM_FOLDER}
     ${CMAKE_CURRENT_SOURCE_DIR}/external/curl/prebuilt/${PLATFORM_FOLDER}
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/sqlite3/libraries/${PLATFORM_FOLDER}
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/websockets/prebuilt/${PLATFORM_FOLDER}
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/webp/prebuilt/${PLATFORM_FOLDER}
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/glfw3/prebuilt/${PLATFORM_FOLDER}
     ${CMAKE_CURRENT_SOURCE_DIR}/external/${PLATFORM_FOLDER}-specific/icon/prebuilt
     ${CMAKE_CURRENT_SOURCE_DIR}/external/${PLATFORM_FOLDER}-specific/zlib/prebuilt
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/${PLATFORM_FOLDER}-specific/gles/prebuilt
   )
   endif()
   link_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/external/curl/prebuilt/${PLATFORM_FOLDER}
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/websockets/prebuilt/${PLATFORM_FOLDER}
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/sqlite3/libraries/${PLATFORM_FOLDER}
   )
 
 elseif(APPLE)

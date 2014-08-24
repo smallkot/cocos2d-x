@@ -44,7 +44,6 @@ set(COCOS_LINK
   png
   webp
   tiff
-  curl
   lzma
   glfw3
   glew32
@@ -62,13 +61,13 @@ set(COCOS_LINK
   libpng
   libwebp
   libtiff
-  libcurl
   freetype250
   glfw3
   glew32
   opengl32
   libiconv
   libzlib
+  ws2_32
   )
 
 endif()
@@ -81,7 +80,6 @@ set(COCOS_LINK
   webp
   tiff
   lzma
-  curl
   freetype
   fontconfig
   png

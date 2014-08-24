@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+
 set(APP_NAME cpp-tests)
 
 if(WIN32)
@@ -192,10 +194,18 @@ include_directories(
   Classes
 )
 
-# add the executable
-add_executable(${APP_NAME}
-  ${SAMPLE_SRC}
-)
+if ( WIN32 )
+	# add the executable
+	add_executable(${APP_NAME}
+	  WIN32
+	  ${SAMPLE_SRC}
+	)
+else()
+	# add the executable
+	add_executable(${APP_NAME}
+	  ${SAMPLE_SRC}
+	)
+endif()
 
 target_link_libraries(${APP_NAME}
   spine
@@ -212,7 +222,30 @@ set(APP_BIN_DIR "${CMAKE_BINARY_DIR}/bin/${APP_NAME}")
 set_target_properties(${APP_NAME} PROPERTIES
      RUNTIME_OUTPUT_DIRECTORY  "${APP_BIN_DIR}")
 
+
+if(WIN32)
+if( MSVC)
 pre_build(${APP_NAME}
-  COMMAND ${CMAKE_COMMAND} -E remove_directory ${APP_BIN_DIR}/Resources
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Resources ${APP_BIN_DIR}/Resources
-  )
+  COMMAND ${CMAKE_COMMAND} -E remove_directory ${APP_BIN_DIR}/${CMAKE_BUILD_TYPE}
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Resources ${APP_BIN_DIR}/${CMAKE_BUILD_TYPE}
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../../external/win32-specific/zlib/prebuilt/zlib1.dll ${APP_BIN_DIR}/${CMAKE_BUILD_TYPE}
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../../external/win32-specific/gles/prebuilt/glew32.dll ${APP_BIN_DIR}/${CMAKE_BUILD_TYPE}
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../../external/win32-specific/icon/prebuilt/iconv.dll ${APP_BIN_DIR}/${CMAKE_BUILD_TYPE}
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../../external/curl/prebuilt/win32/libcurl.dll ${APP_BIN_DIR}/${CMAKE_BUILD_TYPE}
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../../external/websockets/prebuilt/win32/websockets.dll ${APP_BIN_DIR}/${CMAKE_BUILD_TYPE}
+)
+else()
+pre_build(${APP_NAME}
+  COMMAND ${CMAKE_COMMAND} -E remove_directory ${APP_BIN_DIR}/${CMAKE_BUILD_TYPE}
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Resources ${APP_BIN_DIR}/${CMAKE_BUILD_TYPE}
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../../external/curl/prebuilt/win32/libcurl.dll ${APP_BIN_DIR}/${CMAKE_BUILD_TYPE}
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../../external/websockets/prebuilt/win32/websockets.dll ${APP_BIN_DIR}/${CMAKE_BUILD_TYPE}
+)
+endif()
+else()
+pre_build(${APP_NAME}
+  COMMAND ${CMAKE_COMMAND} -E remove_directory ${APP_BIN_DIR}
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Resources ${APP_BIN_DIR}
+)
+endif()
+
