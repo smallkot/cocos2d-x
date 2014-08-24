@@ -217,6 +217,10 @@ public:
     SpriteFrame* getBackgroundSpriteFrameForState(Control::State state) const;
     
     void setCallback(const ccButtonCallback& callback);
+    
+    virtual void addChild(Node * child, int zOrder=0, int tag=0) override;
+    virtual void setCascadeOpacityEnabled(bool cascadeOpacityEnabled) override;
+    virtual void setCascadeColorEnabled(bool cascadeColorEnabled) override;
 
 protected:
     

@@ -36,10 +36,12 @@ NS_CC_EXT_BEGIN
 ButtonControl::ButtonControl():_background(Scale9Sprite::create()),_label(Label::create()),_zoomWhenHighlighted(false),_horizontalPadding(0),_verticalPadding(0),_togglesSelectedState(false),_preferredSize(0,0),_maxSize(0,0),_needLaout(true)
 {
     _ignoreAnchorPointForPosition = false;
-    addChild(_background);
-    addChild(_label);
+    Control::addChild(_background);
+    Control::addChild(_label);
     _label->setHorizontalAlignment(cocos2d::TextHAlignment::CENTER);
     _label->setVerticalAlignment(cocos2d::TextVAlignment::CENTER);
+    Control::setCascadeColorEnabled(true);
+    Control::setCascadeOpacityEnabled(true);
 }
 ButtonControl::~ButtonControl()
 {
@@ -537,6 +539,21 @@ SpriteFrame* ButtonControl::getBackgroundSpriteFrameForState(Control::State stat
 void ButtonControl::setCallback(const ccButtonCallback& callback)
 {
     _callBack = callback;
+}
+
+void ButtonControl::addChild(Node * child, int zOrder/* =0 */, int tag/* =0 */)
+{
+    CCASSERT(0, "addChild: is not supported on Label.");
+}
+
+void ButtonControl::setCascadeOpacityEnabled(bool cascadeOpacityEnabled)
+{
+    
+}
+
+void ButtonControl::setCascadeColorEnabled(bool cascadeColorEnabled)
+{
+    
 }
 
 NS_CC_EXT_END
