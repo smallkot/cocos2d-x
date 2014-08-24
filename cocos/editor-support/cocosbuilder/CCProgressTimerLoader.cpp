@@ -2,8 +2,6 @@
 
 #define PROPERTY_FLIP "flip"
 #define PROPERTY_DISPLAYFRAME "spriteFrame"
-#define PROPERTY_COLOR "color"
-#define PROPERTY_OPACITY "opacity"
 #define PROPERTY_BLENDFUNC "blendFunc"
 #define PROPERTY_TYPE       "type"
 #define PROPERTY_MIDPOINT   "midpoint"
@@ -53,22 +51,6 @@ void ProgressTimerLoader::onHandlePropTypeFlip(Node * pNode, Node * pParent, con
     }
 }
 
-void ProgressTimerLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, const Color3B &pColor3B, CCBReader * pCCBReader) {
-    if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
-        ((ProgressTimer *)pNode)->setColor(pColor3B);
-    } else {
-        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, pCCBReader);
-    }
-}
-
-void ProgressTimerLoader::onHandlePropTypeByte(Node * pNode, Node * pParent, const char * pPropertyName, unsigned char pByte, CCBReader * pCCBReader) {
-    if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
-        ((ProgressTimer *)pNode)->setOpacity(pByte);
-    } else {
-        NodeLoader::onHandlePropTypeByte(pNode, pParent, pPropertyName, pByte, pCCBReader);
-    }
-}
-
 void ProgressTimerLoader::onHandlePropTypeBlendFunc(Node * pNode, Node * pParent, const char * pPropertyName, BlendFunc pCCBlendFunc, CCBReader * pCCBReader) {
     if(strcmp(pPropertyName, PROPERTY_BLENDFUNC) == 0) {
         ((ProgressTimer *)pNode)->getSprite()->setBlendFunc(pCCBlendFunc);
@@ -104,8 +86,6 @@ void ProgressTimerLoader::onHandlePropTypeFloat(Node *pNode, Node *pParent, cons
 {
     if (strcmp(pPropertyName, PROPERTY_PERCENTAGE) == 0) {
         _percentage = pFloat;
-    } else if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
-        ((ProgressTimer *)pNode)->setOpacity(static_cast<GLubyte>(pFloat*255.0));
     } else {
         NodeLoader::onHandlePropTypeFloat(pNode, pParent, pPropertyName, pFloat, pCCBReader);
     }

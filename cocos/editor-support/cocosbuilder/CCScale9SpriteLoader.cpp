@@ -6,8 +6,6 @@ using namespace cocos2d::extension;
 #define PROPERTY_CONTENTSIZE "contentSize"
 #define PROPERTY_DISPLAYFRAME "displayFrame"
 #define PROPERTY_SPRITEFRAME "spriteFrame"
-#define PROPERTY_COLOR "color"
-#define PROPERTY_OPACITY "opacity"
 #define PROPERTY_BLENDFUNC "blendFunc"
 #define PROPERTY_PREFEREDSIZE "preferedSize" // TODO Should be "preferredSize". This is a typo in cocos2d-iphone, cocos2d-x and CocosBuilder!
 #define PROPERTY_INSETLEFT "insetLeft"
@@ -47,22 +45,6 @@ void Scale9SpriteLoader::onHandlePropTypeSpriteFrame(Node * pNode, Node * pParen
     }
 }
 
-void Scale9SpriteLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, const Color3B &pColor3B, CCBReader * ccbReader) {
-    if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
-        ((Scale9Sprite *)pNode)->setColor(pColor3B);
-    } else {
-        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, ccbReader);
-    }
-}
-
-void Scale9SpriteLoader::onHandlePropTypeByte(Node * pNode, Node * pParent, const char * pPropertyName, unsigned char pByte, CCBReader * ccbReader) {
-    if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
-        ((Scale9Sprite *)pNode)->setOpacity(pByte);
-    } else {
-        NodeLoader::onHandlePropTypeByte(pNode, pParent, pPropertyName, pByte, ccbReader);
-    }
-}
-
 void Scale9SpriteLoader::onHandlePropTypeBlendFunc(Node * pNode, Node * pParent, const char * pPropertyName, BlendFunc pBlendFunc, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_BLENDFUNC) == 0) {
         // TODO Not exported by CocosBuilder yet!
@@ -91,8 +73,6 @@ void Scale9SpriteLoader::onHandlePropTypeFloat(Node * pNode, Node * pParent, con
         ((Scale9Sprite *)pNode)->setInsetRight(pFloat);
     } else if(strcmp(pPropertyName, PROPERTY_INSETBOTTOM) == 0) {
         ((Scale9Sprite *)pNode)->setInsetBottom(pFloat);
-    } else if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
-        ((Scale9Sprite *)pNode)->setOpacity(static_cast<GLubyte>(pFloat*255.0));
     } else if(strcmp(pPropertyName, PROPERTY_MARGIN_LEFT) == 0) {
         _margins.origin.x = pFloat;
     } else if(strcmp(pPropertyName, PROPERTY_MARGIN_TOP) == 0) {
@@ -101,8 +81,6 @@ void Scale9SpriteLoader::onHandlePropTypeFloat(Node * pNode, Node * pParent, con
         _margins.size.width = pFloat;
     } else if(strcmp(pPropertyName, PROPERTY_MARGIN_BOTTOM) == 0) {
         _margins.size.height = pFloat;
-    } else if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
-        ((LayerColor *)pNode)->setOpacity(static_cast<GLubyte>(pFloat*255.0));
     } else {
         NodeLoader::onHandlePropTypeFloat(pNode, pParent, pPropertyName, pFloat, ccbReader);
     }

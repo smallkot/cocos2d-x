@@ -43,16 +43,6 @@ protected:
      * @js NA
      * @lua NA
      */
-    virtual void onHandlePropTypeColor3(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, const cocos2d::Color3B &pColor3B, CCBReader * ccbReader) override;
-    /**
-     * @js NA
-     * @lua NA
-     */
-    virtual void onHandlePropTypeByte(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, unsigned char pByte, CCBReader * ccbReader) override;
-    /**
-     * @js NA
-     * @lua NA
-     */
     virtual void onHandlePropTypeBlendFunc(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::BlendFunc pBlendFunc, CCBReader * ccbReader) override;
     
     /**

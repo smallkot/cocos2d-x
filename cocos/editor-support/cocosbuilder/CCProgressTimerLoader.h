@@ -25,8 +25,6 @@ protected:
     virtual void onStarPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader) override;
     virtual void onEndPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader) override;
     
-    virtual void onHandlePropTypeColor3(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, const cocos2d::Color3B &pColor3B, CCBReader * pCCBReader) override;
-    virtual void onHandlePropTypeByte(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, unsigned char pByte, CCBReader * pCCBReader) override;
     virtual void onHandlePropTypeBlendFunc(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::BlendFunc pCCBBlendFunc, CCBReader * pCCBReader) override;
     virtual void onHandlePropTypeSpriteFrame(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, cocos2d::SpriteFrame * pCCSpriteFrame, CCBReader * pCCBReader) override;
     virtual void onHandlePropTypeFlip(cocos2d::Node * pNode, cocos2d::Node * pParent, const char * pPropertyName, bool * pFlip, CCBReader * pCCBReader) override;

@@ -4,35 +4,9 @@ using namespace cocos2d;
 
 namespace cocosbuilder {
 
-#define PROPERTY_COLOR "color"
-#define PROPERTY_OPACITY "opacity"
 #define PROPERTY_BLENDFUNC "blendFunc"
 #define PROPERTY_FNTFILE "fntFile"
 #define PROPERTY_STRING "string"
-
-void LabelBMFontLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, const Color3B &pColor3B, CCBReader * ccbReader) {
-    if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
-        ((Label *)pNode)->setColor(pColor3B);
-    } else {
-        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, ccbReader);
-    }
-}
-
-void LabelBMFontLoader::onHandlePropTypeByte(Node * pNode, Node * pParent, const char * pPropertyName, unsigned char pByte, CCBReader * ccbReader) {
-    if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
-        ((Label *)pNode)->setOpacity(pByte);
-    } else {
-        NodeLoader::onHandlePropTypeByte(pNode, pParent, pPropertyName, pByte, ccbReader);
-    }
-}
-
-void LabelBMFontLoader::onHandlePropTypeFloat(Node * pNode, Node * pParent, const char* pPropertyName, float pFloat, CCBReader * ccbReader){
-    if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
-        ((LayerColor *)pNode)->setOpacity(static_cast<GLubyte>(pFloat*255.0));
-    } else {
-        NodeLoader::onHandlePropTypeFloat(pNode, pParent, pPropertyName, pFloat, ccbReader);
-    }
-}
 
 void LabelBMFontLoader::onHandlePropTypeBlendFunc(Node * pNode, Node * pParent, const char * pPropertyName, BlendFunc pBlendFunc, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_BLENDFUNC) == 0) {

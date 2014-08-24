@@ -1154,9 +1154,12 @@ void NodeLoader::onHandlePropTypeScaleLock(Node * pNode, Node * pParent, const c
 }
 
 void NodeLoader::onHandlePropTypeFloat(Node * pNode, Node * pParent, const char* pPropertyName, float pFloat, CCBReader * ccbReader) {
-//    ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
-    // It may be a custom property, add it to custom property dictionary.
-    _customProperties[pPropertyName] = Value(pFloat);
+    if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
+        pNode->setOpacity(static_cast<GLubyte>(pFloat*255.0));
+    } else {
+        // It may be a custom property, add it to custom property dictionary.
+        _customProperties[pPropertyName] = Value(pFloat);
+    }
 }
 
 
@@ -1200,6 +1203,10 @@ void NodeLoader::onHandlePropTypeCheck(Node * pNode, Node * pParent, const char*
         pNode->setVisible(pCheck);
     } else if(strcmp(pPropertyName, PROPERTY_IGNOREANCHORPOINTFORPOSITION) == 0) {
         pNode->ignoreAnchorPointForPosition(pCheck);
+    } else if(strcmp(pPropertyName, PROPERTY_CASCADECOLOR) == 0) {
+        pNode->setCascadeColorEnabled(pCheck);
+    } else if(strcmp(pPropertyName, PROPERTY_CASCADEOPACITY) == 0) {
+        pNode->setCascadeOpacityEnabled(pCheck);
     } else {
         //ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
         // It may be a custom property, add it to custom property dictionary.
@@ -1220,11 +1227,20 @@ void NodeLoader::onHandlePropTypeTexture(Node * pNode, Node * pParent, const cha
 }
 
 void NodeLoader::onHandlePropTypeByte(Node * pNode, Node * pParent, const char* pPropertyName, unsigned char pByte, CCBReader * ccbReader) {
-    ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
+    if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
+        pNode->setOpacity(pByte);
+    } else {
+        ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
+    }
 }
 
 void NodeLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char* pPropertyName, const Color3B &pColor3B, CCBReader * ccbReader) {
-    ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
+    if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
+        pNode->setColor(pColor3B);
+    }
+    else {
+        ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
+    }
 }
 
 void NodeLoader::onHandlePropTypeColor4FVar(Node * pNode, Node * pParent, const char* pPropertyName, const Color4F * pColor4FVar, CCBReader * ccbReader) {

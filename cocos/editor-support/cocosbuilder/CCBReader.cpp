@@ -806,9 +806,15 @@ Node * CCBReader::readNodeGraph(Node * pParent)
         embeddedNode->setRotation(ccbFileNode->getRotation());
         embeddedNode->setScaleX(ccbFileNode->getScaleX());
         embeddedNode->setScaleY(ccbFileNode->getScaleY());
+        embeddedNode->setSkewX(ccbFileNode->getSkewX());
+        embeddedNode->setSkewY(ccbFileNode->getSkewY());
         embeddedNode->setTag(ccbFileNode->getTag());
         embeddedNode->setName(ccbFileNode->getName());
-        embeddedNode->setVisible(true);
+        embeddedNode->setCascadeOpacityEnabled(ccbFileNode->isCascadeOpacityEnabled());
+        embeddedNode->setCascadeColorEnabled(ccbFileNode->isCascadeColorEnabled());
+        embeddedNode->setOpacity(ccbFileNode->getOpacity());
+        embeddedNode->setColor(ccbFileNode->getColor());
+        embeddedNode->setVisible(ccbFileNode->isVisible());
         //embeddedNode->ignoreAnchorPointForPosition(ccbFileNode->isIgnoreAnchorPointForPosition());
         
         _animationManager->moveAnimationsFromNode(ccbFileNode, embeddedNode);

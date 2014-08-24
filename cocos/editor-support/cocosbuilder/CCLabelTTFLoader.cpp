@@ -2,8 +2,6 @@
 
 using namespace cocos2d;
 
-#define PROPERTY_COLOR "color"
-#define PROPERTY_OPACITY "opacity"
 #define PROPERTY_BLENDFUNC "blendFunc"
 #define PROPERTY_FONTNAME "fontName"
 #define PROPERTY_FONTSIZE "fontSize"
@@ -54,36 +52,11 @@ void LabelTTFLoader::onHandlePropTypeColor4(Node * pNode, Node * pParent, const 
     }
 }
 
-void LabelTTFLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, const Color3B &pColor3B, CCBReader * ccbReader) {
-    if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
-        ((Label *)pNode)->setColor(pColor3B);
-    } else {
-        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, ccbReader);
-    }
-}
-
 void LabelTTFLoader::onHandlePropTypePosition(Node * pNode, Node * pParent, const char* pPropertyName, const Point &pPosition, CCBReader * pCCBReader) {
     if(strcmp(pPropertyName, PROPERTY_SHADOWOFFSET) == 0) {
         _shadowOffset = pPosition;
     } else {
         NodeLoader::onHandlePropTypePosition(pNode, pParent, pPropertyName, pPosition, pCCBReader);
-    }
-}
-
-
-void LabelTTFLoader::onHandlePropTypeByte(Node * pNode, Node * pParent, const char * pPropertyName, unsigned char pByte, CCBReader * ccbReader) {
-    if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
-        ((Label *)pNode)->setOpacity(pByte);
-    } else {
-        NodeLoader::onHandlePropTypeByte(pNode, pParent, pPropertyName, pByte, ccbReader);
-    }
-}
-
-void LabelTTFLoader::onHandlePropTypeFloat(Node * pNode, Node * pParent, const char* pPropertyName, float pFloat, CCBReader * ccbReader){
-    if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
-        ((LayerColor *)pNode)->setOpacity(static_cast<GLubyte>(pFloat*255.0));
-    } else {
-        NodeLoader::onHandlePropTypeFloat(pNode, pParent, pPropertyName, pFloat, ccbReader);
     }
 }
 

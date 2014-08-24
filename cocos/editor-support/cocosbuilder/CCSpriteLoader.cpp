@@ -5,8 +5,6 @@ using namespace cocos2d;
 #define PROPERTY_FLIP "flip"
 #define PROPERTY_DISPLAYFRAME "displayFrame"
 #define PROPERTY_SPRITEFRAME "spriteFrame"
-#define PROPERTY_COLOR "color"
-#define PROPERTY_OPACITY "opacity"
 #define PROPERTY_BLENDFUNC "blendFunc"
 
 namespace cocosbuilder {
@@ -29,30 +27,6 @@ void SpriteLoader::onHandlePropTypeFlip(Node * pNode, Node * pParent, const char
         ((Sprite *)pNode)->setFlippedY(pFlip[1]);
     } else {
         NodeLoader::onHandlePropTypeFlip(pNode, pParent, pPropertyName, pFlip, ccbReader);
-    }
-}
-
-void SpriteLoader::onHandlePropTypeColor3(Node * pNode, Node * pParent, const char * pPropertyName, const Color3B &pColor3B, CCBReader * ccbReader) {
-    if(strcmp(pPropertyName, PROPERTY_COLOR) == 0) {
-        ((Sprite *)pNode)->setColor(pColor3B);
-    } else {
-        NodeLoader::onHandlePropTypeColor3(pNode, pParent, pPropertyName, pColor3B, ccbReader);
-    }
-}
-
-void SpriteLoader::onHandlePropTypeByte(Node * pNode, Node * pParent, const char * pPropertyName, unsigned char pByte, CCBReader * ccbReader) {
-    if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
-        ((Sprite *)pNode)->setOpacity(pByte);
-    } else {
-        NodeLoader::onHandlePropTypeByte(pNode, pParent, pPropertyName, pByte, ccbReader);
-    }
-}
-
-void SpriteLoader::onHandlePropTypeFloat(Node * pNode, Node * pParent, const char* pPropertyName, float pFloat, CCBReader * ccbReader){
-    if(strcmp(pPropertyName, PROPERTY_OPACITY) == 0) {
-        ((LayerColor *)pNode)->setOpacity(static_cast<GLubyte>(pFloat*255.0));
-    } else {
-        NodeLoader::onHandlePropTypeFloat(pNode, pParent, pPropertyName, pFloat, ccbReader);
     }
 }
 
