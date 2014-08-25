@@ -18,6 +18,9 @@ public:
     CCB_STATIC_NEW_AUTORELEASE_OBJECT_METHOD(LayerColorLoader, loader);
 
 protected:
+    
+    virtual void onStarPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader) override;
+    
     virtual cocos2d::LayerColor * createNode(cocos2d::Node * pParent, cocosbuilder::CCBReader * ccbReader) {
         cocos2d::LayerColor *layer = cocos2d::LayerColor::create();
         layer->ignoreAnchorPointForPosition(false);
