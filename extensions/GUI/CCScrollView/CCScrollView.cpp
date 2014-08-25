@@ -728,7 +728,7 @@ void ScrollView::onTouchMoved(Touch* touch, Event* event)
                     moveDistance.x *= BOUNCE_BACK_FACTOR;
                 }
             }
-            else
+            else if (_direction == Direction::BOTH)
             {
                 dis = sqrtf(moveDistance.x*moveDistance.x + moveDistance.y*moveDistance.y);
                 
