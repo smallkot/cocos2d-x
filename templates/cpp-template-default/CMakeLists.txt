@@ -41,10 +41,13 @@ endif()
 
 
 if(NOT MSVC)# all gcc
-set(CMAKE_C_FLAGS_DEBUG "-g -Wall -DCOCOS2D_DEBUG=1")
-set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-std=c99")
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
+  set(CMAKE_C_FLAGS_DEBUG "-g -Wall -DCOCOS2D_DEBUG=1")
+  set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
+  if (NOT DEBUG_MODE)
+    set(CMAKE_EXE_LINKER_FLAGS "-s")
+  endif()
+  set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} "-std=c99")
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
 endif()
 
 if(MINGW)
@@ -290,5 +293,3 @@ else()
     )
 
 endif()
-
-target_link_libraries(${APP_NAME} audio cocos2d)

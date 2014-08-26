@@ -391,7 +391,9 @@ void NodeLoader::parseProperties(Node * pNode, Node * pParent, CCBReader * ccbRe
 
 Vec2 NodeLoader::parsePropTypePosition(Node * pNode, Node * pParent, CCBReader * ccbReader, const char *pPropertyName)
 {
-    Vec2 pt(ccbReader->readFloat(),ccbReader->readFloat());
+	float x = ccbReader->readFloat();
+	float y = ccbReader->readFloat();
+    Vec2 pt(x,y);
     
     Size containerSize = ccbReader->getAnimationManager()->getContainerSize(pParent);
     
@@ -412,7 +414,7 @@ Vec2 NodeLoader::parsePropTypePosition(Node * pNode, Node * pParent, CCBReader *
         yUnit = static_cast<CCBReader::PositionUnit>(ccbReader->readByte());
     }
     
-    Point pos = getAbsolutePosition(ccbReader->getMainScale(), ccbReader->getAdditionalScale(),pt, corner, xUnit, yUnit, containerSize, pPropertyName);
+    Point pos = getAbsolutePosition(ccbReader->getMainScale(), ccbReader->getAdditionalScale(), pt, corner, xUnit, yUnit, containerSize, pPropertyName);
     
     if (ccbReader->getAnimatedProperties()->find(pPropertyName) != ccbReader->getAnimatedProperties()->end())
     {

@@ -30,7 +30,7 @@ void ProgressTimerLoader::onHandlePropTypeSpriteFrame(Node * pNode, Node * pPare
             Sprite *temp=((ProgressTimer *)pNode)->getSprite();
             temp->retain();
             ((ProgressTimer *)pNode)->setSprite(NULL);
-            temp->setDisplayFrame(pCCSpriteFrame);
+			temp->setSpriteFrame(pCCSpriteFrame);
             ((ProgressTimer *)pNode)->setSprite(temp);
             temp->release();
         } else {
