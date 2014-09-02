@@ -28,35 +28,38 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-#include <spine/BoundingBoxAttachment.h>
-#include <spine/extension.h>
+#ifndef SPINE_IKCONSTRAINTDATA_H_
+#define SPINE_IKCONSTRAINTDATA_H_
 
-void _spBoundingBoxAttachment_dispose (spAttachment* attachment) {
-	spBoundingBoxAttachment* self = SUB_CAST(spBoundingBoxAttachment, attachment);
+#include <spine/BoneData.h>
 
-	_spAttachment_deinit(attachment);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-	FREE(self->vertices);
-	FREE(self);
+typedef struct spIkConstraintData spIkConstraintData;
+struct spIkConstraintData {
+	const char* const name;
+	
+	int bonesCount;
+	spBoneData** bones;
+	
+	spBoneData* target;
+	int bendDirection;
+	float mix;
+};
+
+spIkConstraintData* spIkConstraintData_create (const char* name);
+void spIkConstraintData_dispose (spIkConstraintData* self);
+
+#ifdef SPINE_SHORT_NAMES
+typedef spIkConstraintData IkConstraintData;
+#define IkConstraintData_create(...) spIkConstraintData_create(__VA_ARGS__)
+#define IkConstraintData_dispose(...) spIkConstraintData_dispose(__VA_ARGS__)
+#endif
+
+#ifdef __cplusplus
 }
+#endif
 
-spBoundingBoxAttachment* spBoundingBoxAttachment_create (const char* name) {
-	spBoundingBoxAttachment* self = NEW(spBoundingBoxAttachment);
-	_spAttachment_init(SUPER(self), name, SP_ATTACHMENT_BOUNDING_BOX, _spBoundingBoxAttachment_dispose);
-	return self;
-}
-
-void spBoundingBoxAttachment_computeWorldVertices (spBoundingBoxAttachment* self, float x, float y, spBone* bone, float* worldVertices) {
-	int i;
-	float px, py;
-	float* vertices = self->vertices;
-
-	x += bone->worldX;
-	y += bone->worldY;
-	for (i = 0; i < self->verticesCount; i += 2) {
-		px = vertices[i];
-		py = vertices[i + 1];
-		worldVertices[i] = px * bone->m00 + py * bone->m01 + x;
-		worldVertices[i + 1] = px * bone->m10 + py * bone->m11 + y;
-	}
-}
+#endif /* SPINE_IKCONSTRAINTDATA_H_ */

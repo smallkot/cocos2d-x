@@ -28,58 +28,33 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-#include <spine/Slot.h>
+#include <spine/BoundingBoxAttachment.h>
 #include <spine/extension.h>
-#include <spine/Skeleton.h>
 
-typedef struct {
-	spSlot super;
-	float attachmentTime;
-} _spSlot;
+void _spBoundingBoxAttachment_dispose (spAttachment* attachment) {
+	spBoundingBoxAttachment* self = SUB_CAST(spBoundingBoxAttachment, attachment);
 
-spSlot* spSlot_create (spSlotData* data, spSkeleton* skeleton, spBone* bone) {
-	spSlot* self = SUPER(NEW(_spSlot));
-	CONST_CAST(spSlotData*, self->data) = data;
-	CONST_CAST(spSkeleton*, self->skeleton) = skeleton;
-	CONST_CAST(spBone*, self->bone) = bone;
-	spSlot_setToSetupPose(self);
-	return self;
-}
+	_spAttachment_deinit(attachment);
 
-void spSlot_dispose (spSlot* self) {
-	FREE(self->attachmentVertices);
+	FREE(self->vertices);
 	FREE(self);
 }
 
-void spSlot_setAttachment (spSlot* self, spAttachment* attachment) {
-	CONST_CAST(spAttachment*, self->attachment) = attachment;
-	SUB_CAST(_spSlot, self) ->attachmentTime = self->skeleton->time;
+spBoundingBoxAttachment* spBoundingBoxAttachment_create (const char* name) {
+	spBoundingBoxAttachment* self = NEW(spBoundingBoxAttachment);
+	_spAttachment_init(SUPER(self), name, SP_ATTACHMENT_BOUNDING_BOX, _spBoundingBoxAttachment_dispose);
+	return self;
 }
 
-void spSlot_setAttachmentTime (spSlot* self, float time) {
-	SUB_CAST(_spSlot, self) ->attachmentTime = self->skeleton->time - time;
-}
-
-float spSlot_getAttachmentTime (const spSlot* self) {
-	return self->skeleton->time - SUB_CAST(_spSlot, self) ->attachmentTime;
-}
-
-void spSlot_setToSetupPose (spSlot* self) {
-	spAttachment* attachment = 0;
-	self->r = self->data->r;
-	self->g = self->data->g;
-	self->b = self->data->b;
-	self->a = self->data->a;
-
-	if (self->data->attachmentName) {
-		/* Find slot index. */
-		int i;
-		for (i = 0; i < self->skeleton->data->slotCount; ++i) {
-			if (self->data == self->skeleton->data->slots[i]) {
-				attachment = spSkeleton_getAttachmentForSlotIndex(self->skeleton, i, self->data->attachmentName);
-				break;
-			}
-		}
+void spBoundingBoxAttachment_computeWorldVertices (spBoundingBoxAttachment* self, spBone* bone, float* worldVertices) {
+	int i;
+	float px, py;
+	float* vertices = self->vertices;
+	float x = bone->skeleton->x + bone->worldX, y = bone->skeleton->y + bone->worldY;
+	for (i = 0; i < self->verticesCount; i += 2) {
+		px = vertices[i];
+		py = vertices[i + 1];
+		worldVertices[i] = px * bone->m00 + py * bone->m01 + x;
+		worldVertices[i + 1] = px * bone->m10 + py * bone->m11 + y;
 	}
-	spSlot_setAttachment(self, attachment);
 }

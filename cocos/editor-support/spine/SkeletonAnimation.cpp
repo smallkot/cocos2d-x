@@ -161,7 +161,7 @@ spTrackEntry* SkeletonAnimation::addAnimation (int trackIndex, const std::string
 	return spAnimationState_addAnimation(_state, trackIndex, animation, loop, delay);
 }
     
-spAnimation* SkeletonAnimation::findAnimation(const std::string& name)
+spAnimation* SkeletonAnimation::findAnimation(const std::string& name) const
 {
     return spSkeletonData_findAnimation(_skeleton->data, name.c_str());
 }

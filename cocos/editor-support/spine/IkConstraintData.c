@@ -28,59 +28,19 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-#ifndef SPINE_BONE_H_
-#define SPINE_BONE_H_
+#include <spine/IkConstraintData.h>
+#include <spine/extension.h>
 
-#include <spine/BoneData.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-struct spSkeleton;
-
-typedef struct spBone spBone;
-struct spBone {
-	spBoneData* const data;
-	struct spSkeleton* const skeleton;
-	spBone* const parent;
-	float x, y;
-	float rotation, rotationIK;
-	float scaleX, scaleY;
-	int/*bool*/flipX, flipY;
-
-	float const m00, m01, worldX; /* a b x */
-	float const m10, m11, worldY; /* c d y */
-	float const worldRotation;
-	float const worldScaleX, worldScaleY;
-};
-
-void spBone_setYDown (int/*bool*/yDown);
-
-/* @param parent May be 0. */
-spBone* spBone_create (spBoneData* data, struct spSkeleton* skeleton, spBone* parent);
-void spBone_dispose (spBone* self);
-
-void spBone_setToSetupPose (spBone* self);
-
-void spBone_updateWorldTransform (spBone* self);
-
-void spBone_worldToLocal (spBone* self, float worldX, float worldY, float* localX, float* localY);
-void spBone_localToWorld (spBone* self, float localX, float localY, float* worldX, float* worldY);
-
-#ifdef SPINE_SHORT_NAMES
-typedef spBone Bone;
-#define Bone_setYDown(...) spBone_setYDown(__VA_ARGS__)
-#define Bone_create(...) spBone_create(__VA_ARGS__)
-#define Bone_dispose(...) spBone_dispose(__VA_ARGS__)
-#define Bone_setToSetupPose(...) spBone_setToSetupPose(__VA_ARGS__)
-#define Bone_updateWorldTransform(...) spBone_updateWorldTransform(__VA_ARGS__)
-#define Bone_worldToLocal(...) spBone_worldToLocal(__VA_ARGS__)
-#define Bone_localToWorld(...) spBone_localToWorld(__VA_ARGS__)
-#endif
-
-#ifdef __cplusplus
+spIkConstraintData* spIkConstraintData_create (const char* name) {
+	spIkConstraintData* self = NEW(spIkConstraintData);
+	MALLOC_STR(self->name, name);
+	self->bendDirection = 1;
+	self->mix = 1;
+	return self;
 }
-#endif
 
-#endif /* SPINE_BONE_H_ */
+void spIkConstraintData_dispose (spIkConstraintData* self) {
+	FREE(self->name);
+	FREE(self->bones);
+	FREE(self);
+}

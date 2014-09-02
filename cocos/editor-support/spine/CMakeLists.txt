@@ -1,33 +1,33 @@
 set(SPINE_SRC
-  Animation.cpp
-  AnimationState.cpp
-  AnimationStateData.cpp
-  Atlas.cpp
-  AtlasAttachmentLoader.cpp
-  Attachment.cpp
-  AttachmentLoader.cpp
-  Bone.cpp
-  BoneData.cpp
-  BoundingBoxAttachment.cpp
-  Event.cpp
-  EventData.cpp
-  Json.cpp
-  MeshAttachment.cpp
-  RegionAttachment.cpp
-  Skeleton.cpp
-  SkeletonAnimation.cpp
-  SkeletonBounds.cpp
-  SkeletonData.cpp
-  SkeletonJson.cpp
-  SkeletonRenderer.cpp
-  Skin.cpp
-  SkinnedMeshAttachment.cpp
-  Slot.cpp
-  SlotData.cpp
-  Slot.cpp
-  SlotData.cpp
+  Animation.c
+  AnimationState.c
+  AnimationStateData.c
+  Atlas.c
+  AtlasAttachmentLoader.c
+  Attachment.c
+  AttachmentLoader.c
+  Bone.c
+  BoneData.c
+  BoundingBoxAttachment.c
+  Event.c
+  EventData.c
+  extension.c
+  IkConstraint.c
+  IkConstraintData.c
+  Json.c
+  MeshAttachment.c
   PolygonBatch.cpp
-  extension.cpp
+  RegionAttachment.c
+  Skeleton.c
+  SkeletonAnimation.cpp
+  SkeletonBounds.c
+  SkeletonData.c
+  SkeletonJson.c
+  SkeletonRenderer.cpp
+  Skin.c
+  SkinnedMeshAttachment.c
+  Slot.c
+  SlotData.c
   spine-cocos2dx.cpp
 )
 

@@ -59,6 +59,12 @@
     <ClInclude Include="..\extension.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\IkConstraint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IkConstraintData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\Json.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -103,76 +109,82 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Skeleton.cpp">
+    <ClCompile Include="..\Skeleton.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\SkeletonBounds.cpp">
+    <ClCompile Include="..\SkeletonBounds.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\SkeletonData.cpp">
+    <ClCompile Include="..\SkeletonData.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\SkeletonJson.cpp">
+    <ClCompile Include="..\SkeletonJson.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Skin.cpp">
+    <ClCompile Include="..\Skin.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Slot.cpp">
+    <ClCompile Include="..\Slot.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\SlotData.cpp">
+    <ClCompile Include="..\SlotData.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\spine-cocos2dx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Animation.cpp">
+    <ClCompile Include="..\Animation.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\AnimationState.cpp">
+    <ClCompile Include="..\AnimationState.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\AnimationStateData.cpp">
+    <ClCompile Include="..\AnimationStateData.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Atlas.cpp">
+    <ClCompile Include="..\Atlas.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\AtlasAttachmentLoader.cpp">
+    <ClCompile Include="..\AtlasAttachmentLoader.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Attachment.cpp">
+    <ClCompile Include="..\Attachment.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\AttachmentLoader.cpp">
+    <ClCompile Include="..\AttachmentLoader.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Bone.cpp">
+    <ClCompile Include="..\Bone.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\BoundingBoxAttachment.cpp">
+    <ClCompile Include="..\BoundingBoxAttachment.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Event.cpp">
+    <ClCompile Include="..\Event.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\EventData.cpp">
+    <ClCompile Include="..\EventData.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\extension.cpp">
+    <ClCompile Include="..\extension.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Json.cpp">
+    <ClCompile Include="..\IkConstraint.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\RegionAttachment.cpp">
+    <ClCompile Include="..\IkConstraintData.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\BoneData.cpp">
+    <ClCompile Include="..\Json.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\MeshAttachment.cpp">
+    <ClCompile Include="..\RegionAttachment.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\BoneData.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\MeshAttachment.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\PolygonBatch.cpp">
@@ -184,7 +196,7 @@
     <ClCompile Include="..\SkeletonRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\SkinnedMeshAttachment.cpp">
+    <ClCompile Include="..\SkinnedMeshAttachment.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">

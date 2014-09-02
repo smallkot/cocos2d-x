@@ -57,7 +57,7 @@ public:
 
 	spTrackEntry* setAnimation (int trackIndex, const std::string& name, bool loop);
 	spTrackEntry* addAnimation (int trackIndex, const std::string& name, bool loop, float delay = 0);
-    spAnimation *findAnimation(const std::string& name);
+    spAnimation *findAnimation(const std::string& name) const;
 	spTrackEntry* getCurrent (int trackIndex = 0);
 	void clearTracks ();
 	void clearTrack (int trackIndex = 0);
@@ -71,16 +71,6 @@ public:
 	void setTrackEndListener (spTrackEntry* entry, const EndListener& listener);
 	void setTrackCompleteListener (spTrackEntry* entry, const CompleteListener& listener);
 	void setTrackEventListener (spTrackEntry* entry, const EventListener& listener);
-
-	CC_DEPRECATED_ATTRIBUTE void setStartListener(spTrackEntry* entry, const StartListener& listener)
-	{ setTrackStartListener(entry, listener); }
-	CC_DEPRECATED_ATTRIBUTE void setEndListener(spTrackEntry* entry, const EndListener& listener)
-	{ setTrackEndListener(entry, listener); }
-	CC_DEPRECATED_ATTRIBUTE void setCompleteListener(spTrackEntry* entry, const CompleteListener& listener)
-	{ setTrackCompleteListener(entry, listener); }
-	CC_DEPRECATED_ATTRIBUTE void setEventListener(spTrackEntry* entry, const EventListener& listener)
-	{ setTrackEventListener(entry, listener); }
-
 
 	virtual void onAnimationStateEvent (int trackIndex, spEventType type, spEvent* event, int loopCount);
 	virtual void onTrackEntryEvent (int trackIndex, spEventType type, spEvent* event, int loopCount);
