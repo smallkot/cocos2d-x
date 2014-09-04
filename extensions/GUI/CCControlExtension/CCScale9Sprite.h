@@ -372,6 +372,8 @@ protected:
      */
     virtual void sortAllProtectedChildren();
     
+    bool isCapInsetEmpty() const;
+    
     bool _spritesGenerated;
     Rect _spriteRect;
     Vec2 _offset;

@@ -211,7 +211,7 @@ bool Scale9Sprite::updateWithSprite(Sprite* sprite, const Rect& originalRect, co
     _preferredSize = originalSize;
     _capInsetsInternal = capInsets;
     
-    if (_scale9Enabled)
+    if (_scale9Enabled && !isCapInsetEmpty())
     {
         this->createSlicedSprites(rect, rotated);
     }
@@ -382,50 +382,76 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
     
     
     // Centre
-    _centre = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcenterbounds, rotated);
-    _centre->retain();
-    this->addProtectedChild(_centre);
-    
+    if(rotatedcenterbounds.size.width != 0 && rotatedcenterbounds.size.height !=0 )
+    {
+        _centre = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcenterbounds, rotated);
+        _centre->retain();
+        this->addProtectedChild(_centre);
+    }
     
     // Top
-    _top = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcentertopbounds, rotated);
-    _top->retain();
-    this->addProtectedChild(_top);
+    if(rotatedcentertopbounds.size.width != 0 && rotatedcentertopbounds.size.height !=0 )
+    {
+        _top = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcentertopbounds, rotated);
+        _top->retain();
+        this->addProtectedChild(_top);
+    }
     
     // Bottom
-    _bottom = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcenterbottombounds, rotated);
-    _bottom->retain();
-    this->addProtectedChild(_bottom);
+    if(rotatedcenterbottombounds.size.width != 0 && rotatedcenterbottombounds.size.height !=0 )
+    {
+        _bottom = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcenterbottombounds, rotated);
+        _bottom->retain();
+        this->addProtectedChild(_bottom);
+    }
     
     // Left
-    _left = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedleftcenterbounds, rotated);
-    _left->retain();
-    this->addProtectedChild(_left);
+    if(rotatedleftcenterbounds.size.width != 0 && rotatedleftcenterbounds.size.height !=0 )
+    {
+        _left = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedleftcenterbounds, rotated);
+        _left->retain();
+        this->addProtectedChild(_left);
+    }
     
     // Right
-    _right = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrightcenterbounds, rotated);
-    _right->retain();
-    this->addProtectedChild(_right);
+    if(rotatedrightcenterbounds.size.width != 0 && rotatedrightcenterbounds.size.height !=0 )
+    {
+        _right = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrightcenterbounds, rotated);
+        _right->retain();
+        this->addProtectedChild(_right);
+    }
     
     // Top left
-    _topLeft = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedlefttopbounds, rotated);
-    _topLeft->retain();
-    this->addProtectedChild(_topLeft);
+    if(rotatedlefttopbounds.size.width != 0 && rotatedlefttopbounds.size.height !=0 )
+    {
+        _topLeft = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedlefttopbounds, rotated);
+        _topLeft->retain();
+        this->addProtectedChild(_topLeft);
+    }
     
     // Top right
-    _topRight = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrighttopbounds, rotated);
-    _topRight->retain();
-    this->addProtectedChild(_topRight);
+    if(rotatedrighttopbounds.size.width != 0 && rotatedrighttopbounds.size.height !=0 )
+    {
+        _topRight = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrighttopbounds, rotated);
+        _topRight->retain();
+        this->addProtectedChild(_topRight);
+    }
     
     // Bottom left
-    _bottomLeft = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedleftbottombounds, rotated);
-    _bottomLeft->retain();
-    this->addProtectedChild(_bottomLeft);
+    if(rotatedleftbottombounds.size.width != 0 && rotatedleftbottombounds.size.height !=0 )
+    {
+        _bottomLeft = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedleftbottombounds, rotated);
+        _bottomLeft->retain();
+        this->addProtectedChild(_bottomLeft);
+    }
     
     // Bottom right
-    _bottomRight = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrightbottombounds, rotated);
-    _bottomRight->retain();
-    this->addProtectedChild(_bottomRight);
+    if(rotatedrightbottombounds.size.width != 0 && rotatedrightbottombounds.size.height !=0 )
+    {
+        _bottomRight = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrightbottombounds, rotated);
+        _bottomRight->retain();
+        this->addProtectedChild(_bottomRight);
+    }
 }
 
 void Scale9Sprite::setContentSize(const Size &size)
@@ -447,60 +473,73 @@ void Scale9Sprite::updatePositions()
         _scale9Image->setScaleY(verticalScale);
     }
     
-    // Check that instances are non-NULL
-    if(!((_topLeft) &&
-         (_topRight) &&
-         (_bottomRight) &&
-         (_bottomLeft) &&
-         (_centre)))
-    {
-        // if any of the above sprites are NULL, return
-        return;
-    }
+    float sizableWidth = size.width - (_topLeft?_topLeft->getContentSize().width:.0f) - (_topRight?_topRight->getContentSize().width:.0f);
+    float sizableHeight = size.height - (_topLeft?_topLeft->getContentSize().height:.0f) - (_topRight?_bottomRight->getContentSize().height:.0f);
     
-    float sizableWidth = size.width - _topLeft->getContentSize().width - _topRight->getContentSize().width;
-    float sizableHeight = size.height - _topLeft->getContentSize().height - _bottomRight->getContentSize().height;
+    float horizontalScale = _centre?(sizableWidth/_centre->getContentSize().width):.0f;
+    float verticalScale = _centre?(sizableHeight/_centre->getContentSize().height):.0f;
     
-    float horizontalScale = sizableWidth/_centre->getContentSize().width;
-    float verticalScale = sizableHeight/_centre->getContentSize().height;
+    float rescaledWidth = _centre?(_centre->getContentSize().width * horizontalScale):0;
+    float rescaledHeight = _centre?(_centre->getContentSize().height * verticalScale):0;
     
-    _centre->setScaleX(horizontalScale);
-    _centre->setScaleY(verticalScale);
-    
-    float rescaledWidth = _centre->getContentSize().width * horizontalScale;
-    float rescaledHeight = _centre->getContentSize().height * verticalScale;
-    
-    float leftWidth = _bottomLeft->getContentSize().width;
-    float bottomHeight = _bottomLeft->getContentSize().height;
-    
-    _bottomLeft->setAnchorPoint(Vec2(1,1));
-    _bottomRight->setAnchorPoint(Vec2(0,1));
-    _topLeft->setAnchorPoint(Vec2(1,0));
-    _topRight->setAnchorPoint(Vec2(0,0));
-    _left->setAnchorPoint(Vec2(1,0.5));
-    _right->setAnchorPoint(Vec2(0,0.5));
-    _top->setAnchorPoint(Vec2(0.5,0));
-    _bottom->setAnchorPoint(Vec2(0.5,1));
-    _centre->setAnchorPoint(Vec2(0.5,0.5));
+    float leftWidth = _bottomLeft?_bottomLeft->getContentSize().width:.0f;
+    float bottomHeight = _bottomLeft?_bottomLeft->getContentSize().height:.0f;
     
     // Position corners
-    _bottomLeft->setPosition(leftWidth,bottomHeight);
-    _bottomRight->setPosition(leftWidth+rescaledWidth,bottomHeight);
-    _topLeft->setPosition(leftWidth, bottomHeight+rescaledHeight);
-    _topRight->setPosition(leftWidth+rescaledWidth, bottomHeight+rescaledHeight);
+    if(_bottomLeft)
+    {
+        _bottomLeft->setAnchorPoint(Vec2(1,1));
+        _bottomLeft->setPosition(leftWidth,bottomHeight);
+    }
+    if(_bottomRight)
+    {
+        _bottomRight->setAnchorPoint(Vec2(0,1));
+        _bottomRight->setPosition(leftWidth+rescaledWidth,bottomHeight);
+    }
+    if(_topLeft)
+    {
+        _topLeft->setAnchorPoint(Vec2(1,0));
+        _topLeft->setPosition(leftWidth, bottomHeight+rescaledHeight);
+    }
+    if(_topRight)
+    {
+        _topRight->setAnchorPoint(Vec2(0,0));
+        _topRight->setPosition(leftWidth+rescaledWidth, bottomHeight+rescaledHeight);
+    }
     
     // Scale and position borders
-    _left->setPosition(leftWidth, bottomHeight+rescaledHeight/2);
-    _left->setScaleY(verticalScale);
-    _right->setPosition(leftWidth+rescaledWidth,bottomHeight+rescaledHeight/2);
-    _right->setScaleY(verticalScale);
-    _bottom->setPosition(leftWidth+rescaledWidth/2,bottomHeight);
-    _bottom->setScaleX(horizontalScale);
-    _top->setPosition(leftWidth+rescaledWidth/2,bottomHeight+rescaledHeight);
-    _top->setScaleX(horizontalScale);
-    
+    if(_left)
+    {
+        _left->setAnchorPoint(Vec2(1,0.5));
+        _left->setPosition(leftWidth, bottomHeight+rescaledHeight/2);
+        _left->setScaleY(verticalScale);
+    }
+    if(_right)
+    {
+        _right->setAnchorPoint(Vec2(0,0.5));
+        _right->setPosition(leftWidth+rescaledWidth,bottomHeight+rescaledHeight/2);
+        _right->setScaleY(verticalScale);
+    }
+    if(_top)
+    {
+        _top->setAnchorPoint(Vec2(0.5,0));
+        _top->setPosition(leftWidth+rescaledWidth/2,bottomHeight+rescaledHeight);
+        _top->setScaleX(horizontalScale);
+    }
+    if(_bottom)
+    {
+        _bottom->setAnchorPoint(Vec2(0.5,1));
+        _bottom->setPosition(leftWidth+rescaledWidth/2,bottomHeight);
+        _bottom->setScaleX(horizontalScale);
+    }
     // Position centre
-    _centre->setPosition(leftWidth+rescaledWidth/2, bottomHeight+rescaledHeight/2);
+    if(_centre)
+    {
+        _centre->setAnchorPoint(Vec2(0.5,0.5));
+        _centre->setPosition(leftWidth+rescaledWidth/2, bottomHeight+rescaledHeight/2);
+        _centre->setScaleX(horizontalScale);
+        _centre->setScaleY(verticalScale);
+    }
 }
 
 bool Scale9Sprite::initWithFile(const std::string& file, const Rect& rect,  const Rect& capInsets)
@@ -804,7 +843,7 @@ void Scale9Sprite::visit(Renderer *renderer, const Mat4 &parentTransform, uint32
             break;
     }
     
-    if (_scale9Enabled)
+    if (_scale9Enabled && !isCapInsetEmpty())
     {
         for( ; j < _protectedChildren.size(); j++ )
         {
@@ -832,7 +871,7 @@ void Scale9Sprite::visit(Renderer *renderer, const Mat4 &parentTransform, uint32
     //
     // draw children and protectedChildren zOrder >= 0
     //
-    if (_scale9Enabled)
+    if (_scale9Enabled && !isCapInsetEmpty())
     {
         for(auto it=_protectedChildren.cbegin()+j; it != _protectedChildren.cend(); ++it)
             (*it)->visit(renderer, _modelViewTransform, flags);
@@ -1131,6 +1170,12 @@ bool Scale9Sprite::isFlippedX()const
 bool Scale9Sprite::isFlippedY()const
 {
     return _flippedY;
+}
+
+bool Scale9Sprite::isCapInsetEmpty() const
+{
+    return false;
+    //return _capInsets.origin == Vec2::ZERO && _capInsets.size.equals(_originalSize);
 }
 
 NS_CC_EXT_END
