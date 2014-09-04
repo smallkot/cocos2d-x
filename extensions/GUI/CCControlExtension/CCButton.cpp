@@ -225,9 +225,8 @@ void ButtonControl::updatePropertiesForState(Control::State state)
         spriteFrame = getBackgroundSpriteFrameForState(Control::State::NORMAL);
     if (spriteFrame)
     {
-        _background->setSpriteFrame(spriteFrame);
-        Size size = _background->getOriginalSize();
-        _background->setCapInsets(Rect(_margin.origin.x*size.width,_margin.origin.y*size.height,_margin.size.width*size.width,_margin.size.height*size.height));
+        Size size = spriteFrame->getOriginalSize();
+        _background->setSpriteFrame(spriteFrame,Rect(_margin.origin.x*size.width,_margin.origin.y*size.height,_margin.size.width*size.width,_margin.size.height*size.height));
     }
     
     // Update label
