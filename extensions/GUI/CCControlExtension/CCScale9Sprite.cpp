@@ -76,14 +76,14 @@ bool Scale9Sprite::init()
 
 bool Scale9Sprite::initWithBatchNode(SpriteBatchNode* batchnode, const Rect& rect, const Rect& capInsets)
 {
-    return this->initWithBatchNode(batchnode, rect, false, capInsets);
+    return this->initWithBatchNode(batchnode, rect, Vec2(0,0), rect.size, false, capInsets);
 }
 
-bool Scale9Sprite::initWithBatchNode(SpriteBatchNode* batchnode, const Rect& rect, bool rotated, const Rect& capInsets)
+bool Scale9Sprite::initWithBatchNode(SpriteBatchNode* batchnode, const Rect& rect, const Vec2 &offset, const Size& originalSize, bool rotated, const Rect& capInsets)
 {
     if(batchnode)
     {
-        this->updateWithBatchNode(batchnode, rect, rotated, capInsets);
+        this->updateWithBatchNode(batchnode, rect, offset, originalSize, rotated, capInsets);
     }
     this->setCascadeColorEnabled(true);
     this->setCascadeOpacityEnabled(true);
@@ -99,11 +99,32 @@ bool Scale9Sprite::initWithBatchNode(SpriteBatchNode* batchnode, const Rect& rec
 #define    TRANSLATE_Y(x, y, ytranslate) \
     y+=ytranslate;                       \
 
-bool Scale9Sprite::updateWithBatchNode(SpriteBatchNode* batchnode, const Rect& originalRect, bool rotated, const Rect& capInsets)
+bool Scale9Sprite::updateWithBatchNode(SpriteBatchNode* batchnode, const Rect& originalRect, const Vec2 &offset, const Size& originalSize, bool rotated, const Rect& capInsets)
 {
     GLubyte opacity = getOpacity();
     Color3B color = getColor();
+    
+    _offset = offset;
+    _spriteOriginalRect = originalRect;
+    
+    Vec2 offsetPosition(offset.x + (originalSize.width - originalRect.size.width) / 2, offset.y + (originalSize.height - originalRect.size.height) / 2);
+    
     Rect rect(originalRect);
+    
+    if(rotated)
+    {
+        rect.size.width = originalSize.width;
+        rect.size.height = originalSize.height;
+        rect.origin.y -= offsetPosition.x;
+        rect.origin.x -= offsetPosition.y;
+    }
+    else
+    {
+        rect.size.width = originalSize.width;
+        rect.size.height = originalSize.height;
+        rect.origin.x -= offsetPosition.x;
+        rect.origin.y -= offsetPosition.y;
+    }
 
     // Release old sprites
     this->removeAllChildrenWithCleanup(true);
@@ -529,7 +550,8 @@ bool Scale9Sprite::initWithSpriteFrame(SpriteFrame* spriteFrame, const Rect& cap
     SpriteBatchNode *batchnode = SpriteBatchNode::createWithTexture(texture, 9);
     CCASSERT(batchnode != nullptr, "CCSpriteBatchNode must be not nil");
 
-    bool pReturn = this->initWithBatchNode(batchnode, spriteFrame->getRect(), spriteFrame->isRotated(), capInsets);
+    bool pReturn = this->initWithBatchNode(batchnode, spriteFrame->getRect(), spriteFrame->getOffset(), spriteFrame->getOriginalSize(), spriteFrame->isRotated(), capInsets);
+    
     return pReturn;
 }
 
@@ -652,7 +674,7 @@ Size Scale9Sprite::getPreferredSize()
 void Scale9Sprite::setCapInsets(Rect capInsets)
 {
     Size contentSize = this->_contentSize;
-    this->updateWithBatchNode(this->_scale9Image, this->_spriteRect, _spriteFrameRotated, capInsets);
+    this->updateWithBatchNode(this->_scale9Image, this->_spriteOriginalRect, this->_offset, this->_spriteRect.size, _spriteFrameRotated, capInsets);
     this->setContentSize(contentSize);
 }
 
@@ -699,7 +721,7 @@ bool Scale9Sprite::isOpacityModifyRGB() const
 void Scale9Sprite::setSpriteFrame(SpriteFrame * spriteFrame)
 {
     SpriteBatchNode * batchnode = SpriteBatchNode::createWithTexture(spriteFrame->getTexture(), 9);
-    this->updateWithBatchNode(batchnode, spriteFrame->getRect(), spriteFrame->isRotated(), Rect::ZERO);
+    this->updateWithBatchNode(batchnode, spriteFrame->getRect(), spriteFrame->getOffset(), spriteFrame->getOriginalSize(),  spriteFrame->isRotated(), Rect::ZERO);
 
     // Reset insets
     this->_insetLeft = 0;

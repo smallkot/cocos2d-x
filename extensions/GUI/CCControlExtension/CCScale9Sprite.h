@@ -239,7 +239,7 @@ public:
     virtual bool initWithSpriteFrameName(const std::string& spriteFrameName);
 
     virtual bool init();
-    virtual bool initWithBatchNode(SpriteBatchNode* batchnode, const Rect& rect, bool rotated, const Rect& capInsets);
+    virtual bool initWithBatchNode(SpriteBatchNode* batchnode, const Rect& rect, const Vec2 &offset, const Size& originalSize, bool rotated, const Rect& capInsets);
     virtual bool initWithBatchNode(SpriteBatchNode* batchnode, const Rect& rect, const Rect& capInsets);
 
     /**
@@ -252,7 +252,7 @@ public:
      */
     Scale9Sprite* resizableSpriteWithCapInsets(const Rect& capInsets);
     
-    virtual bool updateWithBatchNode(SpriteBatchNode* batchnode, const Rect& rect, bool rotated, const Rect& capInsets);
+    virtual bool updateWithBatchNode(SpriteBatchNode* batchnode, const Rect& rect, const Vec2 &offset, const Size& originalSize, bool rotated, const Rect& capInsets);
     virtual void setSpriteFrame(SpriteFrame * spriteFrame);
 
     // overrides
@@ -275,6 +275,8 @@ protected:
 
     bool _spritesGenerated;
     Rect _spriteRect;
+    Rect _spriteOriginalRect;
+    Vec2 _offset;
     bool   _spriteFrameRotated;
     Rect _capInsetsInternal;
     bool _positionsAreDirty;
