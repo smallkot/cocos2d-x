@@ -233,21 +233,34 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
 {
     Rect rect = originalRect;
     
-    Vec2 offsetPosition(_offset.x + (_originalSize.width - originalRect.size.width) / 2, _offset.y + (_originalSize.height - originalRect.size.height) / 2);
+    Vec2 offsetPosition(ceil(_offset.x + (_originalSize.width - originalRect.size.width) / 2), ceil(_offset.y + (_originalSize.height - originalRect.size.height) / 2));
+    
+    Vec2 leftTopOffset;
+    Vec2 rightBottomOffset;
     
     if(rotated)
     {
+        float leftOffset = ceil((_originalSize.width - originalRect.size.width) / 2 - _offset.x);
+        float topOffset = ceil((_originalSize.height - originalRect.size.height) / 2 - _offset.y);
+        
         rect.size.width = _originalSize.width;
         rect.size.height = _originalSize.height;
         rect.origin.y -= offsetPosition.x;
         rect.origin.x -= offsetPosition.y;
+        
+        leftTopOffset = Vec2(_originalSize.height - originalRect.size.height - topOffset, leftOffset);
+        rightBottomOffset = Vec2(-topOffset,(_originalSize.width - originalRect.size.width - leftOffset));
     }
     else
     {
+        float leftOffset = ceil((_originalSize.width - originalRect.size.width) / 2 + _offset.x);
+        float topOffset = ceil((_originalSize.height - originalRect.size.height) / 2 - _offset.y);
         rect.size.width = _originalSize.width;
         rect.size.height = _originalSize.height;
         rect.origin.x -= offsetPosition.x;
         rect.origin.y -= offsetPosition.y;
+        leftTopOffset = Vec2(leftOffset, topOffset);
+        rightBottomOffset = Vec2(_originalSize.width - originalRect.size.width - leftOffset,_originalSize.height - originalRect.size.height - topOffset);
     }
     
     float w = rect.size.width;
@@ -376,21 +389,50 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
         rotatedleftcenterbounds.origin = leftcenterbounds.origin;
         rotatedcenterbottombounds.origin = centerbottombounds.origin;
         rotatedcentertopbounds.origin = centertopbounds.origin;
-        
-        
     }
     
+    Rect origcenterbounds= rotatedcenterbounds;
     
     // Centre
-    if(rotatedcenterbounds.size.width != 0 && rotatedcenterbounds.size.height !=0 )
+    if(rotatedleftcenterbounds.size.width<leftTopOffset.x)
     {
-        _centre = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcenterbounds, rotated);
+        rotatedcenterbounds.origin.x += leftTopOffset.x - rotatedleftcenterbounds.size.width;
+        rotatedcenterbounds.size.width -= leftTopOffset.x - rotatedleftcenterbounds.size.width;
+    }
+    if(rotatedrightcenterbounds.size.width<rightBottomOffset.x)
+    {
+        rotatedcenterbounds.size.width -= rightBottomOffset.x - rotatedrightcenterbounds.size.width;
+    }
+    if(rotatedcentertopbounds.size.height<leftTopOffset.y)
+    {
+        rotatedcenterbounds.size.height -= leftTopOffset.y - rotatedcenterbottombounds.size.height;
+    }
+    if(rotatedcenterbottombounds.size.height<rightBottomOffset.y)
+    {
+        rotatedcenterbounds.origin.y += rightBottomOffset.y - rotatedcentertopbounds.size.height;
+        rotatedcenterbounds.size.height -= rightBottomOffset.y - rotatedcentertopbounds.size.height;
+    }
+    if(rotatedcenterbounds.size.width > 0 && rotatedcenterbounds.size.height > 0 )
+    {
+        Vec2 mid1 = Vec2(origcenterbounds.getMidX(),origcenterbounds.getMidY());
+        Vec2 mid2 = Vec2(rotatedcenterbounds.getMidX(),rotatedcenterbounds.getMidY());
+        Vec2 offset = mid1 - mid2;
+        if(rotated)
+        {
+            offset = Vec2(-offset.y,-offset.x);
+            //rotatedcenterbounds.size = Size(rotatedcenterbounds.size.height,rotatedcenterbounds.size.width);
+        }
+        SpriteFrame *frame = SpriteFrame::createWithTexture(_scale9Image->getTexture(), rotatedcenterbounds, rotated, offset, origcenterbounds.size);
+        _centre = Sprite::createWithSpriteFrame(frame);
         _centre->retain();
         this->addProtectedChild(_centre);
     }
     
     // Top
-    if(rotatedcentertopbounds.size.width != 0 && rotatedcentertopbounds.size.height !=0 )
+    rotatedcentertopbounds.size.height -= leftTopOffset.y;
+    rotatedcentertopbounds.origin.x += leftTopOffset.x;
+    rotatedcentertopbounds.size.width -= rightBottomOffset.x + leftTopOffset.x;
+    if(rotatedcentertopbounds.size.width > 0 && rotatedcentertopbounds.size.height > 0 )
     {
         _top = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcentertopbounds, rotated);
         _top->retain();
@@ -398,7 +440,11 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
     }
     
     // Bottom
-    if(rotatedcenterbottombounds.size.width != 0 && rotatedcenterbottombounds.size.height !=0 )
+    rotatedcenterbottombounds.origin.y += rightBottomOffset.y;
+    rotatedcenterbottombounds.size.height -= rightBottomOffset.y;
+    rotatedcenterbottombounds.origin.x += leftTopOffset.x;
+    rotatedcenterbottombounds.size.width -= rightBottomOffset.x + leftTopOffset.x;
+    if(rotatedcenterbottombounds.size.width > 0 && rotatedcenterbottombounds.size.height > 0 )
     {
         _bottom = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcenterbottombounds, rotated);
         _bottom->retain();
@@ -406,7 +452,11 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
     }
     
     // Left
-    if(rotatedleftcenterbounds.size.width != 0 && rotatedleftcenterbounds.size.height !=0 )
+    rotatedleftcenterbounds.origin.x += rightBottomOffset.x;
+    rotatedleftcenterbounds.size.width -= rightBottomOffset.x;
+    rotatedleftcenterbounds.origin.y += rightBottomOffset.y;
+    rotatedleftcenterbounds.size.height -= rightBottomOffset.y + leftTopOffset.y;
+    if(rotatedleftcenterbounds.size.width > 0 && rotatedleftcenterbounds.size.height > 0 )
     {
         _left = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedleftcenterbounds, rotated);
         _left->retain();
@@ -414,7 +464,10 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
     }
     
     // Right
-    if(rotatedrightcenterbounds.size.width != 0 && rotatedrightcenterbounds.size.height !=0 )
+    rotatedrightcenterbounds.size.width -= rightBottomOffset.x;
+    rotatedrightcenterbounds.origin.y += rightBottomOffset.y;
+    rotatedrightcenterbounds.size.height -= rightBottomOffset.y + leftTopOffset.y;
+    if(rotatedrightcenterbounds.size.width > 0 && rotatedrightcenterbounds.size.height > 0 )
     {
         _right = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrightcenterbounds, rotated);
         _right->retain();
@@ -422,7 +475,11 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
     }
     
     // Top left
-    if(rotatedlefttopbounds.size.width != 0 && rotatedlefttopbounds.size.height !=0 )
+    _topLeftSize = rotatedlefttopbounds.size;
+    rotatedlefttopbounds.origin.x += leftTopOffset.x;
+    rotatedlefttopbounds.size.width -= leftTopOffset.x;
+    rotatedlefttopbounds.size.height -= leftTopOffset.y;
+    if(rotatedlefttopbounds.size.width > 0 && rotatedlefttopbounds.size.height > 0 )
     {
         _topLeft = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedlefttopbounds, rotated);
         _topLeft->retain();
@@ -430,7 +487,9 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
     }
     
     // Top right
-    if(rotatedrighttopbounds.size.width != 0 && rotatedrighttopbounds.size.height !=0 )
+    rotatedrighttopbounds.size.width -= rightBottomOffset.x;
+    rotatedrighttopbounds.size.height -= leftTopOffset.y;
+    if(rotatedrighttopbounds.size.width > 0 && rotatedrighttopbounds.size.height > 0 )
     {
         _topRight = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrighttopbounds, rotated);
         _topRight->retain();
@@ -438,7 +497,11 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
     }
     
     // Bottom left
-    if(rotatedleftbottombounds.size.width != 0 && rotatedleftbottombounds.size.height !=0 )
+    rotatedleftbottombounds.origin.x += leftTopOffset.x;
+    rotatedleftbottombounds.size.width -= leftTopOffset.x;
+    rotatedleftbottombounds.origin.y += rightBottomOffset.y;
+    rotatedleftbottombounds.size.height -= rightBottomOffset.y;
+    if(rotatedleftbottombounds.size.width > 0 && rotatedleftbottombounds.size.height > 0 )
     {
         _bottomLeft = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedleftbottombounds, rotated);
         _bottomLeft->retain();
@@ -446,7 +509,11 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
     }
     
     // Bottom right
-    if(rotatedrightbottombounds.size.width != 0 && rotatedrightbottombounds.size.height !=0 )
+    _bottomRightSize = rotatedrightbottombounds.size;
+    rotatedrightbottombounds.size.width -= rightBottomOffset.x;
+    rotatedrightbottombounds.origin.y += rightBottomOffset.y;
+    rotatedrightbottombounds.size.height -= rightBottomOffset.y;
+    if(rotatedrightbottombounds.size.width > 0 && rotatedrightbottombounds.size.height > 0 )
     {
         _bottomRight = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrightbottombounds, rotated);
         _bottomRight->retain();
@@ -473,17 +540,23 @@ void Scale9Sprite::updatePositions()
         _scale9Image->setScaleY(verticalScale);
     }
     
-    float sizableWidth = size.width - (_topLeft?_topLeft->getContentSize().width:.0f) - (_topRight?_topRight->getContentSize().width:.0f);
-    float sizableHeight = size.height - (_topLeft?_topLeft->getContentSize().height:.0f) - (_topRight?_bottomRight->getContentSize().height:.0f);
+    float sizableWidth = size.width - _topLeftSize.width - _bottomRightSize.width;
+    float sizableHeight = size.height - _topLeftSize.height - _bottomRightSize.height;
     
     float horizontalScale = _centre?(sizableWidth/_centre->getContentSize().width):.0f;
     float verticalScale = _centre?(sizableHeight/_centre->getContentSize().height):.0f;
     
+    if(_centre)
+    {
+        _centre->setScaleX(horizontalScale);
+        _centre->setScaleY(verticalScale);
+    }
+    
     float rescaledWidth = _centre?(_centre->getContentSize().width * horizontalScale):0;
     float rescaledHeight = _centre?(_centre->getContentSize().height * verticalScale):0;
     
-    float leftWidth = _bottomLeft?_bottomLeft->getContentSize().width:.0f;
-    float bottomHeight = _bottomLeft?_bottomLeft->getContentSize().height:.0f;
+    float leftWidth = _topLeftSize.width;
+    float bottomHeight = _bottomRightSize.height;
     
     // Position corners
     if(_bottomLeft)

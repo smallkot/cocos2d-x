@@ -392,6 +392,9 @@ protected:
     Sprite* _bottom;
     Sprite* _bottomRight;
     
+    Size _topLeftSize;
+    Size _bottomRightSize;
+    
     bool _scale9Enabled;
     
     /** Original sprite's size. */
