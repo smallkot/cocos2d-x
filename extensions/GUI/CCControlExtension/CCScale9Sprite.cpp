@@ -229,42 +229,39 @@ bool Scale9Sprite::updateWithSprite(Sprite* sprite, const Rect& originalRect, co
     return true;
 }
 
+Rect intersectRect(const Rect &first, const Rect &second)
+{
+    Rect ret;
+    ret.origin.x = std::max(first.origin.x,second.origin.x);
+    ret.origin.y = std::max(first.origin.y,second.origin.y);
+    
+    float rightRealPoint = std::min(first.origin.x + first.size.width, second.origin.x + second.size.width);
+    float bottomRealPoint = std::min(first.origin.y + first.size.height, second.origin.y + second.size.height);
+    
+    ret.size.width = rightRealPoint - ret.origin.x;
+    ret.size.height = bottomRealPoint - ret.origin.y;
+    return ret;
+}
+
 void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
 {
     Rect rect = originalRect;
     
     Vec2 offsetPosition(ceil(_offset.x + (_originalSize.width - originalRect.size.width) / 2), ceil(_offset.y + (_originalSize.height - originalRect.size.height) / 2));
     
-    Vec2 leftTopOffset;
-    Vec2 rightBottomOffset;
+    Rect realRect = originalRect;
     
-    if(rotated)
-    {
-        float leftOffset = ceil((_originalSize.width - originalRect.size.width) / 2 - _offset.x);
-        float topOffset = ceil((_originalSize.height - originalRect.size.height) / 2 - _offset.y);
-        
-        rect.size.width = _originalSize.width;
-        rect.size.height = _originalSize.height;
-        rect.origin.y -= offsetPosition.x;
-        rect.origin.x -= offsetPosition.y;
-        
-        leftTopOffset = Vec2(_originalSize.height - originalRect.size.height - topOffset, leftOffset);
-        rightBottomOffset = Vec2(-topOffset,(_originalSize.width - originalRect.size.width - leftOffset));
-    }
-    else
-    {
-        float leftOffset = ceil((_originalSize.width - originalRect.size.width) / 2 + _offset.x);
-        float topOffset = ceil((_originalSize.height - originalRect.size.height) / 2 - _offset.y);
-        rect.size.width = _originalSize.width;
-        rect.size.height = _originalSize.height;
-        rect.origin.x -= offsetPosition.x;
-        rect.origin.y -= offsetPosition.y;
-        leftTopOffset = Vec2(leftOffset, topOffset);
-        rightBottomOffset = Vec2(_originalSize.width - originalRect.size.width - leftOffset,_originalSize.height - originalRect.size.height - topOffset);
-    }
+    float leftOffset = ceil((_originalSize.width - originalRect.size.width) / 2 + _offset.x);
+    float topOffset = ceil((_originalSize.height - originalRect.size.height) / 2 - _offset.y);
     
-    float w = rect.size.width;
-    float h = rect.size.height;
+    float rightOffset = _originalSize.width - originalRect.size.width - leftOffset;
+    float bottomOffset = _originalSize.height - originalRect.size.height - topOffset;
+    
+    Vec2 leftTopOffset = Vec2(leftOffset, topOffset);
+    Vec2 rightBottomOffset = Vec2(rightOffset,bottomOffset);
+    
+    float w = _originalSize.width;
+    float h = _originalSize.height;
     
     // If there is no specified center region
     if ( _capInsetsInternal.equals(Rect::ZERO) )
@@ -275,11 +272,11 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
     
     float left_w = _capInsetsInternal.origin.x;
     float center_w = _capInsetsInternal.size.width;
-    float right_w = rect.size.width - (left_w + center_w);
+    float right_w = w - (left_w + center_w);
     
     float top_h = _capInsetsInternal.origin.y;
     float center_h = _capInsetsInternal.size.height;
-    float bottom_h = rect.size.height - (top_h + center_h);
+    float bottom_h = h - (top_h + center_h);
     
     // calculate rects
     
@@ -346,7 +343,7 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
     {
         
         AffineTransform t = AffineTransform::IDENTITY;
-        t = AffineTransformTranslate(t, rect.origin.x, rect.origin.y);
+        t = AffineTransformTranslate(t, rect.origin.x - offsetPosition.x, rect.origin.y - offsetPosition.y);
         
         rotatedcenterbounds = RectApplyAffineTransform(rotatedcenterbounds, t);
         rotatedrightbottombounds = RectApplyAffineTransform(rotatedrightbottombounds, t);
@@ -367,7 +364,7 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
         
         AffineTransform t = AffineTransform::IDENTITY;
         
-        t = AffineTransformTranslate(t, rect.size.height+rect.origin.x, rect.origin.y);
+        t = AffineTransformTranslate(t, _originalSize.height + rect.origin.x - offsetPosition.y, rect.origin.y - offsetPosition.x);
         t = AffineTransformRotate(t, 1.57079633f);
         
         centerbounds = RectApplyAffineTransform(centerbounds, t);
@@ -391,38 +388,30 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
         rotatedcentertopbounds.origin = centertopbounds.origin;
     }
     
-    Rect origcenterbounds= rotatedcenterbounds;
-    
     // Centre
-    if(rotatedleftcenterbounds.size.width<leftTopOffset.x)
+    Size origSize = rotatedcenterbounds.size;
+    
+    if(rotated)
     {
-        rotatedcenterbounds.origin.x += leftTopOffset.x - rotatedleftcenterbounds.size.width;
-        rotatedcenterbounds.size.width -= leftTopOffset.x - rotatedleftcenterbounds.size.width;
+        rotatedcenterbounds.size = Size(rotatedcenterbounds.size.height,rotatedcenterbounds.size.width);
+        realRect.size = Size(realRect.size.height,realRect.size.width);
     }
-    if(rotatedrightcenterbounds.size.width<rightBottomOffset.x)
-    {
-        rotatedcenterbounds.size.width -= rightBottomOffset.x - rotatedrightcenterbounds.size.width;
-    }
-    if(rotatedcentertopbounds.size.height<leftTopOffset.y)
-    {
-        rotatedcenterbounds.size.height -= leftTopOffset.y - rotatedcenterbottombounds.size.height;
-    }
-    if(rotatedcenterbottombounds.size.height<rightBottomOffset.y)
-    {
-        rotatedcenterbounds.origin.y += rightBottomOffset.y - rotatedcentertopbounds.size.height;
-        rotatedcenterbounds.size.height -= rightBottomOffset.y - rotatedcentertopbounds.size.height;
-    }
+    
+    Rect origcenterbounds = rotatedcenterbounds;
+    
+    rotatedcenterbounds = intersectRect(rotatedcenterbounds,realRect);
+    
     if(rotatedcenterbounds.size.width > 0 && rotatedcenterbounds.size.height > 0 )
     {
         Vec2 mid1 = Vec2(origcenterbounds.getMidX(),origcenterbounds.getMidY());
         Vec2 mid2 = Vec2(rotatedcenterbounds.getMidX(),rotatedcenterbounds.getMidY());
-        Vec2 offset = mid1 - mid2;
+        Vec2 offset = mid2 - mid1;
         if(rotated)
         {
-            offset = Vec2(-offset.y,-offset.x);
-            //rotatedcenterbounds.size = Size(rotatedcenterbounds.size.height,rotatedcenterbounds.size.width);
+            offset = Vec2(offset.y,offset.x);
+            rotatedcenterbounds.size = Size(rotatedcenterbounds.size.height,rotatedcenterbounds.size.width);
         }
-        SpriteFrame *frame = SpriteFrame::createWithTexture(_scale9Image->getTexture(), rotatedcenterbounds, rotated, offset, origcenterbounds.size);
+        SpriteFrame *frame = SpriteFrame::createWithTexture(_scale9Image->getTexture(), rotatedcenterbounds, rotated, offset, origSize);
         _centre = Sprite::createWithSpriteFrame(frame);
         _centre->retain();
         this->addProtectedChild(_centre);
@@ -1247,8 +1236,7 @@ bool Scale9Sprite::isFlippedY()const
 
 bool Scale9Sprite::isCapInsetEmpty() const
 {
-    return false;
-    //return _capInsets.origin == Vec2::ZERO && _capInsets.size.equals(_originalSize);
+    return _capInsets.origin == Vec2::ZERO && _capInsets.size.equals(_originalSize);
 }
 
 NS_CC_EXT_END
