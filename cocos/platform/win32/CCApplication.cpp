@@ -31,6 +31,7 @@ THE SOFTWARE.
 #include "base/CCDirector.h"
 #include <algorithm>
 #include "platform/CCFileUtils.h"
+#include <shellapi.h>
 /**
 @brief    This function change the PVRFrame show/hide setting in register.
 @param  bEnable If true show the PVRFrame window, otherwise hide.
@@ -203,6 +204,15 @@ const char * Application::getCurrentLanguageCode()
 Application::Platform Application::getTargetPlatform()
 {
     return Platform::OS_WINDOWS;
+}
+
+bool Application::openURL(const std::string &url)
+{
+    WCHAR *temp = new WCHAR[url.size() + 1];
+    int wchars_num = MultiByteToWideChar(CP_UTF8, 0, url.c_str(), url.size() + 1, temp, url.size() + 1);
+    HINSTANCE r = ShellExecuteW(NULL, L"open", temp, NULL, NULL, SW_SHOWNORMAL);
+    delete[] temp;
+    return (int)r>32;
 }
 
 void Application::setResourceRootPath(const std::string& rootResDir)
