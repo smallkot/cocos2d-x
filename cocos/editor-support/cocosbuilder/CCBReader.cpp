@@ -265,12 +265,12 @@ void CCBReader::calcScales(const Size &designResolution, float designScale, Scen
             if(mainScale1<mainScale2)
             {
                 setMainScale(mainScale1);
-                setAdditionalScale((resolutionAspectX/mainScale1)/designAspectX);
+                setAdditionalScale(mainScale2);
             }
             else
             {
                 setMainScale(mainScale2);
-                setAdditionalScale((resolutionAspectY/mainScale2)/designAspectY);
+                setAdditionalScale(mainScale1);
             }
         }
         else if(scaleType == SceneScaleType::MAXSCALE)
@@ -280,12 +280,12 @@ void CCBReader::calcScales(const Size &designResolution, float designScale, Scen
             if(mainScale1>mainScale2)
             {
                 setMainScale(mainScale1);
-                setAdditionalScale((resolutionAspectX/mainScale1)/designAspectX);
+                setAdditionalScale(mainScale2);
             }
             else
             {
                 setMainScale(mainScale2);
-                setAdditionalScale((resolutionAspectY/mainScale2)/designAspectY);
+                setAdditionalScale(mainScale1);
             }
         }
         
