@@ -222,7 +222,18 @@ void ButtonControl::updatePropertiesForState(Control::State state)
     
     SpriteFrame* spriteFrame = getBackgroundSpriteFrameForState(state);
     if (!spriteFrame)
-        spriteFrame = getBackgroundSpriteFrameForState(Control::State::NORMAL);
+    {
+        if(state == Control::State::SELECTED_HIGH_LIGHTED)
+        {
+            spriteFrame = getBackgroundSpriteFrameForState(Control::State::HIGH_LIGHTED);
+            if(spriteFrame)
+                spriteFrame = getBackgroundSpriteFrameForState(Control::State::NORMAL);
+        }
+        else
+        {
+            spriteFrame = getBackgroundSpriteFrameForState(Control::State::NORMAL);
+        }
+    }
     if (spriteFrame)
     {
         Size size = spriteFrame->getOriginalSize();
