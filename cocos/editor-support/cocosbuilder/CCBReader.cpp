@@ -280,12 +280,12 @@ void CCBReader::calcScales(const Size &designResolution, float designScale, Scen
             if(mainScale1>mainScale2)
             {
                 setMainScale(mainScale1);
-                setAdditionalScale(mainScale2);
+                setAdditionalScale(mainScale2/mainScale1);
             }
             else
             {
                 setMainScale(mainScale2);
-                setAdditionalScale(mainScale1);
+                setAdditionalScale(mainScale1/mainScale2);
             }
         }
         
