@@ -523,7 +523,7 @@ void Scale9Sprite::updatePositions()
     if(_scale9Image)
     {
         float horizontalScale = size.width/_scale9Image->getContentSize().width;
-        float verticalScale = size.height/_scale9Image->getContentSize().width;
+        float verticalScale = size.height/_scale9Image->getContentSize().height;
         
         _scale9Image->setScaleX(horizontalScale);
         _scale9Image->setScaleY(verticalScale);
@@ -905,33 +905,13 @@ void Scale9Sprite::visit(Renderer *renderer, const Mat4 &parentTransform, uint32
             break;
     }
     
-    if (_scale9Enabled && !isCapInsetEmpty())
-    {
-        for( ; j < _protectedChildren.size(); j++ )
-        {
-            auto node = _protectedChildren.at(j);
-            
-            if ( node && node->getLocalZOrder() < 0 )
-                node->visit(renderer, _modelViewTransform, flags);
-            else
-                break;
-        }
-    }
-    else
-    {
-        if (_scale9Image)
-        {
-            _scale9Image->visit(renderer, _modelViewTransform, flags);
-        }
-    }
-    
     //
     // draw self
     //
     this->draw(renderer, _modelViewTransform, flags);
     
     //
-    // draw children and protectedChildren zOrder >= 0
+    // draw protectedChildren and children zOrder >= 0
     //
     if (_scale9Enabled && !isCapInsetEmpty())
     {
