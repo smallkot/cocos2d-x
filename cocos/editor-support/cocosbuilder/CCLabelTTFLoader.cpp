@@ -30,6 +30,7 @@ void LabelTTFLoader::onStarPropertiesParsing(cocos2d::Node * pNode, CCBReader * 
     _outlineWidth = 0.0f;
     _shadowBlurRadius = 0.0f;
     _shadowOffset = Vec2(0,0);
+    pNode->setColor(Color3B::WHITE);
 }
     
 void LabelTTFLoader::onEndPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader)
