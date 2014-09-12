@@ -9,6 +9,7 @@ namespace cocosbuilder {
 void LayerColorLoader::onStarPropertiesParsing(cocos2d::Node * pNode, CCBReader * ccbReader)
 {
     pNode->setOpacity(255);
+    pNode->setColor(Color3B::WHITE);
 }
 
 void LayerColorLoader::onHandlePropTypeBlendFunc(Node * pNode, Node * pParent, const char * pPropertyName, BlendFunc pBlendFunc, CCBReader * ccbReader) {
