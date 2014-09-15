@@ -330,12 +330,9 @@ void ButtonControl::layout()
         shrunkSize = true;
     }
     
-    if (shrunkSize)
-    {
-        Size labelSize = Size(clampf(size.width - _horizontalPadding * 2, 0, originalLabelSize.width),
-                                      clampf(size.height - _verticalPadding * 2, 0, originalLabelSize.height));
-        _label->setDimensions(labelSize.width, labelSize.height);
-    }
+    Size labelSize = Size(clampf(size.width - _horizontalPadding * 2, 0, size.width - _horizontalPadding * 2),
+                                      clampf(size.height - _verticalPadding * 2, 0, size.height - _verticalPadding * 2));
+    _label->setDimensions(labelSize.width, labelSize.height);
     
     _background->setContentSize(size);
     _background->setAnchorPoint(Point(0.5f,0.5f));

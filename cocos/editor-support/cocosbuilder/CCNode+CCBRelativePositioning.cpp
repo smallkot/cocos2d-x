@@ -92,11 +92,11 @@ Point getAbsolutePosition(float mainScale, float additionalScale, const Point &p
     
     // Convert position to points
     if (xUnit == CCBReader::PositionUnit::POINTS) x = pt.x;
-    else if (xUnit == CCBReader::PositionUnit::UIPOINTS) x = pt.x * CCBReader::getResolutionScale() * mainScale;
+    else if (xUnit == CCBReader::PositionUnit::UIPOINTS) x = pt.x * CCBReader::getResolutionScale();
     else if (xUnit == CCBReader::PositionUnit::NORMALIZED) x = pt.x * containerSize.width;
     
     if (yUnit == CCBReader::PositionUnit::POINTS) y = pt.y;
-    else if (yUnit == CCBReader::PositionUnit::UIPOINTS) y = pt.y * CCBReader::getResolutionScale() * mainScale;
+    else if (yUnit == CCBReader::PositionUnit::UIPOINTS) y = pt.y * CCBReader::getResolutionScale();
     else if (yUnit == CCBReader::PositionUnit::NORMALIZED) y = pt.y * containerSize.height;
     
     // Account for reference corner
@@ -139,7 +139,7 @@ Size getAbsoluteSize(float mainScale, float additionalScale, const Size &content
     }
     else if (widthUnit == CCBReader::SizeUnit::UIPOINTS)
     {
-        size.width = CCBReader::getResolutionScale() * mainScale * contentSize.width;
+        size.width = CCBReader::getResolutionScale() * contentSize.width;
     }
     else if (widthUnit == CCBReader::SizeUnit::NORMALIZED)
     {
@@ -151,7 +151,7 @@ Size getAbsoluteSize(float mainScale, float additionalScale, const Size &content
     }
     else if (widthUnit == CCBReader::SizeUnit::INSETUIPOINTS)
     {
-        size.width = containerSize.width - contentSize.width * CCBReader::getResolutionScale() * mainScale;
+        size.width = containerSize.width - contentSize.width * CCBReader::getResolutionScale();
     }
         
     // Height
@@ -161,7 +161,7 @@ Size getAbsoluteSize(float mainScale, float additionalScale, const Size &content
     }
     else if (heightUnit == CCBReader::SizeUnit::UIPOINTS)
     {
-        size.height = CCBReader::getResolutionScale() * mainScale * contentSize.height;
+        size.height = CCBReader::getResolutionScale() * contentSize.height;
     }
     else if (heightUnit == CCBReader::SizeUnit::NORMALIZED)
     {
@@ -173,7 +173,7 @@ Size getAbsoluteSize(float mainScale, float additionalScale, const Size &content
     }
     else if (heightUnit == CCBReader::SizeUnit::INSETUIPOINTS)
     {
-        size.height = containerSize.height - contentSize.height * CCBReader::getResolutionScale() * mainScale;
+        size.height = containerSize.height - contentSize.height * CCBReader::getResolutionScale();
     }
     
     return size;
