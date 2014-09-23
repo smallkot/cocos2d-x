@@ -5,3 +5,32 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
 #endif
+
+#ifdef __cplusplus
+	#include <stdarg.h>
+	#include <stdlib.h>
+	#include <string.h>
+	#include <limits.h>
+	#include <sys/select.h>
+	#include <float.h>
+	#include <math.h>
+	#include <string.h>
+	#include <stdarg.h>
+	#include <stdio.h>
+	#include <stdlib.h>
+	#include <time.h>
+	#include <sys/time.h>
+	#include <stdint.h>
+	#include <assert.h>
+	#include <vector>
+	#include <string>
+	#include <map>
+	#include <list>
+	#include <memory>
+	#include <functional>
+	#include <thread>
+	#include <mutex>
+	#include <unordered_map>
+	#include <list>
+	#include <algorithm>
+#endif
