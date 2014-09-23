@@ -9198,6 +9198,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "../tests/cpp-tests/proj.mac/Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					CC_TARGET_OS_MAC,
@@ -9211,6 +9213,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "../tests/cpp-tests/proj.mac/Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					CC_TARGET_OS_MAC,
@@ -9293,6 +9297,8 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "../tests/cpp-tests/proj.ios/Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					CC_TARGET_OS_IPHONE,
@@ -9310,6 +9316,8 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "../tests/cpp-tests/proj.ios/Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					CC_TARGET_OS_IPHONE,
