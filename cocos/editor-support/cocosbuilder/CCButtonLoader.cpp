@@ -153,13 +153,13 @@ void ButtonLoader::onHandlePropTypeFloat(cocos2d::Node * pNode, cocos2d::Node * 
     } else if(strcmp(pPropertyName, PROPERTY_MARGIN_BOTTOM) == 0) {
         _margins.size.height = pFloat;
     } else if(strcmp(pPropertyName, PROPERTY_OFFSET_LEFT) == 0) {
-        ((ButtonControl *)pNode)->setBackgroundOpacity(pFloat*255, Control::State::NORMAL);
+        ((ButtonControl *)pNode)->setLeftOffset(pFloat);
     } else if(strcmp(pPropertyName, PROPERTY_OFFSET_TOP) == 0) {
-        _margins.origin.y = pFloat;
+        ((ButtonControl *)pNode)->setTopOffset(pFloat);
     } else if(strcmp(pPropertyName, PROPERTY_OFFSET_RIGHT) == 0) {
-        _margins.size.width = pFloat;
+        ((ButtonControl *)pNode)->setRightOffset(pFloat);
     } else if(strcmp(pPropertyName, PROPERTY_OFFSET_BOTTOM) == 0) {
-        _margins.size.height = pFloat;
+        ((ButtonControl *)pNode)->setBottomOffset(pFloat);
     } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDOPACITY_NORMAL) == 0) {
         ((ButtonControl *)pNode)->setBackgroundOpacity(pFloat*255, Control::State::NORMAL);
     } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDOPACITY_HIGHLIGHTED) == 0) {

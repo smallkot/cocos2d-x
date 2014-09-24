@@ -584,42 +584,42 @@ void ButtonControl::setOffsets(float left, float top, float right, float bottom)
     _bottomOffsets = bottom;
 }
 
-void ButtonControl::setLeftOffsets(float left)
+void ButtonControl::setLeftOffset(float left)
 {
     _leftOffsets = left;
 }
 
-float ButtonControl::getLeftOffsets() const
+float ButtonControl::getLeftOffset() const
 {
     return _leftOffsets;
 }
 
-void ButtonControl::setTopOffsets(float top)
+void ButtonControl::setTopOffset(float top)
 {
     _topOffsets = top;
 }
 
-float ButtonControl::getTopOffsets() const
+float ButtonControl::getTopOffset() const
 {
     return _topOffsets;
 }
 
-void ButtonControl::setRightOffsets(float right)
+void ButtonControl::setRightOffset(float right)
 {
     _rightOffsets = right;
 }
 
-float ButtonControl::getRightOffsets() const
+float ButtonControl::getRightOffset() const
 {
     return _rightOffsets;
 }
 
-void ButtonControl::setBottomOffsets(float bottom)
+void ButtonControl::setBottomOffset(float bottom)
 {
     _bottomOffsets = bottom;
 }
 
-float ButtonControl::getBottomOffsets() const
+float ButtonControl::getBottomOffset() const
 {
     return _bottomOffsets;
 }

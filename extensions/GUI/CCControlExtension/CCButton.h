@@ -132,14 +132,14 @@ public:
     TextVAlignment getVerticalAlignment() const;
     
     void setOffsets(float left, float top, float right, float bottom);
-    void setLeftOffsets(float left);
-    float getLeftOffsets() const;
-    void setTopOffsets(float top);
-    float getTopOffsets() const;
-    void setRightOffsets(float right);
-    float getRightOffsets() const;
-    void setBottomOffsets(float bottom);
-    float getBottomOffsets() const;
+    void setLeftOffset(float left);
+    float getLeftOffset() const;
+    void setTopOffset(float top);
+    float getTopOffset() const;
+    void setRightOffset(float right);
+    float getRightOffset() const;
+    void setBottomOffset(float bottom);
+    float getBottomOffset() const;
 
     /**
      *  Sets the background color for the specified state. The color is multiplied into the background sprite frame.
