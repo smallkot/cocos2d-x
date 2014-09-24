@@ -69,6 +69,11 @@ namespace cocosbuilder {;
 #define PROPERTY_MARGIN_TOP "marginTop"
 #define PROPERTY_MARGIN_RIGHT "marginRight"
 #define PROPERTY_MARGIN_BOTTOM "marginBottom"
+    
+#define PROPERTY_OFFSET_LEFT "offsetLeft"
+#define PROPERTY_OFFSET_TOP "offsetTop"
+#define PROPERTY_OFFSET_RIGHT "offsetRight"
+#define PROPERTY_OFFSET_BOTTOM "offsetBottom"
 
 #define PROPERTY_TOGGLESSELECTEDSTATE "togglesSelectedState"
 
@@ -147,8 +152,15 @@ void ButtonLoader::onHandlePropTypeFloat(cocos2d::Node * pNode, cocos2d::Node * 
         _margins.size.width = pFloat;
     } else if(strcmp(pPropertyName, PROPERTY_MARGIN_BOTTOM) == 0) {
         _margins.size.height = pFloat;
-    }
-    if(strcmp(pPropertyName, PROPERTY_BACKGROUNDOPACITY_NORMAL) == 0) {
+    } else if(strcmp(pPropertyName, PROPERTY_OFFSET_LEFT) == 0) {
+        ((ButtonControl *)pNode)->setBackgroundOpacity(pFloat*255, Control::State::NORMAL);
+    } else if(strcmp(pPropertyName, PROPERTY_OFFSET_TOP) == 0) {
+        _margins.origin.y = pFloat;
+    } else if(strcmp(pPropertyName, PROPERTY_OFFSET_RIGHT) == 0) {
+        _margins.size.width = pFloat;
+    } else if(strcmp(pPropertyName, PROPERTY_OFFSET_BOTTOM) == 0) {
+        _margins.size.height = pFloat;
+    } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDOPACITY_NORMAL) == 0) {
         ((ButtonControl *)pNode)->setBackgroundOpacity(pFloat*255, Control::State::NORMAL);
     } else if(strcmp(pPropertyName, PROPERTY_BACKGROUNDOPACITY_HIGHLIGHTED) == 0) {
         ((ButtonControl *)pNode)->setBackgroundOpacity(pFloat*255, Control::State::HIGH_LIGHTED);

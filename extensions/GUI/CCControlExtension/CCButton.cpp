@@ -33,7 +33,7 @@
 
 NS_CC_EXT_BEGIN
 
-ButtonControl::ButtonControl():_background(Scale9Sprite::create()),_label(Label::create()),_zoomWhenHighlighted(false),_horizontalPadding(0),_verticalPadding(0),_togglesSelectedState(false),_preferredSize(0,0),_maxSize(0,0),_needLaout(true)
+ButtonControl::ButtonControl():_background(Scale9Sprite::create()),_label(Label::create()),_zoomWhenHighlighted(false),_horizontalPadding(0),_verticalPadding(0),_togglesSelectedState(false),_preferredSize(0,0),_maxSize(0,0),_needLaout(true), _leftOffsets(0.0f), _topOffsets(0.0f), _rightOffsets(0.0f), _bottomOffsets(0)
 {
     _ignoreAnchorPointForPosition = false;
     Control::addChild(_background);
@@ -87,6 +87,19 @@ ButtonControl *ButtonControl::create(const std::string &title, const std::string
     }
     
     return ret;
+}
+
+bool ButtonControl::isTouchInside(Touch * touch)
+{
+    Vec2 touchLocation = touch->getLocation(); // Get the touch position
+    touchLocation = this->getParent()->convertToNodeSpace(touchLocation);
+    Rect rect = Rect(0, 0, _contentSize.width, _contentSize.height);
+    rect.origin.x += _leftOffsets * getContentSize().width;
+    rect.origin.y += _topOffsets * getContentSize().height;
+    rect.size.width -= _rightOffsets * getContentSize().width - rect.origin.x;
+    rect.size.height -= _bottomOffsets * getContentSize().height - rect.origin.y;
+    Rect bBox = RectApplyAffineTransform(rect, getNodeToParentAffineTransform());
+    return bBox.containsPoint(touchLocation);
 }
 
 bool ButtonControl::onTouchBegan(Touch *touch, Event *event)
@@ -561,6 +574,54 @@ void ButtonControl::setCascadeOpacityEnabled(bool cascadeOpacityEnabled)
 void ButtonControl::setCascadeColorEnabled(bool cascadeColorEnabled)
 {
     
+}
+
+void ButtonControl::setOffsets(float left, float top, float right, float bottom)
+{
+    _leftOffsets = left;
+    _topOffsets = top;
+    _rightOffsets = right;
+    _bottomOffsets = bottom;
+}
+
+void ButtonControl::setLeftOffsets(float left)
+{
+    _leftOffsets = left;
+}
+
+float ButtonControl::getLeftOffsets() const
+{
+    return _leftOffsets;
+}
+
+void ButtonControl::setTopOffsets(float top)
+{
+    _topOffsets = top;
+}
+
+float ButtonControl::getTopOffsets() const
+{
+    return _topOffsets;
+}
+
+void ButtonControl::setRightOffsets(float right)
+{
+    _rightOffsets = right;
+}
+
+float ButtonControl::getRightOffsets() const
+{
+    return _rightOffsets;
+}
+
+void ButtonControl::setBottomOffsets(float bottom)
+{
+    _bottomOffsets = bottom;
+}
+
+float ButtonControl::getBottomOffsets() const
+{
+    return _bottomOffsets;
 }
 
 NS_CC_EXT_END

@@ -130,6 +130,16 @@ public:
     
     void setVerticalAlignment(TextVAlignment vAlignment);
     TextVAlignment getVerticalAlignment() const;
+    
+    void setOffsets(float left, float top, float right, float bottom);
+    void setLeftOffsets(float left);
+    float getLeftOffsets() const;
+    void setTopOffsets(float top);
+    float getTopOffsets() const;
+    void setRightOffsets(float right);
+    float getRightOffsets() const;
+    void setBottomOffsets(float bottom);
+    float getBottomOffsets() const;
 
     /**
      *  Sets the background color for the specified state. The color is multiplied into the background sprite frame.
@@ -221,6 +231,8 @@ public:
     virtual void addChild(Node * child, int zOrder=0, int tag=0) override;
     virtual void setCascadeOpacityEnabled(bool cascadeOpacityEnabled) override;
     virtual void setCascadeColorEnabled(bool cascadeColorEnabled) override;
+    
+    virtual bool isTouchInside(Touch * touch) override;
 
 protected:
     
@@ -250,6 +262,11 @@ protected:
     bool _needLaout;
     Rect _margin;
     ccButtonCallback _callBack;
+    
+    float _leftOffsets;
+    float _topOffsets;
+    float _rightOffsets;
+    float _bottomOffsets;
     
     void layout();
     virtual void needsLayout();
