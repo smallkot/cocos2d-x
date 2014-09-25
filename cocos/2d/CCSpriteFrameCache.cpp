@@ -106,7 +106,12 @@ void SpriteFrameCache::registerSpriteFramesFile(const std::string &plist)
     std::string fullPath = FileUtils::getInstance()->fullPathForFilename(plist);
     ValueMap dictionary = FileUtils::getInstance()->getValueMapFromFile(fullPath);
     
-    ValueMap& framesDict = dictionary["frames"].asValueMap();
+    auto framesDictIter = dictionary.find("frames");
+    
+    if(framesDictIter == dictionary.end())
+        return;
+    
+    ValueMap& framesDict = framesDictIter->second.asValueMap();
     int format = 0;
     
     // get the format
