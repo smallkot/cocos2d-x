@@ -559,7 +559,7 @@ float NodeLoader::parsePropTypeDegrees(Node * pNode, Node * pParent, CCBReader *
 
 float NodeLoader::parsePropTypeFloatScale(Node * pNode, Node * pParent, CCBReader * ccbReader) 
 {
-    float f = ccbReader->readFloat();
+    float f = ccbReader->readFloat() * ccbReader->getResolutionScale();
 
     int type = ccbReader->readInt(false);
     
