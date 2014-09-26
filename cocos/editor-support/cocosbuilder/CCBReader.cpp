@@ -956,8 +956,6 @@ Node * CCBReader::readNodeGraph(Node * pParent)
         }
         else
         {
-            bool scaleByResourceScale = this->readBool();
-            
             if (bodyShape == 0)
             {
                 
@@ -976,11 +974,8 @@ Node * CCBReader::readNodeGraph(Node * pParent)
                         float x = this->readFloat() + physicsOffset.x;
                         float y = this->readFloat() + physicsOffset.y;
                         
-                        if(scaleByResourceScale)
-                        {
-                            x *= CCBReader::getResolutionScale();
-                            y *= CCBReader::getResolutionScale();
-                        }
+                        x *= CCBReader::getResolutionScale();
+                        y *= CCBReader::getResolutionScale();
                         
                         polygons[j].push_back(Point(x, y));
                     }
@@ -998,11 +993,8 @@ Node * CCBReader::readNodeGraph(Node * pParent)
                 float x = this->readFloat() + physicsOffset.x;
                 float y = this->readFloat() + physicsOffset.y;
                 
-                if(scaleByResourceScale)
-                {
-                    x *= CCBReader::getResolutionScale();
-                    y *= CCBReader::getResolutionScale();
-                }
+                x *= CCBReader::getResolutionScale();
+                y *= CCBReader::getResolutionScale();
                 
                 Point point = Point(x, y);
                 

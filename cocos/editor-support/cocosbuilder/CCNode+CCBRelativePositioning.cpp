@@ -91,12 +91,12 @@ Point getAbsolutePosition(float mainScale, float additionalScale, const Point &p
     float y = 0;
     
     // Convert position to points
-    if (xUnit == CCBReader::PositionUnit::POINTS) x = pt.x;
-    else if (xUnit == CCBReader::PositionUnit::UIPOINTS) x = pt.x * CCBReader::getResolutionScale();
+    if (xUnit == CCBReader::PositionUnit::POINTS) x = pt.x * CCBReader::getResolutionScale();
+    else if (xUnit == CCBReader::PositionUnit::UIPOINTS) x = pt.x * mainScale * CCBReader::getResolutionScale();
     else if (xUnit == CCBReader::PositionUnit::NORMALIZED) x = pt.x * containerSize.width;
     
-    if (yUnit == CCBReader::PositionUnit::POINTS) y = pt.y;
-    else if (yUnit == CCBReader::PositionUnit::UIPOINTS) y = pt.y * CCBReader::getResolutionScale();
+    if (yUnit == CCBReader::PositionUnit::POINTS) y = pt.y * CCBReader::getResolutionScale();
+    else if (yUnit == CCBReader::PositionUnit::UIPOINTS) y = pt.y * mainScale * CCBReader::getResolutionScale();
     else if (yUnit == CCBReader::PositionUnit::NORMALIZED) y = pt.y * containerSize.height;
     
     // Account for reference corner
@@ -135,11 +135,11 @@ Size getAbsoluteSize(float mainScale, float additionalScale, const Size &content
     // Width
     if (widthUnit == CCBReader::SizeUnit::POINTS)
     {
-        size.width = contentSize.width;
+        size.width = CCBReader::getResolutionScale() * contentSize.width;
     }
     else if (widthUnit == CCBReader::SizeUnit::UIPOINTS)
     {
-        size.width = CCBReader::getResolutionScale() * contentSize.width;
+        size.width = CCBReader::getResolutionScale() * mainScale * contentSize.width;
     }
     else if (widthUnit == CCBReader::SizeUnit::NORMALIZED)
     {
@@ -147,21 +147,21 @@ Size getAbsoluteSize(float mainScale, float additionalScale, const Size &content
     }
     else if (widthUnit == CCBReader::SizeUnit::INSETPOINTS)
     {
-        size.width = containerSize.width - contentSize.width;
+        size.width = containerSize.width - contentSize.width * CCBReader::getResolutionScale();
     }
     else if (widthUnit == CCBReader::SizeUnit::INSETUIPOINTS)
     {
-        size.width = containerSize.width - contentSize.width * CCBReader::getResolutionScale();
+        size.width = containerSize.width - contentSize.width * CCBReader::getResolutionScale() * mainScale;
     }
         
     // Height
     if (heightUnit == CCBReader::SizeUnit::POINTS)
     {
-        size.height = contentSize.height;
+        size.height = CCBReader::getResolutionScale() * contentSize.height;
     }
     else if (heightUnit == CCBReader::SizeUnit::UIPOINTS)
     {
-        size.height = CCBReader::getResolutionScale() * contentSize.height;
+        size.height = CCBReader::getResolutionScale() * mainScale * contentSize.height;
     }
     else if (heightUnit == CCBReader::SizeUnit::NORMALIZED)
     {
@@ -169,11 +169,11 @@ Size getAbsoluteSize(float mainScale, float additionalScale, const Size &content
     }
     else if (heightUnit == CCBReader::SizeUnit::INSETPOINTS)
     {
-        size.height = containerSize.height - contentSize.height;
+        size.height = containerSize.height - contentSize.height * CCBReader::getResolutionScale();
     }
     else if (heightUnit == CCBReader::SizeUnit::INSETUIPOINTS)
     {
-        size.height = containerSize.height - contentSize.height * CCBReader::getResolutionScale();
+        size.height = containerSize.height - contentSize.height * CCBReader::getResolutionScale() * mainScale;
     }
     
     return size;
