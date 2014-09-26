@@ -131,10 +131,6 @@ bool Scale9Sprite::init(Sprite* sprite, const Rect& rect, const Vec2& offset, co
     {
         this->updateWithSprite(sprite, rect, offset, originalSize, rotated, capInsets);
     }
-    this->setCascadeColorEnabled(true);
-    this->setCascadeOpacityEnabled(true);
-    this->setAnchorPoint(Vec2(0.5f, 0.5f));
-    this->_positionsAreDirty = true;
     
     return true;
 }
@@ -172,6 +168,7 @@ bool Scale9Sprite::updateWithSprite(Sprite* sprite, const Rect& originalRect, co
     GLubyte opacity = getOpacity();
     Color3B color = getColor();
     Rect rect(originalRect);
+    Size size = originalSize;
     
     _offset = offset;
     //Size originalSize = sprite->getContentSize();
@@ -203,12 +200,13 @@ bool Scale9Sprite::updateWithSprite(Sprite* sprite, const Rect& originalRect, co
         Size textureSize = _scale9Image->getTexture()->getContentSize();
         
         rect = Rect(0, 0, textureSize.width, textureSize.height);
+        size = rect.size;
     }
     
     // Set the given rect's size as original size
     _spriteRect = rect;
-    _originalSize = originalSize;
-    _preferredSize = originalSize;
+    _originalSize = size;
+    _preferredSize = size;
     _capInsetsInternal = capInsets;
     
     if (_scale9Enabled && !isCapInsetEmpty())
@@ -216,7 +214,7 @@ bool Scale9Sprite::updateWithSprite(Sprite* sprite, const Rect& originalRect, co
         this->createSlicedSprites(rect, rotated);
     }
     
-    this->setContentSize(originalSize);
+    this->setContentSize(size);
     
     if (_spritesGenerated)
     {
