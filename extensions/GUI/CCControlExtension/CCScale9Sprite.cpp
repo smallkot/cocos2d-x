@@ -125,19 +125,19 @@ bool Scale9Sprite::init(Sprite* sprite, const Rect& rect, const Rect& capInsets)
     return this->init(sprite, rect, false, capInsets);
 }
 
-bool Scale9Sprite::init(Sprite* sprite, const Rect& rect, const Vec2& offset, const Size& originalSize, bool rotated, const Rect& capInsets)
+bool Scale9Sprite::init(Sprite* sprite, const Rect& rect, bool rotated, const Rect& capInsets)
+{
+    return init(sprite, rect, rotated, Vec2::ZERO, rect.size, capInsets);
+}
+
+bool Scale9Sprite::init(Sprite* sprite, const Rect& rect, bool rotated, const Vec2 &offset, const Size &originalSize, const Rect& capInsets)
 {
     if(sprite)
     {
-        this->updateWithSprite(sprite, rect, offset, originalSize, rotated, capInsets);
+        this->updateWithSprite(sprite, rect, rotated, offset, originalSize, capInsets);
     }
     
     return true;
-}
-
-bool Scale9Sprite::init(Sprite* sprite, const Rect& rect, bool rotated, const Rect& capInsets)
-{
-    return this->init(sprite, rect, Vec2(0,0), rect.size, false, capInsets);
 }
 
 bool Scale9Sprite::initWithBatchNode(cocos2d::SpriteBatchNode *batchnode, const cocos2d::Rect &rect, bool rotated, const cocos2d::Rect &capInsets)
@@ -160,23 +160,36 @@ y+=ytranslate;         \
 bool Scale9Sprite::updateWithBatchNode(cocos2d::SpriteBatchNode *batchnode, const cocos2d::Rect &originalRect, bool rotated, const cocos2d::Rect &capInsets)
 {
     Sprite *sprite = Sprite::createWithTexture(batchnode->getTexture());
-    return this->updateWithSprite(sprite, originalRect, Vec2(0,0), originalRect.size, rotated, capInsets);
+    return this->updateWithSprite(sprite, originalRect, rotated, Vec2::ZERO, originalRect.size, capInsets);
 }
 
-bool Scale9Sprite::updateWithSprite(Sprite* sprite, const Rect& originalRect, const Vec2& offset, const Size& originalSize, bool rotated, const Rect& capInsets)
+bool Scale9Sprite::updateWithSprite(Sprite* sprite, const Rect& rect, bool rotated, const Rect& capInsets)
+{
+    return updateWithSprite(sprite, rect, rotated, Vec2::ZERO, rect.size, capInsets);
+}
+
+static Rect intersectRect(const Rect &first, const Rect &second)
+{
+    Rect ret;
+    ret.origin.x = std::max(first.origin.x,second.origin.x);
+    ret.origin.y = std::max(first.origin.y,second.origin.y);
+    
+    float rightRealPoint = std::min(first.origin.x + first.size.width, second.origin.x + second.size.width);
+    float bottomRealPoint = std::min(first.origin.y + first.size.height, second.origin.y + second.size.height);
+    
+    ret.size.width = std::max(rightRealPoint - ret.origin.x, 0.0f);
+    ret.size.height = std::max(bottomRealPoint - ret.origin.y, 0.0f);
+    return ret;
+}
+
+bool Scale9Sprite::updateWithSprite(Sprite* sprite, const Rect& textureRect, bool rotated, const Vec2 &offset, const Size &originalSize, const Rect& capInsets)
 {
     GLubyte opacity = getOpacity();
     Color3B color = getColor();
-    Rect rect(originalRect);
-    Size size = originalSize;
-    
-    _offset = offset;
-    //Size originalSize = sprite->getContentSize();
     
     // Release old sprites
     this->cleanupSlicedSprites();
     _protectedChildren.clear();
-    
     
     if(this->_scale9Image != sprite)
     {
@@ -190,8 +203,17 @@ bool Scale9Sprite::updateWithSprite(Sprite* sprite, const Rect& originalRect, co
         return false;
     }
     
+    SpriteFrame *spriteFrame = _scale9Image->getSpriteFrame();
+    
+    if (!spriteFrame)
+    {
+        return false;
+    }
+    
+    Rect rect(textureRect);
+    Size size(originalSize);
+    
     _capInsets = capInsets;
-    _spriteFrameRotated = rotated;
     
     // If there is no given rect
     if ( rect.equals(Rect::ZERO) )
@@ -200,18 +222,24 @@ bool Scale9Sprite::updateWithSprite(Sprite* sprite, const Rect& originalRect, co
         Size textureSize = _scale9Image->getTexture()->getContentSize();
         
         rect = Rect(0, 0, textureSize.width, textureSize.height);
+    }
+    
+    if( size.equals(Size::ZERO) )
+    {
         size = rect.size;
     }
     
     // Set the given rect's size as original size
     _spriteRect = rect;
+    _offset = offset;
+    _spriteFrameRotated = rotated;
     _originalSize = size;
     _preferredSize = size;
     _capInsetsInternal = capInsets;
     
-    if (_scale9Enabled && !isCapInsetEmpty())
+    if (_scale9Enabled)
     {
-        this->createSlicedSprites(rect, rotated);
+        this->createSlicedSprites();
     }
     
     this->setContentSize(size);
@@ -227,39 +255,12 @@ bool Scale9Sprite::updateWithSprite(Sprite* sprite, const Rect& originalRect, co
     return true;
 }
 
-Rect intersectRect(const Rect &first, const Rect &second)
+void Scale9Sprite::createSlicedSprites()
 {
-    Rect ret;
-    ret.origin.x = std::max(first.origin.x,second.origin.x);
-    ret.origin.y = std::max(first.origin.y,second.origin.y);
-    
-    float rightRealPoint = std::min(first.origin.x + first.size.width, second.origin.x + second.size.width);
-    float bottomRealPoint = std::min(first.origin.y + first.size.height, second.origin.y + second.size.height);
-    
-    ret.size.width = rightRealPoint - ret.origin.x;
-    ret.size.height = bottomRealPoint - ret.origin.y;
-    return ret;
-}
-
-void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
-{
-    Rect rect = originalRect;
-    
-    Vec2 offsetPosition(ceil(_offset.x + (_originalSize.width - originalRect.size.width) / 2), ceil(_offset.y + (_originalSize.height - originalRect.size.height) / 2));
-    
-    Rect realRect = originalRect;
-    
-    float leftOffset = ceil((_originalSize.width - originalRect.size.width) / 2 + _offset.x);
-    float topOffset = ceil((_originalSize.height - originalRect.size.height) / 2 - _offset.y);
-    
-    float rightOffset = _originalSize.width - originalRect.size.width - leftOffset;
-    float bottomOffset = _originalSize.height - originalRect.size.height - topOffset;
-    
-    Vec2 leftTopOffset = Vec2(leftOffset, topOffset);
-    Vec2 rightBottomOffset = Vec2(rightOffset,bottomOffset);
-    
     float w = _originalSize.width;
     float h = _originalSize.height;
+    
+    Vec2 offsetPosition(ceil(_offset.x + (_originalSize.width - _spriteRect.size.width) / 2), ceil(_offset.y + (_originalSize.height - _spriteRect.size.height) / 2));
     
     // If there is no specified center region
     if ( _capInsetsInternal.equals(Rect::ZERO) )
@@ -268,13 +269,19 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
         _capInsetsInternal = Rect(w/3, h/3, w/3, h/3);
     }
     
+    Rect originalRect;
+    if(_spriteFrameRotated)
+        originalRect = Rect(_spriteRect.origin.x - offsetPosition.y, _spriteRect.origin.y - offsetPosition.x, _originalSize.width, _originalSize.height);
+    else
+        originalRect = Rect(_spriteRect.origin.x - offsetPosition.x, _spriteRect.origin.y - offsetPosition.y, _originalSize.width, _originalSize.height);
+    
     float left_w = _capInsetsInternal.origin.x;
     float center_w = _capInsetsInternal.size.width;
-    float right_w = w - (left_w + center_w);
+    float right_w = originalRect.size.width - (left_w + center_w);
     
     float top_h = _capInsetsInternal.origin.y;
     float center_h = _capInsetsInternal.size.height;
-    float bottom_h = h - (top_h + center_h);
+    float bottom_h = originalRect.size.height - (top_h + center_h);
     
     // calculate rects
     
@@ -282,8 +289,11 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
     float x = 0.0;
     float y = 0.0;
     
+    Rect pixelRect = Rect(offsetPosition.x, offsetPosition.y, _spriteRect.size.width, _spriteRect.size.height);
+    
     // top left
-    Rect lefttopbounds = Rect(x, y, left_w, top_h);
+    Rect lefttopboundsorig = Rect(x, y, left_w, top_h);
+    Rect lefttopbounds = lefttopboundsorig;
     
     // top center
     TRANSLATE_X(x, y, left_w);
@@ -324,8 +334,29 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
     
     // bottom right
     TRANSLATE_X(x, y, center_w);
-    Rect rightbottombounds = Rect(x, y, right_w, bottom_h);
+    Rect rightbottomboundsorig = Rect(x, y, right_w, bottom_h);
+    Rect rightbottombounds = rightbottomboundsorig;
     
+    if((_capInsetsInternal.origin.x + _capInsetsInternal.size.width) <= _originalSize.width
+       || (_capInsetsInternal.origin.y + _capInsetsInternal.size.height) <= _originalSize.height)
+        //in general case it is error but for legacy support we will check it
+    {
+        lefttopbounds = intersectRect(lefttopbounds, pixelRect);
+        centertopbounds = intersectRect(centertopbounds, pixelRect);
+        righttopbounds = intersectRect(righttopbounds, pixelRect);
+        leftcenterbounds = intersectRect(leftcenterbounds, pixelRect);
+        centerbounds = intersectRect(centerbounds, pixelRect);
+        rightcenterbounds = intersectRect(rightcenterbounds, pixelRect);
+        leftbottombounds = intersectRect(leftbottombounds, pixelRect);
+        centerbottombounds = intersectRect(centerbottombounds, pixelRect);
+        rightbottombounds = intersectRect(rightbottombounds, pixelRect);
+    }
+    else
+        //it is error but for legacy turn off clip system
+        CCLOG("Scale9Sprite capInsetsInternal > originalSize");
+    
+    Rect rotatedlefttopboundsorig = lefttopboundsorig;
+    Rect rotatedrightbottomboundsorig = rightbottomboundsorig;
     
     Rect rotatedcenterbounds = centerbounds;
     Rect rotatedrightbottombounds = rightbottombounds;
@@ -337,11 +368,14 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
     Rect rotatedcenterbottombounds = centerbottombounds;
     Rect rotatedcentertopbounds = centertopbounds;
     
-    if (!rotated)
+    if (!_spriteFrameRotated)
     {
         
         AffineTransform t = AffineTransform::IDENTITY;
-        t = AffineTransformTranslate(t, rect.origin.x - offsetPosition.x, rect.origin.y - offsetPosition.y);
+        t = AffineTransformTranslate(t, originalRect.origin.x, originalRect.origin.y);
+        
+        rotatedlefttopboundsorig = RectApplyAffineTransform(rotatedlefttopboundsorig, t);
+        rotatedrightbottomboundsorig = RectApplyAffineTransform(rotatedrightbottomboundsorig, t);
         
         rotatedcenterbounds = RectApplyAffineTransform(rotatedcenterbounds, t);
         rotatedrightbottombounds = RectApplyAffineTransform(rotatedrightbottombounds, t);
@@ -362,8 +396,11 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
         
         AffineTransform t = AffineTransform::IDENTITY;
         
-        t = AffineTransformTranslate(t, _originalSize.height + rect.origin.x - offsetPosition.y, rect.origin.y - offsetPosition.x);
+        t = AffineTransformTranslate(t, originalRect.size.height+originalRect.origin.x, originalRect.origin.y);
         t = AffineTransformRotate(t, 1.57079633f);
+        
+        lefttopboundsorig = RectApplyAffineTransform(lefttopboundsorig, t);
+        rightbottomboundsorig = RectApplyAffineTransform(rightbottomboundsorig, t);
         
         centerbounds = RectApplyAffineTransform(centerbounds, t);
         rightbottombounds = RectApplyAffineTransform(rightbottombounds, t);
@@ -375,6 +412,9 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
         centerbottombounds = RectApplyAffineTransform(centerbottombounds, t);
         centertopbounds = RectApplyAffineTransform(centertopbounds, t);
         
+        rotatedlefttopboundsorig.origin = lefttopboundsorig.origin;
+        rotatedrightbottomboundsorig.origin = rightbottomboundsorig.origin;
+        
         rotatedcenterbounds.origin = centerbounds.origin;
         rotatedrightbottombounds.origin = rightbottombounds.origin;
         rotatedleftbottombounds.origin = leftbottombounds.origin;
@@ -384,125 +424,81 @@ void Scale9Sprite::createSlicedSprites(const Rect& originalRect, bool rotated)
         rotatedleftcenterbounds.origin = leftcenterbounds.origin;
         rotatedcenterbottombounds.origin = centerbottombounds.origin;
         rotatedcentertopbounds.origin = centertopbounds.origin;
+        
+        
     }
+    
+    _topLeftSize = rotatedlefttopboundsorig.size;
+    _bottomRightSize = rotatedrightbottomboundsorig.size;
     
     // Centre
-    Size origSize = rotatedcenterbounds.size;
-    
-    if(rotated)
-    {
-        rotatedcenterbounds.size = Size(rotatedcenterbounds.size.height,rotatedcenterbounds.size.width);
-        realRect.size = Size(realRect.size.height,realRect.size.width);
-    }
-    
-    Rect origcenterbounds = rotatedcenterbounds;
-    
-    rotatedcenterbounds = intersectRect(rotatedcenterbounds,realRect);
-    
     if(rotatedcenterbounds.size.width > 0 && rotatedcenterbounds.size.height > 0 )
     {
-        Vec2 mid1 = Vec2(origcenterbounds.getMidX(),origcenterbounds.getMidY());
-        Vec2 mid2 = Vec2(rotatedcenterbounds.getMidX(),rotatedcenterbounds.getMidY());
-        Vec2 offset = mid2 - mid1;
-        if(rotated)
-        {
-            offset = Vec2(offset.y,offset.x);
-            rotatedcenterbounds.size = Size(rotatedcenterbounds.size.height,rotatedcenterbounds.size.width);
-        }
-        SpriteFrame *frame = SpriteFrame::createWithTexture(_scale9Image->getTexture(), rotatedcenterbounds, rotated, offset, origSize);
-        _centre = Sprite::createWithSpriteFrame(frame);
+        _centre = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcenterbounds, _spriteFrameRotated);
         _centre->retain();
         this->addProtectedChild(_centre);
     }
     
     // Top
-    rotatedcentertopbounds.size.height -= leftTopOffset.y;
-    rotatedcentertopbounds.origin.x += leftTopOffset.x;
-    rotatedcentertopbounds.size.width -= rightBottomOffset.x + leftTopOffset.x;
     if(rotatedcentertopbounds.size.width > 0 && rotatedcentertopbounds.size.height > 0 )
     {
-        _top = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcentertopbounds, rotated);
+        _top = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcentertopbounds, _spriteFrameRotated);
         _top->retain();
         this->addProtectedChild(_top);
     }
     
     // Bottom
-    rotatedcenterbottombounds.origin.y += rightBottomOffset.y;
-    rotatedcenterbottombounds.size.height -= rightBottomOffset.y;
-    rotatedcenterbottombounds.origin.x += leftTopOffset.x;
-    rotatedcenterbottombounds.size.width -= rightBottomOffset.x + leftTopOffset.x;
     if(rotatedcenterbottombounds.size.width > 0 && rotatedcenterbottombounds.size.height > 0 )
     {
-        _bottom = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcenterbottombounds, rotated);
+        _bottom = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedcenterbottombounds, _spriteFrameRotated);
         _bottom->retain();
         this->addProtectedChild(_bottom);
     }
     
     // Left
-    rotatedleftcenterbounds.origin.x += rightBottomOffset.x;
-    rotatedleftcenterbounds.size.width -= rightBottomOffset.x;
-    rotatedleftcenterbounds.origin.y += rightBottomOffset.y;
-    rotatedleftcenterbounds.size.height -= rightBottomOffset.y + leftTopOffset.y;
     if(rotatedleftcenterbounds.size.width > 0 && rotatedleftcenterbounds.size.height > 0 )
     {
-        _left = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedleftcenterbounds, rotated);
+        _left = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedleftcenterbounds, _spriteFrameRotated);
         _left->retain();
         this->addProtectedChild(_left);
     }
     
     // Right
-    rotatedrightcenterbounds.size.width -= rightBottomOffset.x;
-    rotatedrightcenterbounds.origin.y += rightBottomOffset.y;
-    rotatedrightcenterbounds.size.height -= rightBottomOffset.y + leftTopOffset.y;
     if(rotatedrightcenterbounds.size.width > 0 && rotatedrightcenterbounds.size.height > 0 )
     {
-        _right = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrightcenterbounds, rotated);
+        _right = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrightcenterbounds, _spriteFrameRotated);
         _right->retain();
         this->addProtectedChild(_right);
     }
     
     // Top left
-    _topLeftSize = rotatedlefttopbounds.size;
-    rotatedlefttopbounds.origin.x += leftTopOffset.x;
-    rotatedlefttopbounds.size.width -= leftTopOffset.x;
-    rotatedlefttopbounds.size.height -= leftTopOffset.y;
     if(rotatedlefttopbounds.size.width > 0 && rotatedlefttopbounds.size.height > 0 )
     {
-        _topLeft = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedlefttopbounds, rotated);
+        _topLeft = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedlefttopbounds, _spriteFrameRotated);
         _topLeft->retain();
         this->addProtectedChild(_topLeft);
     }
     
     // Top right
-    rotatedrighttopbounds.size.width -= rightBottomOffset.x;
-    rotatedrighttopbounds.size.height -= leftTopOffset.y;
     if(rotatedrighttopbounds.size.width > 0 && rotatedrighttopbounds.size.height > 0 )
     {
-        _topRight = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrighttopbounds, rotated);
+        _topRight = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrighttopbounds, _spriteFrameRotated);
         _topRight->retain();
         this->addProtectedChild(_topRight);
     }
     
     // Bottom left
-    rotatedleftbottombounds.origin.x += leftTopOffset.x;
-    rotatedleftbottombounds.size.width -= leftTopOffset.x;
-    rotatedleftbottombounds.origin.y += rightBottomOffset.y;
-    rotatedleftbottombounds.size.height -= rightBottomOffset.y;
     if(rotatedleftbottombounds.size.width > 0 && rotatedleftbottombounds.size.height > 0 )
     {
-        _bottomLeft = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedleftbottombounds, rotated);
+        _bottomLeft = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedleftbottombounds, _spriteFrameRotated);
         _bottomLeft->retain();
         this->addProtectedChild(_bottomLeft);
     }
     
     // Bottom right
-    _bottomRightSize = rotatedrightbottombounds.size;
-    rotatedrightbottombounds.size.width -= rightBottomOffset.x;
-    rotatedrightbottombounds.origin.y += rightBottomOffset.y;
-    rotatedrightbottombounds.size.height -= rightBottomOffset.y;
     if(rotatedrightbottombounds.size.width > 0 && rotatedrightbottombounds.size.height > 0 )
     {
-        _bottomRight = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrightbottombounds, rotated);
+        _bottomRight = Sprite::createWithTexture(_scale9Image->getTexture(), rotatedrightbottombounds, _spriteFrameRotated);
         _bottomRight->retain();
         this->addProtectedChild(_bottomRight);
     }
@@ -685,7 +681,7 @@ bool Scale9Sprite::initWithSpriteFrame(SpriteFrame* spriteFrame, const Rect& cap
     Sprite *sprite = Sprite::createWithSpriteFrame(spriteFrame);
     CCASSERT(sprite != NULL, "sprite must be not nil");
     
-    bool pReturn = this->init(sprite, spriteFrame->getRect(), spriteFrame->getOffset(), spriteFrame->getOriginalSize(), spriteFrame->isRotated(), capInsets);
+    bool pReturn = this->init(sprite, spriteFrame->getRect(), spriteFrame->isRotated(), spriteFrame->getOffset(), spriteFrame->getOriginalSize(), capInsets);
     return pReturn;
 }
 
@@ -765,10 +761,10 @@ Scale9Sprite* Scale9Sprite::createWithSpriteFrameName(const std::string& spriteF
     
 }
 
-Scale9Sprite* Scale9Sprite::resizableSpriteWithCapInsets(const Rect& capInsets)
+Scale9Sprite* Scale9Sprite::resizableSpriteWithCapInsets(const Rect& capInsets) const
 {
     Scale9Sprite* pReturn = new (std::nothrow) Scale9Sprite();
-    if ( pReturn && pReturn->init(_scale9Image, _spriteRect, capInsets) )
+    if ( pReturn && pReturn->init(_scale9Image, _spriteRect, _spriteFrameRotated, _offset, _originalSize, _capInsets) )
     {
         pReturn->autorelease();
         return pReturn;
@@ -807,8 +803,8 @@ void Scale9Sprite::updateCapInset()
     {
         insets = Rect(_insetLeft,
                       _insetTop,
-                      _spriteRect.size.width-_insetLeft-_insetRight,
-                      _spriteRect.size.height-_insetTop-_insetBottom);
+                      _originalSize.width-_insetLeft-_insetRight,
+                      _originalSize.height-_insetTop-_insetBottom);
     }
     this->setCapInsets(insets);
 }
@@ -816,14 +812,14 @@ void Scale9Sprite::updateCapInset()
 
 void Scale9Sprite::setSpriteFrame(SpriteFrame * spriteFrame, const Rect& capInsets)
 {
-    Sprite * sprite = Sprite::createWithSpriteFrame(spriteFrame);
-    this->updateWithSprite(sprite, spriteFrame->getRect(), spriteFrame->getOffset(), spriteFrame->getOriginalSize(), spriteFrame->isRotated(), capInsets);
+    Sprite * sprite = Sprite::createWithTexture(spriteFrame->getTexture());
+    this->updateWithSprite(sprite, spriteFrame->getRect(), spriteFrame->isRotated(), spriteFrame->getOffset(), spriteFrame->getOriginalSize(), Rect::ZERO);
     
     // Reset insets
     this->_insetLeft = capInsets.origin.x;
     this->_insetTop = capInsets.origin.y;
-    this->_insetRight = capInsets.size.width;
-    this->_insetBottom = capInsets.size.width;
+    this->_insetRight = _originalSize.width - _insetLeft - capInsets.size.width;
+    this->_insetBottom = _originalSize.height - _insetTop - capInsets.size.height;
 }
 
 void Scale9Sprite::setPreferredSize(const Size& preferedSize)
@@ -836,7 +832,11 @@ void Scale9Sprite::setPreferredSize(const Size& preferedSize)
 void Scale9Sprite::setCapInsets(const Rect& capInsets)
 {
     Size contentSize = this->_contentSize;
-    this->updateWithSprite(this->_scale9Image, this->_spriteRect, _offset, _originalSize, _spriteFrameRotated, capInsets);
+    this->updateWithSprite(this->_scale9Image, _spriteRect, _spriteFrameRotated, _offset, _originalSize, capInsets);
+    this->_insetLeft = capInsets.origin.x;
+    this->_insetTop = capInsets.origin.y;
+    this->_insetRight = _originalSize.width - _insetLeft - capInsets.size.width;
+    this->_insetBottom = _originalSize.height - _insetTop - capInsets.size.height;
     this->setContentSize(contentSize);
 }
 
@@ -903,22 +903,42 @@ void Scale9Sprite::visit(Renderer *renderer, const Mat4 &parentTransform, uint32
             break;
     }
     
+    if (_scale9Enabled)
+    {
+        for( ; j < _protectedChildren.size(); j++ )
+        {
+            auto node = _protectedChildren.at(j);
+            
+            if ( node && node->getLocalZOrder() < 0 )
+                node->visit(renderer, _modelViewTransform, flags);
+            else
+                break;
+        }
+    }
+    else
+    {
+        if (_scale9Image && _scale9Image->getLocalZOrder() < 0 )
+        {
+            _scale9Image->visit(renderer, _modelViewTransform, flags);
+        }
+    }
+    
     //
     // draw self
     //
     this->draw(renderer, _modelViewTransform, flags);
     
     //
-    // draw protectedChildren and children zOrder >= 0
+    // draw children and protectedChildren zOrder >= 0
     //
-    if (_scale9Enabled && !isCapInsetEmpty())
+    if (_scale9Enabled)
     {
         for(auto it=_protectedChildren.cbegin()+j; it != _protectedChildren.cend(); ++it)
             (*it)->visit(renderer, _modelViewTransform, flags);
     }
     else
     {
-        if (_scale9Image)
+        if (_scale9Image && _scale9Image->getLocalZOrder() >= 0 )
         {
             _scale9Image->visit(renderer, _modelViewTransform, flags);
         }
@@ -987,9 +1007,7 @@ void Scale9Sprite::setScale9Enabled(bool enabled)
     {
         if (_scale9Image)
         {
-            this->updateWithSprite(this->_scale9Image,
-                                   this->_spriteRect, _offset, _originalSize,
-                                   _spriteFrameRotated, _capInsets);
+            this->updateWithSprite(this->_scale9Image, _spriteRect, _spriteFrameRotated, _offset, _originalSize, _capInsets);
         }
     }
     _positionsAreDirty = true;
@@ -1026,7 +1044,7 @@ void Scale9Sprite::adjustScale9ImagePosition()
     if (_scale9Image)
     {
         _scale9Image->setPosition(_contentSize.width * _scale9Image->getAnchorPoint().x,
-                                       _contentSize.height * _scale9Image->getAnchorPoint().y);
+                                  _contentSize.height * _scale9Image->getAnchorPoint().y);
     }
 }
 
@@ -1210,11 +1228,6 @@ bool Scale9Sprite::isFlippedX()const
 bool Scale9Sprite::isFlippedY()const
 {
     return _flippedY;
-}
-
-bool Scale9Sprite::isCapInsetEmpty() const
-{
-    return _capInsets.origin == Vec2::ZERO && _capInsets.size.equals(_originalSize);
 }
 
 NS_CC_EXT_END

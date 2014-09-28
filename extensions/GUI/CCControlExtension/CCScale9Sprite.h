@@ -237,9 +237,9 @@ public:
     virtual bool initWithSpriteFrameName(const std::string& spriteFrameName);
     
     virtual bool init();
-    virtual bool init(Sprite* sprite, const Rect& rect, const Vec2& offset, const Size& originalSize, bool rotated, const Rect& capInsets);
     virtual bool init(Sprite* sprite, const Rect& rect, bool rotated, const Rect& capInsets);
     virtual bool init(Sprite* sprite, const Rect& rect, const Rect& capInsets);
+    virtual bool init(Sprite* sprite, const Rect& rect, bool rotated, const Vec2 &offset, const Size &originalSize, const Rect& capInsets);
     CC_DEPRECATED_ATTRIBUTE virtual bool initWithBatchNode(SpriteBatchNode* batchnode, const Rect& rect, bool rotated, const Rect& capInsets);
     CC_DEPRECATED_ATTRIBUTE virtual bool initWithBatchNode(SpriteBatchNode* batchnode, const Rect& rect, const Rect& capInsets);
 
@@ -251,9 +251,10 @@ public:
      *
      * @param capInsets The values to use for the cap insets.
      */
-    Scale9Sprite* resizableSpriteWithCapInsets(const Rect& capInsets);
+    Scale9Sprite* resizableSpriteWithCapInsets(const Rect& capInsets) const;
     
-    virtual bool updateWithSprite(Sprite* sprite, const Rect& rect, const Vec2& offset, const Size& originalSize, bool rotated, const Rect& capInsets);
+    virtual bool updateWithSprite(Sprite* sprite, const Rect& rect, bool rotated, const Rect& capInsets);
+    virtual bool updateWithSprite(Sprite* sprite, const Rect& rect, bool rotated, const Vec2 &offset, const Size &originalSize, const Rect& capInsets);
     CC_DEPRECATED_ATTRIBUTE bool updateWithBatchNode(SpriteBatchNode* batchnode, const Rect& originalRect, bool rotated, const Rect& capInsets);
 
     virtual void setSpriteFrame(SpriteFrame * spriteFrame, const Rect& capInsets = Rect::ZERO);
@@ -362,7 +363,7 @@ public:
 protected:
     void updateCapInset();
     void updatePositions();
-    void createSlicedSprites(const Rect& rect, bool rotated);
+    void createSlicedSprites();
     void cleanupSlicedSprites();
     void adjustScale9ImagePosition();
     /**
@@ -372,11 +373,8 @@ protected:
      */
     virtual void sortAllProtectedChildren();
     
-    bool isCapInsetEmpty() const;
-    
     bool _spritesGenerated;
     Rect _spriteRect;
-    Vec2 _offset;
     bool   _spriteFrameRotated;
     Rect _capInsetsInternal;
     bool _positionsAreDirty;
@@ -392,13 +390,14 @@ protected:
     Sprite* _bottom;
     Sprite* _bottomRight;
     
+    bool _scale9Enabled;
+        
     Size _topLeftSize;
     Size _bottomRightSize;
     
-    bool _scale9Enabled;
-    
     /** Original sprite's size. */
     Size _originalSize;
+    Vec2 _offset;
     /** Prefered sprite's size. By default the prefered size is the original size. */
     
     //if the preferredSize component is given as -1, it is ignored
