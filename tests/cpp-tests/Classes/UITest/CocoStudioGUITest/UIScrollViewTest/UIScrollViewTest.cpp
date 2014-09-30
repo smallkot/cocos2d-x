@@ -52,7 +52,7 @@ bool UIScrollViewTest_Vertical::init()
         float innerWidth = scrollView->getContentSize().width;
         float innerHeight = scrollView->getContentSize().height + imageView->getContentSize().height;
         
-        scrollView->setInnerContainerSize(Size(innerWidth, innerHeight));                
+        scrollView->setInnerContainerSize(Size(innerWidth, innerHeight*5));
         
         Button* button = Button::create("cocosui/animationbuttonnormal.png", "cocosui/animationbuttonpressed.png");
         button->setPosition(Vec2(innerWidth / 2.0f, scrollView->getInnerContainerSize().height - button->getContentSize().height / 2.0f));

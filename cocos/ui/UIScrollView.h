@@ -41,6 +41,7 @@ typedef enum
     SCROLLVIEW_EVENT_SCROLL_TO_LEFT,
     SCROLLVIEW_EVENT_SCROLL_TO_RIGHT,
     SCROLLVIEW_EVENT_SCROLLING,
+    SCROLLVIEW_EVENT_SCROLLING_END,
     SCROLLVIEW_EVENT_BOUNCE_TOP,
     SCROLLVIEW_EVENT_BOUNCE_BOTTOM,
     SCROLLVIEW_EVENT_BOUNCE_LEFT,
@@ -72,6 +73,7 @@ public:
         SCROLL_TO_LEFT,
         SCROLL_TO_RIGHT,
         SCROLLING,
+        SCROLLING_END,
         BOUNCE_TOP,
         BOUNCE_BOTTOM,
         BOUNCE_LEFT,
@@ -279,12 +281,13 @@ public:
     virtual void update(float dt) override;
     
     void setBounceEnabled(bool enabled);
-    
     bool isBounceEnabled() const;
     
     void setInertiaScrollEnabled(bool enabled);
-    
     bool isInertiaScrollEnabled() const;
+    
+    void setDefaultAutoScrollAcceleration(float value);
+    float getDefaultAutoScrollAcceleration() const;
     
     /**
      * Sets LayoutType.
@@ -372,11 +375,15 @@ protected:
     void scrollToLeftEvent();
     void scrollToRightEvent();
     void scrollingEvent();
+    void scrollingEndEvent();
     
     void bounceTopEvent();
     void bounceBottomEvent();
     void bounceLeftEvent();
     void bounceRightEvent();
+    
+    bool isBouncing() const { return _bouncing; }
+    bool isAutoscroll() const { return _autoScroll; }
     
 protected:
     Layout* _innerContainer;
@@ -393,13 +400,13 @@ protected:
     float _bounceBottomBoundary;
     float _bounceLeftBoundary;
     float _bounceRightBoundary;
-
     
     bool _autoScroll;
     float _autoScrollAddUpTime;
     
     float _autoScrollOriginalSpeed;
     float _autoScrollAcceleration;
+    float _defaultAutoScrollAcceleration;
     bool _isAutoScrollSpeedAttenuated;
     bool _needCheckAutoScrollDestination;
     Vec2 _autoScrollDestination;

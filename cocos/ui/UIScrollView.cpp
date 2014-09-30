@@ -53,6 +53,7 @@ _autoScroll(false),
 _autoScrollAddUpTime(0.0f),
 _autoScrollOriginalSpeed(0.0f),
 _autoScrollAcceleration(-1000.0f),
+_defaultAutoScrollAcceleration(-1000.0f),
 _isAutoScrollSpeedAttenuated(false),
 _needCheckAutoScrollDestination(false),
 _autoScrollDestination(Vec2::ZERO),
@@ -306,6 +307,7 @@ void ScrollView::autoScrollChildren(float dt)
         if (nowSpeed <= 0.0f)
         {
             stopAutoScrollChildren();
+            scrollingEndEvent();
             checkNeedBounce();
         }
         else
@@ -317,6 +319,7 @@ void ScrollView::autoScrollChildren(float dt)
             if (!scrollChildren(offsetX, offsetY))
             {
                 stopAutoScrollChildren();
+                scrollingEndEvent();
                 checkNeedBounce();
             }
         }
@@ -332,6 +335,7 @@ void ScrollView::autoScrollChildren(float dt)
             if (!notDone || !scrollCheck)
             {
                 stopAutoScrollChildren();
+                scrollingEndEvent();
                 checkNeedBounce();
             }
         }
@@ -340,6 +344,7 @@ void ScrollView::autoScrollChildren(float dt)
             if (!scrollChildren(_autoScrollDir.x * dt * _autoScrollOriginalSpeed, _autoScrollDir.y * dt * _autoScrollOriginalSpeed))
             {
                 stopAutoScrollChildren();
+                scrollingEndEvent();
                 checkNeedBounce();
             }
         }
@@ -505,7 +510,7 @@ void ScrollView::startAutoScrollChildrenWithDestination(const Vec2& des, float t
     Vec2 dis = des - _innerContainer->getPosition();
     Vec2 dir = dis.getNormalized();
     float orSpeed = 0.0f;
-    float acceleration = -1000.0f;
+    float acceleration = _defaultAutoScrollAcceleration;
     if (attenuated)
     {
         acceleration = (-(2 * dis.getLength())) / (time * time);
@@ -1414,6 +1419,7 @@ void ScrollView::endRecordSlidAction()
     {
         if (_slidTime <= 0.016f)
         {
+            scrollingEndEvent();
             return;
         }
         float totalDis = 0.0f;
@@ -1453,8 +1459,12 @@ void ScrollView::endRecordSlidAction()
                 break;
         }
         float orSpeed = MIN(fabs(totalDis)/(_slidTime), AUTOSCROLLMAXSPEED);
-        startAutoScrollChildrenWithOriginalSpeed(dir, orSpeed, true, -1000);
+        startAutoScrollChildrenWithOriginalSpeed(dir, orSpeed, true, _defaultAutoScrollAcceleration);
         _slidTime = 0.0f;
+    }
+    else
+    {
+        scrollingEndEvent();
     }
 }
 
@@ -1661,6 +1671,19 @@ void ScrollView::scrollingEvent()
     }
     this->release();
 }
+    
+void ScrollView::scrollingEndEvent()
+{
+    this->retain();
+    if (_scrollViewEventListener && _scrollViewEventSelector)
+    {
+        (_scrollViewEventListener->*_scrollViewEventSelector)(this, SCROLLVIEW_EVENT_SCROLLING_END);
+    }
+    if (_eventCallback) {
+        _eventCallback(this,EventType::SCROLLING_END);
+    }
+    this->release();
+}
 
 void ScrollView::bounceTopEvent()
 {
@@ -1754,6 +1777,16 @@ bool ScrollView::isInertiaScrollEnabled() const
 {
     return _inertiaScrollEnabled;
 }
+    
+void ScrollView::setDefaultAutoScrollAcceleration(float value)
+{
+    _defaultAutoScrollAcceleration = value;
+}
+    
+float ScrollView::getDefaultAutoScrollAcceleration() const
+{
+    return _defaultAutoScrollAcceleration;
+}
 
 Layout* ScrollView::getInnerContainer()const
 {
@@ -1806,6 +1839,7 @@ void ScrollView::copySpecialProperties(Widget *widget)
         setInertiaScrollEnabled(scrollView->_inertiaScrollEnabled);
         _scrollViewEventListener = scrollView->_scrollViewEventListener;
         _scrollViewEventSelector = scrollView->_scrollViewEventSelector;
+        _defaultAutoScrollAcceleration = scrollView->_defaultAutoScrollAcceleration;
         _eventCallback = scrollView->_eventCallback;
     }
 }
