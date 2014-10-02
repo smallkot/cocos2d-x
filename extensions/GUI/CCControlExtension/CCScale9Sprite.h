@@ -393,8 +393,10 @@ protected:
     bool _scale9Enabled;
         
     Size _topLeftSize;
+    Size _centerSize;
     Size _bottomRightSize;
-    
+    Vec2 _centerOffset;
+        
     /** Original sprite's size. */
     Size _originalSize;
     Vec2 _offset;
