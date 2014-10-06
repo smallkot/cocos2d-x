@@ -397,6 +397,13 @@ void ScrollView::relocateContainer(bool animated)
     {
         this->setContentOffset(Vec2(newX, newY), animated);
     }
+    else
+    {
+        if(_delegate)
+        {
+            _delegate->scrollViewDidScrollEnd(this);
+        }
+    }
 }
 
 Vec2 ScrollView::maxContainerOffset()
@@ -457,6 +464,7 @@ void ScrollView::stoppedAnimatedScroll(Node * node)
     if (_delegate != nullptr)
     {
         _delegate->scrollViewDidScroll(this);
+        _delegate->scrollViewDidScrollEnd(this);
     }
 }
 
