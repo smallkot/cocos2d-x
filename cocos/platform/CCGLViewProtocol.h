@@ -164,6 +164,7 @@ public:
     virtual void handleTouchesMove(int num, intptr_t ids[], float xs[], float ys[]);
     virtual void handleTouchesEnd(int num, intptr_t ids[], float xs[], float ys[]);
     virtual void handleTouchesCancel(int num, intptr_t ids[], float xs[], float ys[]);
+    virtual void cancellAllTouches();
 
     /**
      * Get the opengl view port rectangle.
