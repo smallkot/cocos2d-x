@@ -416,6 +416,50 @@ void GLViewProtocol::handleTouchesCancel(int num, intptr_t ids[], float xs[], fl
     handleTouchesOfEndOrCancel(EventTouch::EventCode::CANCELLED, num, ids, xs, ys);
 }
 
+void GLViewProtocol::cancellAllTouches()
+{
+    EventTouch touchEvent;
+    int temp = g_indexBitsUsed;
+    for (int i = 0; i < EventTouch::MAX_TOUCHES; i++)
+    {
+        if ( temp & 0x00000001) {
+            Touch* touch = g_touches[i];
+            if (touch)
+            {
+                CCLOGINFO("Ending touches with id: %d, x=%f, y=%f", i, x, y);
+                
+                touchEvent._touches.push_back(touch);
+                
+                g_touches[i] = nullptr;
+                removeUsedIndexBit(i);
+            }
+            else
+            {
+                CCLOG("Ending touches with id: %ld error", static_cast<long>(i));
+                return;
+            }
+        }
+        temp >>= 1;
+    }
+    g_touchIdReorderMap.clear();
+    
+    if (touchEvent._touches.size() == 0)
+    {
+        CCLOG("touchesEnded or touchesCancel: size = 0");
+        return;
+    }
+    
+    touchEvent._eventCode = EventTouch::EventCode::CANCELLED;
+    auto dispatcher = Director::getInstance()->getEventDispatcher();
+    dispatcher->dispatchEvent(&touchEvent);
+    
+    for (auto& touch : touchEvent._touches)
+    {
+        // release the touch object.
+        touch->release();
+    }
+}
+
 const Rect& GLViewProtocol::getViewPortRect() const
 {
     return _viewPortRect;
