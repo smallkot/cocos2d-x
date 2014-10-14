@@ -245,7 +245,7 @@ void ParticleSystemQuad::setDisplayFrame(SpriteFrame *spriteFrame)
     // update texture before updating texture rect
     if ( !_texture || spriteFrame->getTexture()->getName() != _texture->getName())
     {
-        this->setTexture(spriteFrame->getTexture());
+        this->setTextureWithRect(spriteFrame->getTexture(), spriteFrame->getRect());
     }
 }
 
