@@ -125,15 +125,15 @@ void ParticleSystemQuadLoader::onHandlePropTypeBlendFunc(Node * pNode, Node * pP
     }
 }
 
-void ParticleSystemQuadLoader::onHandlePropTypeTexture(Node * pNode, Node * pParent, const char * pPropertyName, Texture2D * pTexture2D, CCBReader * ccbReader) {
+void ParticleSystemQuadLoader::onHandlePropTypeTexture(Node * pNode, Node * pParent, const char * pPropertyName, SpriteFrame * pSpriteFrame, CCBReader * ccbReader) {
     if(strcmp(pPropertyName, PROPERTY_TEXTURE) == 0) {
-        static_cast<ParticleSystemQuad*>(pNode)->setTexture(pTexture2D);
-        if(pTexture2D)
+        static_cast<ParticleSystemQuad*>(pNode)->setDisplayFrame(pSpriteFrame);
+        if(pSpriteFrame && ccbReader->getVersion() < 6)
         {
-            static_cast<ParticleSystemQuad*>(pNode)->setBlendAdditive(true);
+            static_cast<ParticleSystemQuad*>(pNode)->setBlendAdditive(false);
         }
     } else {
-        NodeLoader::onHandlePropTypeTexture(pNode, pParent, pPropertyName, pTexture2D, ccbReader);
+        NodeLoader::onHandlePropTypeTexture(pNode, pParent, pPropertyName, pSpriteFrame, ccbReader);
     }
 }
 

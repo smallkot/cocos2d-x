@@ -252,10 +252,10 @@ void NodeLoader::parseProperties(Node * pNode, Node * pParent, CCBReader * ccbRe
             }
             case CCBReader::PropertyType::TEXTURE:
             {
-                Texture2D * ccTexture2D = this->parsePropTypeTexture(pNode, pParent, ccbReader);
+                SpriteFrame * ccSpriteFrame = this->parsePropTypeTexture(pNode, pParent, ccbReader);
                 if(setProp) 
                 {
-                    this->onHandlePropTypeTexture(pNode, pParent, propertyName.c_str(), ccTexture2D, ccbReader);
+                    this->onHandlePropTypeTexture(pNode, pParent, propertyName.c_str(), ccSpriteFrame, ccbReader);
                 }
                 break;
             }
@@ -691,17 +691,23 @@ Animation * NodeLoader::parsePropTypeAnimation(Node * pNode, Node * pParent, CCB
     return ccAnimation;
 }
 
-Texture2D * NodeLoader::parsePropTypeTexture(Node * pNode, Node * pParent, CCBReader * ccbReader) {
-    std::string spriteFile = ccbReader->getCCBRootPath() + ccbReader->readCachedString();
+SpriteFrame * NodeLoader::parsePropTypeTexture(Node * pNode, Node * pParent, CCBReader * ccbReader) {
     
-    if (spriteFile.length() > 0)
+    SpriteFrame *spriteFrame = nullptr;
+    std::string spriteFile = ccbReader->readCachedString();
+    if (spriteFile.length() != 0)
     {
-        return Director::getInstance()->getTextureCache()->addImage(spriteFile.c_str());
+        spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(spriteFile.c_str());
+        if(!spriteFrame)
+        {
+            Texture2D * texture = Director::getInstance()->getTextureCache()->addImage(spriteFile.c_str());
+            if(texture != NULL) {
+                Rect bounds = Rect(0, 0, texture->getContentSize().width, texture->getContentSize().height);
+                spriteFrame = CCSpriteFrame::createWithTexture(texture, bounds);
+            }
+        }
     }
-    else 
-    {
-        return nullptr;
-    }
+    return spriteFrame;
 }
 
 unsigned char NodeLoader::parsePropTypeByte(Node * pNode, Node * pParent, CCBReader * ccbReader, const char *pPropertyName) 
@@ -1224,7 +1230,7 @@ void NodeLoader::onHandlePropTypeAnimation(Node * pNode, Node * pParent, const c
     ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
 }
 
-void NodeLoader::onHandlePropTypeTexture(Node * pNode, Node * pParent, const char* pPropertyName, Texture2D * pTexture2D, CCBReader * ccbReader) {
+void NodeLoader::onHandlePropTypeTexture(Node * pNode, Node * pParent, const char* pPropertyName, SpriteFrame * pSpriteFrame, CCBReader * ccbReader) {
     ASSERT_FAIL_UNEXPECTED_PROPERTY(pPropertyName);
 }
 

@@ -100,7 +100,7 @@ class NodeLoader : public cocos2d::Ref {
         virtual bool parsePropTypeCheck(cocos2d::Node * pNode, cocos2d::Node * pParent, CCBReader * ccbReader, const char *pPropertyName);
         virtual cocos2d::SpriteFrame * parsePropTypeSpriteFrame(cocos2d::Node * pNode, cocos2d::Node * pParent, CCBReader * ccbReader, const char *pPropertyName);
         virtual cocos2d::Animation * parsePropTypeAnimation(cocos2d::Node * pNode, cocos2d::Node * pParent, CCBReader * ccbReader);
-        virtual cocos2d::Texture2D * parsePropTypeTexture(cocos2d::Node * pNode, cocos2d::Node * pParent, CCBReader * ccbReader);
+        virtual cocos2d::SpriteFrame * parsePropTypeTexture(cocos2d::Node * pNode, cocos2d::Node * pParent, CCBReader * ccbReader);
         virtual unsigned char parsePropTypeByte(cocos2d::Node * pNode, cocos2d::Node * pParent, CCBReader * ccbReader, const char *pPropertyName);
         virtual cocos2d::Color3B parsePropTypeColor3(cocos2d::Node * pNode, cocos2d::Node * pParent, CCBReader * ccbReader, const char *pPropertyName);
         virtual cocos2d::Color4B parsePropTypeColor4(cocos2d::Node * pNode, cocos2d::Node * pParent, CCBReader * ccbReader, const char *pPropertyName);
@@ -134,7 +134,7 @@ class NodeLoader : public cocos2d::Ref {
         virtual void onHandlePropTypeCheck(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, bool pCheck, CCBReader * ccbReader);
         virtual void onHandlePropTypeSpriteFrame(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, cocos2d::SpriteFrame * pSpriteFrame, CCBReader * ccbReader);
         virtual void onHandlePropTypeAnimation(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, cocos2d::Animation * pAnimation, CCBReader * ccbReader);
-        virtual void onHandlePropTypeTexture(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, cocos2d::Texture2D * pTexture2D, CCBReader * ccbReader);
+        virtual void onHandlePropTypeTexture(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, cocos2d::SpriteFrame * pSpriteFrame, CCBReader * ccbReader);
         virtual void onHandlePropTypeByte(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, unsigned char pByte, CCBReader * ccbReader);
         virtual void onHandlePropTypeColor3(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, const cocos2d::Color3B &pColor3B, CCBReader * ccbReader);
         virtual void onHandlePropTypeColor4FVar(cocos2d::Node * pNode, cocos2d::Node * pParent, const char* pPropertyName, const cocos2d::Color4F *pColor4FVar, CCBReader * ccbReader);
