@@ -22,3 +22,6 @@
 [submodule "external/jansson"]
 	path = external/jansson
 	url = git@github.com:vedi/jansson.git
+[submodule "extensions/EasyNDK"]
+	path = extensions/EasyNDK
+	url = git@github.com:vedi/EasyNDK.git
