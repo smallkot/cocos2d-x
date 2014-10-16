@@ -10,6 +10,12 @@
 [submodule "tests/cpp-tests/Resources/ccs-res"]
         path = tests/cpp-tests/Resources/ccs-res
         url = git://github.com/dumganhar/ccs-res.git
-[submodule "cocos2dx-profile"]
-	path = cocos2dx-profile
+[submodule "extensions\\soomla-cocos2dx-core"]
+	path = extensions\\soomla-cocos2dx-core
+	url = git@github.com:soomla/soomla-cocos2dx-core.git
+[submodule "extensions/soomla-cocos2dx-core"]
+	path = extensions/soomla-cocos2dx-core
+	url = git@github.com:soomla/soomla-cocos2dx-core.git
+[submodule "extensions/cocos2dx-profile"]
+	path = extensions/cocos2dx-profile
 	url = git@github.com:vedi/cocos2dx-profile.git
