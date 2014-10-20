@@ -649,7 +649,34 @@ SpriteFrame * NodeLoader::parsePropTypeSpriteFrame(Node * pNode, Node * pParent,
         std::string spriteFile = ccbReader->readCachedString();
         if (spriteFile.length() != 0)
         {
-            spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(spriteFile.c_str());
+            std::string fullResourceName = std::string(spriteFile).insert(spriteFile.find_last_of("."), ccbReader->getCCBResourcePostfix());
+            std::string fullPath = "";
+            bool exists = false;
+            
+            if (!ccbReader->getCCBResourcePostfix().empty())
+            {
+                fullPath = FileUtils::getInstance()->fullPathForFilename(fullResourceName.c_str());
+                exists = fullResourceName.compare(fullPath.c_str()) != 0;
+            }
+            // check resource
+            if (!exists) {
+                fullResourceName = spriteFile;
+                fullPath = FileUtils::getInstance()->fullPathForFilename(fullResourceName.c_str());
+                exists = fullResourceName.compare(fullPath.c_str()) != 0;
+            }
+            //=========
+            // try apply postfix
+            //std::string fullResourceName = std::string(spriteFile).insert(spriteFile.find_last_of("."), ccbReader->getCCBResourcePostfix());
+            spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(fullResourceName.c_str());
+            if(!spriteFrame)
+            {
+                Texture2D * texture = Director::getInstance()->getTextureCache()->addImage(fullResourceName.c_str());
+                if(texture != NULL) {
+                    Rect bounds = Rect(0, 0, texture->getContentSize().width, texture->getContentSize().height);
+                    spriteFrame = CCSpriteFrame::createWithTexture(texture, bounds);
+                }
+            }
+            /*spriteFrame = SpriteFrameCache::getInstance()->getSpriteFrameByName(spriteFile.c_str());
             if(!spriteFrame)
             {
                 Texture2D * texture = Director::getInstance()->getTextureCache()->addImage(spriteFile.c_str());
@@ -658,6 +685,7 @@ SpriteFrame * NodeLoader::parsePropTypeSpriteFrame(Node * pNode, Node * pParent,
                     spriteFrame = CCSpriteFrame::createWithTexture(texture, bounds);
                 }
             }
+             */
         }
     }
     if (ccbReader->getAnimatedProperties()->find(pPropertyName) != ccbReader->getAnimatedProperties()->end())

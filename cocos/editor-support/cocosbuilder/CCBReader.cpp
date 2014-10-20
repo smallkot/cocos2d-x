@@ -70,6 +70,7 @@ CCBReader::CCBReader(NodeLoaderLibrary * pNodeLoaderLibrary, CCBMemberVariableAs
 , _ccbx(false)
 , _ccbMainScale(1.0f)
 , _ccbAdditionalScale(1.0f)
+, m_sCCBResourcePostfix("")
 {
     this->_nodeLoaderLibrary = pNodeLoaderLibrary;
     this->_nodeLoaderLibrary->retain();
@@ -88,6 +89,7 @@ CCBReader::CCBReader(CCBReader * ccbReader)
 , _animatedProps(nullptr)
 , _ccbMainScale(1.0f)
 , _ccbAdditionalScale(1.0f)
+, m_sCCBResourcePostfix("")
 {
     this->_ccbMainScale = ccbReader->_ccbMainScale;
     this->_ccbAdditionalScale = ccbReader->_ccbAdditionalScale;
@@ -98,6 +100,8 @@ CCBReader::CCBReader(CCBReader * ccbReader)
     this->_CCBMemberVariableAssigner = ccbReader->_CCBMemberVariableAssigner;
     this->_CCBSelectorResolver = ccbReader->_CCBSelectorResolver;
     this->_nodeLoaderListener = ccbReader->_nodeLoaderListener;
+    
+    this->m_sCCBResourcePostfix = ccbReader->m_sCCBResourcePostfix;
     
     this->_CCBRootPath = ccbReader->getCCBRootPath();
     this->_ccbx = ccbReader->_ccbx;
@@ -116,6 +120,7 @@ CCBReader::CCBReader()
 , _CCBMemberVariableAssigner(nullptr)
 , _CCBSelectorResolver(nullptr)
 , _ccbx(false)
+, m_sCCBResourcePostfix("")
 {
     init();
 }
@@ -229,13 +234,45 @@ Node* CCBReader::readNodeGraphFromFile(const std::string &pCCBFileName, Ref *pOw
         strCCBFileName += strSuffix;
     }
 
-    std::string strPath = FileUtils::getInstance()->fullPathForFilename(strCCBFileName.c_str());
+    //std::string strPath = FileUtils::getInstance()->fullPathForFilename(strCCBFileName.c_str());
+    
+    std::string strPath = strCCBFileName;
+    bool exists = resolveFile(strPath);
+    CC_ASSERT(exists);
 
     Data dataPtr = FileUtils::getInstance()->getDataFromFile(strPath);
     
     Node *ret =  this->readNodeGraphFromData(dataPtr, pOwner, parentSize, scaleType);
     
     return ret;
+}
+    
+bool CCBReader::resolveFile(std::string & fileName)
+{
+    bool exists = false;
+    std::string sPath;
+    string fullPath;
+    
+    if (!exists) {
+        // check resource_postfix
+        if (!getCCBResourcePostfix().empty()) {
+            sPath = fileName;
+            std::string(sPath).insert(sPath.find_last_of("."),getCCBResourcePostfix());
+            //sPath.append(getCCBResourcePostfix());
+            fullPath = FileUtils::getInstance()->fullPathForFilename(sPath.c_str());
+            exists = sPath.compare(fullPath.c_str()) != 0;
+        }
+        // check resource
+        if (!exists) {
+            sPath = fileName;
+            fullPath = FileUtils::getInstance()->fullPathForFilename(sPath.c_str());
+            exists = sPath.compare(fullPath.c_str()) != 0;
+        }
+    }
+    
+    fileName.assign(fullPath);
+    
+    return exists;
 }
     
 void CCBReader::calcScales(const Size &designResolution, float designScale, SceneScaleType scaleType)

@@ -70,6 +70,7 @@ class CCBKeyframe;
  */
 class CCBReader : public cocos2d::Ref 
 {
+    CC_SYNTHESIZE(std::string, m_sCCBResourcePostfix, CCBResourcePostfix);
 public:
     enum class PropertyType {
         POSITION = 0,
@@ -247,6 +248,8 @@ public:
     cocos2d::Node* readNodeGraphFromFile(const std::string &pCCBFileName, SceneScaleType scaleType = SceneScaleType::NONE);
     cocos2d::Node* readNodeGraphFromFile(const std::string &pCCBFileName, cocos2d::Ref *pOwner, SceneScaleType scaleType = SceneScaleType::NONE);
     cocos2d::Node* readNodeGraphFromFile(const std::string &pCCBFileName, cocos2d::Ref *pOwner, const cocos2d::Size &parentSize, SceneScaleType scaleType = SceneScaleType::NONE);
+    
+    bool resolveFile(std::string & fileName);
     /**
      * @js NA
      * @lua NA
